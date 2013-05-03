@@ -87,10 +87,10 @@
     </RelativeLayout>
 
     <TextView
-        android:id="@+id/textView4"
+        android:id="@+id/qustextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Large Text"
+        android:text="\n是否添加到日历提醒？"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <RelativeLayout

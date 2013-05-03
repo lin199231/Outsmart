@@ -17,6 +17,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.telephony.PhoneNumberUtils;
 import android.telephony.SmsManager;
+import android.util.Log;
 import android.view.*;
 import android.view.View.*;
 import android.view.Window;
@@ -28,10 +29,9 @@ import android.widget.Toast;
 
 public class DialogActivity extends Activity implements OnClickListener {
 
+	private TextView smstextView = null;
 	private TextView timetextView = null;
 	private TextView locationtextView = null;
-	private TextView smstextView = null;
-	private TextView textView4 = null;
 	private EditText editText = null;
 	private Button btn_ok = null;
 	private Button btn_cancel = null;
@@ -39,8 +39,8 @@ public class DialogActivity extends Activity implements OnClickListener {
 	private String location = new String();
 	private Date time;
 	private String sender = new String();
-	private AutoCompleteTextView autoCompletetextView = null;	
-	
+	private AutoCompleteTextView autoCompletetextView = null;
+
 	private boolean isClear = false;
 
 	private static String calanderURL = "";
@@ -71,7 +71,6 @@ public class DialogActivity extends Activity implements OnClickListener {
 		timetextView = (TextView) findViewById(R.id.timetextView);
 		locationtextView = (TextView) findViewById(R.id.locationtextView);
 		smstextView = (TextView) findViewById(R.id.smstextView);
-		textView4 = (TextView) findViewById(R.id.textView4);
 		btn_ok = (Button) findViewById(R.id.btn_ok);
 		btn_ok.setOnClickListener(this);
 		btn_cancel = (Button) findViewById(R.id.btn_cancel);
@@ -81,29 +80,14 @@ public class DialogActivity extends Activity implements OnClickListener {
 		autoCompletetextView = (AutoCompleteTextView) findViewById(R.id.AutoCompleteTextView);
 		autoCompletetextView.setOnClickListener(this);
 
-		//接受intent
+		// 接受intent
 		Intent intent = getIntent();
 		String content = intent.getStringExtra("content");
 		String sender = intent.getStringExtra("sender");
-		// Log.e("tag", sender);
-		
+		Log.i("content", content);
+		Log.i("sender", sender);
 		
 		MSG msg = new MSG(content);
-		
-		location = msg.getLocation();
-		time = msg.getTime();
-		//System.out.println(time.getTime());
-		this.sender = sender;
-		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		timetextView.setText("时间：" + format.format(time));
-		locationtextView.setText("地点："+ location);
-		smstextView.setText(content);
-		// textView4.setText("是否是会议提醒:" + msg.isMeeting() + "\n是否添加到日历提醒？");
-		textView4.setText("\n是否添加到日历提醒？");
-
-		//TipHelper.PlaySound(this);// 响铃
-		//long ring[]={1000,500,1000};
-		//TipHelper.Vibrate(this, ring, false);//震动
 	}
 
 	@Override
@@ -156,7 +140,7 @@ public class DialogActivity extends Activity implements OnClickListener {
 			getContentResolver().insert(Uri.parse(calanderRemiderURL), values);
 			Toast.makeText(DialogActivity.this, "添加提醒成功!!!", Toast.LENGTH_SHORT)
 					.show();
-			//finish();
+			// finish();
 			break;
 		}
 		case R.id.btn_reply: {
@@ -180,9 +164,9 @@ public class DialogActivity extends Activity implements OnClickListener {
 									System.out.println(reply);
 									PendingIntent sentIntent = PendingIntent
 											.getBroadcast(DialogActivity.this,
-													0, new Intent(), 
+													0, new Intent(),
 
-0);
+													0);
 									if (PhoneNumberUtils
 											.isGlobalPhoneNumber(sender)
 											&& sender.length() > 0) {
@@ -191,13 +175,13 @@ public class DialogActivity extends Activity implements OnClickListener {
 										sms.sendTextMessage(sender, null,
 												reply, sentIntent, null);
 										Toast.makeText(DialogActivity.this,
-												"短信发送成功", 
+												"短信发送成功",
 
-Toast.LENGTH_LONG)
-												.show();
-										//finish();
+												Toast.LENGTH_LONG).show();
+										// finish();
 									} else
-										Toast.makeText(DialogActivity.this,"短信发送失败，请重新尝试",
+										Toast.makeText(DialogActivity.this,
+												"短信发送失败，请重新尝试",
 												Toast.LENGTH_LONG).show();
 									finish();
 								}
