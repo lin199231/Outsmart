@@ -49,6 +49,6 @@ public class CopyDic {
 				e.printStackTrace();
 			}
 		}
-		Log.i("¿½±´×ÖµäÊ±¼ä", Calendar.getInstance().getTimeInMillis() - ftime + "");
+		Log.i("Time of Copy Dic", Calendar.getInstance().getTimeInMillis() - ftime + "");
 	}
 }
