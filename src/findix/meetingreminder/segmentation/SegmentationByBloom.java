@@ -1,11 +1,7 @@
 package findix.meetingreminder.segmentation;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashSet;
 
 import android.util.Log;
 
@@ -26,7 +22,7 @@ public class SegmentationByBloom {
 		}
 	}
 
-	public static String[] getWords(String str) {
+	public String[] getWords(String str) {
 		ArrayList<String> list = getWordsbyArrayList(str);
 		return (String[]) list.toArray(new String[list.size()]);
 	}

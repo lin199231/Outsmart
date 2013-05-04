@@ -3,7 +3,6 @@ package findix.meetingreminder.segmentation;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-import android.R.integer;
 import android.util.Log;
 
 public class SegmentationByString {

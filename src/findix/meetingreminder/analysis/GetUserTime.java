@@ -1,6 +1,5 @@
 ﻿package findix.meetingreminder.analysis;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.regex.*;
@@ -11,7 +10,6 @@ import android.util.Log;
 //String Location为记录地点的字符串
 
 import findix.meetingreminder.segmentation.SegmentationByBloom;
-import findix.meetingreminder.segmentation.SegmentationByHash;
 
 public class GetUserTime {
 
@@ -55,10 +53,9 @@ public class GetUserTime {
 	 * 
 	 * return Location; }
 	 */
-	@SuppressWarnings("deprecation")
 	private void PhaseShiefTime() {// 用于解析出字符串中的时间和地点信息
 		time = Calendar.getInstance();// 获取系统当前时间
-		time.set(time.SECOND, 0);
+		time.set(Calendar.SECOND, 0);
 		time.setFirstDayOfWeek(Calendar.MONDAY);
 		// 正则表达式确定
 		Pattern Year = Pattern.compile("\\d{2,4}[年\\.\\/\\-]");// xx-xxxx年

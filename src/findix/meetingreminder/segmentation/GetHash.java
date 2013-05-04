@@ -15,8 +15,8 @@ public class GetHash {
 		return HashCode;
 	}
 
+	@SuppressWarnings("resource")
 	public void getHashTable(int Mode) {
-		long hash;
 		String str;
 		File main2012 = new File(
 				"C:\\Users\\feng\\workspace\\Bloom\\main2012-5.txt");
