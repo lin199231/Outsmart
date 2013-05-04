@@ -2,7 +2,6 @@ package findix.meetingreminder;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 
 import findix.meetingreminder.analysis.GetUserLocation;
 import findix.meetingreminder.analysis.GetUserTime;
@@ -10,9 +9,12 @@ import findix.meetingreminder.analysis.GetUserTime;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.PendingIntent;
+import android.app.TimePickerDialog;
 import android.content.*;
+import android.content.DialogInterface.OnMultiChoiceClickListener;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
@@ -25,8 +27,10 @@ import android.view.View.*;
 import android.view.Window;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 public class DialogActivity extends Activity implements OnClickListener {
@@ -38,8 +42,11 @@ public class DialogActivity extends Activity implements OnClickListener {
 	private Button btn_ok = null;
 	private Button btn_cancel = null;
 	private Button btn_reply = null;
+	private Button btn_changeLocation = null;
+	private Button btn_changeTime = null;
+	private Button btn_changeDate = null;
 	private String[] location;
-	private Date time;
+	private Calendar time;
 	private String sender = new String();
 	private AutoCompleteTextView autoCompletetextView = null;
 
@@ -80,6 +87,14 @@ public class DialogActivity extends Activity implements OnClickListener {
 		btn_cancel.setOnClickListener(this);
 		btn_reply = (Button) findViewById(R.id.btn_reply);
 		btn_reply.setOnClickListener(this);
+		btn_changeDate = (Button) findViewById(R.id.changeDateButton);
+		btn_changeDate.setOnClickListener(new BtnOnClickListener(
+				R.id.changeDateButton));
+		btn_changeTime = (Button) findViewById(R.id.changeTimeButton);
+		btn_changeTime.setOnClickListener(new BtnOnClickListener(
+				R.id.changeTimeButton));
+		btn_changeLocation = (Button) findViewById(R.id.changeLocationButton);
+		btn_changeLocation.setOnClickListener(this);
 		autoCompletetextView = (AutoCompleteTextView) findViewById(R.id.AutoCompleteTextView);
 		autoCompletetextView.setOnClickListener(this);
 
@@ -91,13 +106,13 @@ public class DialogActivity extends Activity implements OnClickListener {
 		Log.i("sender", sender);
 
 		GetUserTime getUserTime = new GetUserTime(content);
-		GetUserLocation getUserLocation=new GetUserLocation();
+		GetUserLocation getUserLocation = new GetUserLocation();
 		location = getUserLocation.getLocation(content);
 		time = getUserTime.getTime();
-		//System.out.println(time.getTime());
+		// System.out.println(time.getTime());
 		this.sender = sender;
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		timetextView.setText("时间：" + format.format(time));
+		timetextView.setText("时间：" + format.format(time.getTime()));
 		locationtextView.setText("地点：" + location);
 		smstextView.setText(content);
 
@@ -110,6 +125,40 @@ public class DialogActivity extends Activity implements OnClickListener {
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
 		switch (v.getId()) {
+		case R.id.changeLocationButton: {
+			final boolean[] defaultSelectedStatus = new boolean[location.length];
+			for (int i = 0; i < location.length; i++)
+				defaultSelectedStatus[i] = false;
+			new AlertDialog.Builder(this)
+					.setTitle("设置地点")
+					// 设置对话框标题
+					.setMultiChoiceItems(location, defaultSelectedStatus,
+							new OnMultiChoiceClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which, boolean isChecked) {
+									// 来回重复选择取消，得相应去改变item对应的bool值，点击确定时，根据这个bool[],得到选择的内容
+									defaultSelectedStatus[which] = isChecked;
+								}
+							}) // 设置对话框[肯定]按钮
+					.setPositiveButton("确定",
+							new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+									// TODO Auto-generated method stub
+									StringBuffer locationSet = null;
+									for (int i = 0; i < defaultSelectedStatus.length; i++) {
+										if (defaultSelectedStatus[i]) {
+											locationSet.append(location[i]);
+										}
+									}
+									locationtextView.setText("地点："+locationSet);
+								}
+							}).setNegativeButton("取消", null)// 设置对话框[否定]按钮
+					.show();
+			break;
+		}
 		case R.id.btn_ok: {
 
 			// 获取账户
@@ -140,9 +189,9 @@ public class DialogActivity extends Activity implements OnClickListener {
 			event.put("calendar_id", calId);
 			Calendar mCalendar = Calendar.getInstance();
 			mCalendar.set(Calendar.HOUR_OF_DAY, 10);
-			long start = time.getTime();
+			long start = time.getTimeInMillis();
 			mCalendar.set(Calendar.HOUR_OF_DAY, 11);
-			long end = time.getTime() + 3600000;
+			long end = time.getTimeInMillis() + 3600000;
 			event.put("dtstart", start);
 			event.put("dtend", end);
 			event.put("hasAlarm", 1);
@@ -217,5 +266,69 @@ public class DialogActivity extends Activity implements OnClickListener {
 			}
 		}
 		}
+	}
+
+	protected Dialog onCreateDialog(int id) {
+		// 用来获取日期和时间的
+		Calendar calendar = Calendar.getInstance();
+
+		Dialog dialog = null;
+		switch (id) {
+		case R.id.changeDateButton:
+			DatePickerDialog.OnDateSetListener dateListener = new DatePickerDialog.OnDateSetListener() {
+				@Override
+				public void onDateSet(DatePicker datePicker, int year,
+						int month, int dayOfMonth) {
+					// Calendar月份是从0开始,所以month要加1
+					time.set(year, month, dayOfMonth);
+					SimpleDateFormat format = new SimpleDateFormat(
+							"yyyy-MM-dd HH:mm:ss");
+
+					timetextView.setText("时间：" + format.format(time.getTime()));
+				}
+			};
+			dialog = new DatePickerDialog(this, dateListener,
+					calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH),
+					calendar.get(Calendar.DAY_OF_MONTH));
+			break;
+		case R.id.changeTimeButton:
+			TimePickerDialog.OnTimeSetListener timeListener = new TimePickerDialog.OnTimeSetListener() {
+
+				@Override
+				public void onTimeSet(TimePicker timerPicker, int hourOfDay,
+						int minute) {
+					time.set(Calendar.HOUR_OF_DAY, hourOfDay);
+					time.set(Calendar.MINUTE, minute);
+					SimpleDateFormat format = new SimpleDateFormat(
+							"yyyy-MM-dd HH:mm:ss");
+					timetextView.setText("时间：" + format.format(time.getTime()));
+				}
+			};
+			dialog = new TimePickerDialog(this, timeListener,
+					calendar.get(Calendar.HOUR_OF_DAY),
+					calendar.get(Calendar.MINUTE), false); // 是否为二十四制
+			break;
+		default:
+			break;
+		}
+		return dialog;
+	}
+
+	/*
+	 * 成员内部类,此处为提高可重用性，也可以换成匿名内部类
+	 */
+	private class BtnOnClickListener implements View.OnClickListener {
+
+		private int dialogId = 0; // 默认为0则不显示对话框
+
+		public BtnOnClickListener(int dialogId) {
+			this.dialogId = dialogId;
+		}
+
+		@Override
+		public void onClick(View view) {
+			showDialog(dialogId);
+		}
+
 	}
 }

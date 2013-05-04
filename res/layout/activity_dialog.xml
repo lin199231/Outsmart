@@ -63,27 +63,28 @@
             android:id="@+id/changeLocationButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
+            android:layout_marginRight="18dp"
             android:text="更改地点" />
 
         <Button
             android:id="@+id/changeTimeButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
-            android:layout_marginLeft="15dp"
+            android:layout_centerHorizontal="true"
             android:text="更改时间" />
 
         <Button
-            android:id="@+id/changeEventButton"
+            android:id="@+id/changeDateButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
-            android:layout_marginRight="15dp"
-            android:text="更改事件" />
+            android:layout_marginLeft="18dp"
+            android:text="更改日期" />
+
     </RelativeLayout>
 
     <TextView

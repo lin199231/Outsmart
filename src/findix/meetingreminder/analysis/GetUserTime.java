@@ -1,7 +1,6 @@
 ﻿package findix.meetingreminder.analysis;
 
 import java.util.Calendar;
-import java.util.Date;
 import java.util.regex.*;
 
 import android.util.Log;
@@ -39,8 +38,8 @@ public class GetUserTime {
 		return text;
 	}
 
-	public Date getTime() {// 返回日历对象
-		return time.getTime();
+	public Calendar getTime() {// 返回日历对象
+		return time;
 		/*
 		 * return time.get(Calendar.YEAR) + "年" + time.get(Calendar.MONTH) +
 		 * "+1月" + time.get(Calendar.DATE) + "日" +
