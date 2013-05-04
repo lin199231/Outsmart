@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import findix.meetingreminder.analysis.GetUserLocation;
 import findix.meetingreminder.analysis.MSG;
 
 import android.app.Activity;
@@ -36,7 +37,7 @@ public class DialogActivity extends Activity implements OnClickListener {
 	private Button btn_ok = null;
 	private Button btn_cancel = null;
 	private Button btn_reply = null;
-	private String location = new String();
+	private String[] location;
 	private Date time;
 	private String sender = new String();
 	private AutoCompleteTextView autoCompletetextView = null;
@@ -86,8 +87,21 @@ public class DialogActivity extends Activity implements OnClickListener {
 		String sender = intent.getStringExtra("sender");
 		Log.i("content", content);
 		Log.i("sender", sender);
-		
+
 		MSG msg = new MSG(content);
+		GetUserLocation getUserLocation=new GetUserLocation();
+		location = getUserLocation.getLocation(content);
+		time = msg.getTime();
+		System.out.println(time.getTime());
+		this.sender = sender;
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		timetextView.setText("时间：" + format.format(time));
+		locationtextView.setText("地点：" + location);
+		smstextView.setText(content);
+
+		// TipHelper.PlaySound(this);// 响铃
+		// long ring[]={1000,500,1000};
+		// TipHelper.Vibrate(this, ring, false);//震动
 	}
 
 	@Override

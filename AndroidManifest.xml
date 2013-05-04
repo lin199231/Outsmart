@@ -52,10 +52,6 @@
             android:name=".DialogActivity"
             android:excludeFromRecents="true"
             android:theme="@style/translucent" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <!-- —————————————————————————————————————————————————————————————————————————————————————————————— -->
 
