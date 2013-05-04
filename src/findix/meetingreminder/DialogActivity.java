@@ -7,6 +7,7 @@ import java.util.Date;
 import findix.meetingreminder.analysis.GetUserLocation;
 import findix.meetingreminder.analysis.GetUserTime;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -62,6 +63,7 @@ public class DialogActivity extends Activity implements OnClickListener {
 
 	}
 
+	@SuppressLint("SimpleDateFormat")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -88,11 +90,11 @@ public class DialogActivity extends Activity implements OnClickListener {
 		Log.i("content", content);
 		Log.i("sender", sender);
 
-		GetUserTime msg = new GetUserTime(content);
+		GetUserTime getUserTime = new GetUserTime(content);
 		GetUserLocation getUserLocation=new GetUserLocation();
 		location = getUserLocation.getLocation(content);
-		time = msg.getTime();
-		System.out.println(time.getTime());
+		time = getUserTime.getTime();
+		//System.out.println(time.getTime());
 		this.sender = sender;
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		timetextView.setText("时间：" + format.format(time));
