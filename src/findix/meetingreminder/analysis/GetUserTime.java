@@ -1,5 +1,6 @@
 ﻿package findix.meetingreminder.analysis;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.regex.*;
@@ -9,15 +10,18 @@ import android.util.Log;
 //String[] text为分词后的结果，对于地点的判断和选择 对其进行操作
 //String Location为记录地点的字符串
 
+import findix.meetingreminder.segmentation.SegmentationByBloom;
 import findix.meetingreminder.segmentation.SegmentationByHash;
 
 public class GetUserTime {
-	
+
 	public GetUserTime(String msg) {
 		long ftime = Calendar.getInstance().getTimeInMillis();
-		Msg = msg;		
-		//SegmentationByHash seg=new SegmentationByHash();
-		//text = seg.getWords(msg);
+		msg = toAllNumic(msg);
+		Msg = msg;
+		// SegmentationByHash seg=new SegmentationByHash();
+		SegmentationByBloom seg = new SegmentationByBloom();
+		text = seg.getWords(msg);
 		PhaseShiefTime();
 		Log.i("运行时间", Calendar.getInstance().getTimeInMillis() - ftime + "");
 	}
@@ -27,8 +31,8 @@ public class GetUserTime {
 	}
 
 	public void setMsg(String msg) {
-		//SegmentationByHash seg=new SegmentationByHash();
-		//text = seg.getWords(msg);
+		// SegmentationByHash seg=new SegmentationByHash();
+		// text = seg.getWords(msg);
 		PhaseShiefTime();
 		PhaseShiefPlace();
 	}
@@ -46,14 +50,15 @@ public class GetUserTime {
 		 */
 	}
 
-	public String getLocation() {// 返回地点字符串
-		
-		return Location;
-	}
-
+	/*
+	 * public String getLocation() {// 返回地点字符串
+	 * 
+	 * return Location; }
+	 */
 	@SuppressWarnings("deprecation")
 	private void PhaseShiefTime() {// 用于解析出字符串中的时间和地点信息
 		time = Calendar.getInstance();// 获取系统当前时间
+		time.set(time.SECOND, 0);
 		time.setFirstDayOfWeek(Calendar.MONDAY);
 		// 正则表达式确定
 		Pattern Year = Pattern.compile("\\d{2,4}[年\\.\\/\\-]");// xx-xxxx年
@@ -160,35 +165,61 @@ public class GetUserTime {
 				}
 			}
 		}// 校正下星期\星期x
-		/*
-		 * MC = Time.matcher(Msg); if (MC.find()) { IK ik = new IK(MC.group());
-		 * String[] IKTime = ik.Analyer(); // 确定小时 if
-		 * (IKTime[0].charAt(IKTime[0].length() - 1) == '点') { if
-		 * (IKTime[0].length() == 2) time.set(Calendar.HOUR,
-		 * Integer.valueOf(IKTime[0].substring(0, 1))); else if
-		 * (Integer.valueOf(IKTime[0].substring(0, 2)) <= 12)
-		 * time.set(Calendar.HOUR, Integer.valueOf(IKTime[0].substring(0, 2)));
-		 * else time.set(Calendar.HOUR_OF_DAY,
-		 * Integer.valueOf(IKTime[0].substring(0, 2))); } else { if
-		 * (IKTime[0].length() == 1) time.set(Calendar.HOUR,
-		 * Integer.valueOf(IKTime[0].substring(0, 1))); else if
-		 * (Integer.valueOf(IKTime[0].substring(0, 2)) < 12)
-		 * time.set(Calendar.HOUR, Integer.valueOf(IKTime[0].substring(0, 2)));
-		 * else time.set(Calendar.HOUR_OF_DAY,
-		 * Integer.valueOf(IKTime[0].substring(0, 2))); } // 确定分钟
-		 * if(IKTime.length==1)time.set(Calendar.MINUTE,0); else if
-		 * (IKTime[1].charAt(IKTime[1].length() - 1) == '分') { if
-		 * (IKTime[1].length() == 2) time.set(Calendar.MINUTE,
-		 * Integer.valueOf(IKTime[1].substring(0, 1))); else
-		 * time.set(Calendar.MINUTE, Integer.valueOf(IKTime[1].substring(0,
-		 * 2))); } else if (IKTime[1].charAt(IKTime[1].length() - 1) == '刻') {
-		 * switch (IKTime[1].charAt(0)) { case '一': case '1':
-		 * time.set(Calendar.MINUTE, 15); break; case '二': case '2':
-		 * time.set(Calendar.MINUTE, 30); break; case '三': case '3':
-		 * time.set(Calendar.MINUTE, 45); break; } } else if (IKTime.length == 1
-		 * && IKTime[1].charAt(0) == '半') { time.set(Calendar.MINUTE, 30); }
-		 * else { time.set(Calendar.MINUTE, Integer.valueOf(IKTime[1])); } }
-		 */
+
+		MC = Time.matcher(Msg);
+		if (MC.find()) {
+			String[] IKTime = toIKMode(MC.group()); // 确定小时
+			if (IKTime[0].charAt(IKTime[0].length() - 1) == '点') {
+				if (IKTime[0].length() == 2)
+					time.set(Calendar.HOUR,
+							Integer.valueOf(IKTime[0].substring(0, 1)));
+				else if (Integer.valueOf(IKTime[0].substring(0, 2)) <= 12)
+					time.set(Calendar.HOUR,
+							Integer.valueOf(IKTime[0].substring(0, 2)));
+				else
+					time.set(Calendar.HOUR_OF_DAY,
+							Integer.valueOf(IKTime[0].substring(0, 2)));
+			} else {
+				if (IKTime[0].length() == 1)
+					time.set(Calendar.HOUR,
+							Integer.valueOf(IKTime[0].substring(0, 1)));
+				else if (Integer.valueOf(IKTime[0].substring(0, 2)) < 12)
+					time.set(Calendar.HOUR,
+							Integer.valueOf(IKTime[0].substring(0, 2)));
+				else
+					time.set(Calendar.HOUR_OF_DAY,
+							Integer.valueOf(IKTime[0].substring(0, 2)));
+			} // 确定分钟
+			if (IKTime.length == 1)
+				time.set(Calendar.MINUTE, 0);
+			else if (IKTime[1].charAt(IKTime[1].length() - 1) == '分') {
+				if (IKTime[1].length() == 2)
+					time.set(Calendar.MINUTE,
+							Integer.valueOf(IKTime[1].substring(0, 1)));
+				else
+					time.set(Calendar.MINUTE,
+							Integer.valueOf(IKTime[1].substring(0, 2)));
+			} else if (IKTime[1].charAt(IKTime[1].length() - 1) == '刻') {
+				switch (IKTime[1].charAt(0)) {
+				case '一':
+				case '1':
+					time.set(Calendar.MINUTE, 15);
+					break;
+				case '二':
+				case '2':
+					time.set(Calendar.MINUTE, 30);
+					break;
+				case '三':
+				case '3':
+					time.set(Calendar.MINUTE, 45);
+					break;
+				}
+			} else if (IKTime.length == 1 && IKTime[1].charAt(0) == '半') {
+				time.set(Calendar.MINUTE, 30);
+			} else {
+				time.set(Calendar.MINUTE, Integer.valueOf(IKTime[1]));
+			}
+		}
 		// 校准时制
 		MC = TS.matcher(Msg);
 		if (MC.find()) {
@@ -206,6 +237,77 @@ public class GetUserTime {
 
 	private void PhaseShiefPlace() {
 		// 对于地点选取的代码在这编写
+	}
+
+	private static String toAllNumic(String msg) {
+		StringBuffer strb = new StringBuffer(msg);
+		String temp;
+		Pattern Single = Pattern.compile("[一二三四五六七八九]");// 一位数
+		Pattern Double = Pattern.compile("十[一二三四五六七八九]");// 两位数
+		Pattern Triple = Pattern.compile("[一二三四五六七八九]十[一二三四五六七八九]");// 三位数
+		Matcher MC = null;// 匹配器
+		MC = Triple.matcher(msg);
+		while (MC.find()) {
+			temp = MC.group();
+			strb.replace(MC.start(), MC.start() + 3, toNumic(temp.charAt(0))
+					+ "" + toNumic(temp.charAt(2)));
+			msg = strb.toString();
+			MC = Triple.matcher(msg);
+		}
+		MC = Double.matcher(msg);
+		while (MC.find()) {
+			temp = MC.group();
+			strb.replace(MC.start(), MC.start() + 2,
+					"1" + toNumic(temp.charAt(1)));
+		}
+		MC = Single.matcher(msg);
+		while (MC.find()) {
+			temp = MC.group();
+			strb.replace(MC.start(), MC.start() + 1, toNumic(temp.charAt(0))
+					+ "");
+		}
+		return msg = strb.toString();
+	}
+
+	private static char toNumic(char c) {
+		switch (c) {
+		case '一':
+			return '1';
+		case '二':
+			return '2';
+		case '三':
+			return '3';
+		case '四':
+			return '4';
+		case '五':
+			return '5';
+		case '六':
+			return '6';
+		case '七':
+			return '7';
+		case '八':
+			return '8';
+		case '九':
+			return '9';
+		default:
+			return '0';
+		}
+	}
+
+	private String[] toIKMode(String str) {
+		String[] IKMode = new String[2];
+		for (int i = 1; i < str.length(); i++) {
+			if (str.charAt(i) == ':' || str.charAt(i) == '：') {
+				IKMode[0] = str.substring(0, i);
+				IKMode[1] = str.substring(i + 1, str.length());
+				return IKMode;
+			} else if (str.charAt(i) == '点') {
+				IKMode[0] = str.substring(0, i + 1);
+				IKMode[1] = str.substring(i + 1, str.length());
+				return IKMode;
+			}
+		}
+		return IKMode;
 	}
 
 	private void TSFix() {
@@ -259,6 +361,6 @@ public class GetUserTime {
 	private String Msg;
 	private String[] text;// 记录分词后的结果
 	private Calendar time;// 记录时间
-	private String Location;// 记录地点
+	// private String Location;// 记录地点
 	private boolean isMeeting = false;// 确定是否是会议
 }
