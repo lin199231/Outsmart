@@ -11,9 +11,9 @@ import android.util.Log;
 
 import findix.meetingreminder.segmentation.SegmentationByHash;
 
-public class MSG {
+public class GetUserTime {
 	
-	public MSG(String msg) {
+	public GetUserTime(String msg) {
 		long ftime = Calendar.getInstance().getTimeInMillis();
 		Msg = msg;		
 		//SegmentationByHash seg=new SegmentationByHash();

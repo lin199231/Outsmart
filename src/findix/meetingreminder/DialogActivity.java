@@ -5,7 +5,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import findix.meetingreminder.analysis.GetUserLocation;
-import findix.meetingreminder.analysis.MSG;
+import findix.meetingreminder.analysis.GetUserTime;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -88,7 +88,7 @@ public class DialogActivity extends Activity implements OnClickListener {
 		Log.i("content", content);
 		Log.i("sender", sender);
 
-		MSG msg = new MSG(content);
+		GetUserTime msg = new GetUserTime(content);
 		GetUserLocation getUserLocation=new GetUserLocation();
 		location = getUserLocation.getLocation(content);
 		time = msg.getTime();
