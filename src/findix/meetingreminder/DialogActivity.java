@@ -81,8 +81,8 @@ public class DialogActivity extends Activity implements OnClickListener {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_dialog);
 		setTheme(R.style.translucent);
-		timetextView = (TextView) findViewById(R.id.timetextView);
 		datetextView = (TextView) findViewById(R.id.datetextView);
+		timetextView = (TextView) findViewById(R.id.timetextView);
 		editText_location = (EditText) findViewById(R.id.locationedittext);
 		smstextView = (TextView) findViewById(R.id.smstextView);
 		btn_ok = (Button) findViewById(R.id.btn_ok);
@@ -113,13 +113,13 @@ public class DialogActivity extends Activity implements OnClickListener {
 
 		GetUserTime getUserTime = new GetUserTime(content);
 		time = getUserTime.getTime();
-		GetUserLocation getUserLocation = new GetUserLocation(content);
+		GetUserLocation getUserLocation = new GetUserLocation(getUserTime.getNoDateMsg());
 		location = getUserLocation.getLocation();
 		this.sender = sender;
 		SimpleDateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd");
 		SimpleDateFormat formatTime = new SimpleDateFormat("H:mm");
-		datetextView.setText(formatTime.format(time.getTime()));
-		timetextView.setText(formatDate.format(time.getTime()));
+		datetextView.setText(formatDate.format(time.getTime()));
+		timetextView.setText(formatTime.format(time.getTime()));
 		editText_location.setText(getUserLocation.getUserLocation(this));
 		editText_location.clearFocus();
 		smstextView.setText(content);
@@ -333,7 +333,7 @@ public class DialogActivity extends Activity implements OnClickListener {
 						int month, int dayOfMonth) {
 					// Calendar月份是从0开始,所以month要加1
 					time.set(year, month, dayOfMonth);
-					SimpleDateFormat format = new SimpleDateFormat("H:mm");
+					SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 					datetextView.setText(format.format(time.getTime()));
 				}
 			};
@@ -349,7 +349,7 @@ public class DialogActivity extends Activity implements OnClickListener {
 						int minute) {
 					time.set(Calendar.HOUR_OF_DAY, hourOfDay);
 					time.set(Calendar.MINUTE, minute);
-					SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+					SimpleDateFormat format = new SimpleDateFormat("H:mm");
 					timetextView.setText(format.format(time.getTime()));
 				}
 			};
