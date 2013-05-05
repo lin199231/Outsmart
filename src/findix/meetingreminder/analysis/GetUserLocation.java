@@ -17,6 +17,8 @@ public class GetUserLocation {
 
 	public GetUserLocation(String text) {
 		this.text=text;
+		GetUserTime GUT = new GetUserTime(text);
+		text=GUT.getNoDateMsg();
 		SegmentationByBloom seg = new SegmentationByBloom();
 		ArrayList<String> location = seg.getWordsbyArrayList(text);
 		NoPunctuation np = new NoPunctuation();
