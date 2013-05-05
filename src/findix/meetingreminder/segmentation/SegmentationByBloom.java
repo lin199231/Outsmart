@@ -2,6 +2,10 @@ package findix.meetingreminder.segmentation;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Stack;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import android.util.Log;
 
@@ -18,7 +22,7 @@ public class SegmentationByBloom {
 
 	public static void getDic() {
 		for (int i = 0; i <= dic.length; i++) {
-			System.out.println(i+" "+(dic[i]-48));
+			System.out.println(i + " " + (dic[i] - 48));
 		}
 	}
 
@@ -27,7 +31,7 @@ public class SegmentationByBloom {
 		return (String[]) list.toArray(new String[list.size()]);
 	}
 
-	public static ArrayList<String> getWordsbyArrayList(String str) {
+	public ArrayList<String> getWordsbyArrayList(String str) {
 		ArrayList<String> list = new ArrayList<String>();
 		String subString = null;
 		int max = 4;
@@ -49,6 +53,14 @@ public class SegmentationByBloom {
 				}
 			}
 		}
+		// 把分词结果倒序使其正序
+		Stack<String> stack=new Stack<String>();
+		for(i=0;i<list.size();i++)
+			stack.push(list.get(i));
+		list.clear();
+		while(!stack.empty())
+			list.add(stack.pop()+"");
+		MakeCharTogether.getCharTogether(list);
 		return list;
 	}
 

@@ -46,7 +46,7 @@ public class DialogActivity extends Activity implements OnClickListener {
 	private Button btn_changeTime = null;
 	private Button btn_changeDate = null;
 	private String[] location;
-	private Calendar time;
+	private Calendar time=Calendar.getInstance();
 	private String sender = new String();
 	private AutoCompleteTextView autoCompletetextView = null;
 
@@ -105,15 +105,14 @@ public class DialogActivity extends Activity implements OnClickListener {
 		Log.i("content", content);
 		Log.i("sender", sender);
 
-		GetUserTime getUserTime = new GetUserTime(content);
-		GetUserLocation getUserLocation = new GetUserLocation();
-		location = getUserLocation.getLocation(content);
-		time = getUserTime.getTime();
-		// System.out.println(time.getTime());
+		//GetUserTime getUserTime = new GetUserTime(content);
+		//time = getUserTime.getTime();
+		GetUserLocation getUserLocation = new GetUserLocation(content);
+		location = getUserLocation.getLocation();
 		this.sender = sender;
-		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 		timetextView.setText("时间：" + format.format(time.getTime()));
-		locationtextView.setText("地点：" + location);
+		locationtextView.setText("地点：" + getUserLocation.getUserLocation(this));
 		smstextView.setText(content);
 
 		// TipHelper.PlaySound(this);// 响铃
@@ -147,7 +146,7 @@ public class DialogActivity extends Activity implements OnClickListener {
 								public void onClick(DialogInterface dialog,
 										int which) {
 									// TODO Auto-generated method stub
-									StringBuffer locationSet = null;
+									StringBuffer locationSet = new StringBuffer();
 									for (int i = 0; i < defaultSelectedStatus.length; i++) {
 										if (defaultSelectedStatus[i]) {
 											locationSet.append(location[i]);
