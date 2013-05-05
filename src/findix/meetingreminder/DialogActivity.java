@@ -106,8 +106,8 @@ public class DialogActivity extends Activity implements OnClickListener {
 		Log.i("content", content);
 		Log.i("sender", sender);
 
-		GetUserTime getUserTime = new GetUserTime(content);
-		time = getUserTime.getTime();
+		//GetUserTime getUserTime = new GetUserTime(content);
+		//time = getUserTime.getTime();
 		GetUserLocation getUserLocation = new GetUserLocation(content);
 		location = getUserLocation.getLocation();
 		this.sender = sender;
