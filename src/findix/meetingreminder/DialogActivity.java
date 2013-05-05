@@ -43,6 +43,7 @@ public class DialogActivity extends Activity implements OnClickListener {
 	private Button btn_cancel = null;
 	private Button btn_reply = null;
 	private Button btn_changeLocation = null;
+	private Button btn_changeEvent = null;
 	private Button btn_changeTime = null;
 	private Button btn_changeDate = null;
 	private String[] location;
@@ -96,6 +97,8 @@ public class DialogActivity extends Activity implements OnClickListener {
 				R.id.changeTimeButton));
 		btn_changeLocation = (Button) findViewById(R.id.changeLocationButton);
 		btn_changeLocation.setOnClickListener(this);
+		btn_changeEvent = (Button) findViewById(R.id.changeEventButton);
+		btn_changeEvent.setOnClickListener(this);
 		autoCompletetextView = (AutoCompleteTextView) findViewById(R.id.AutoCompleteTextView);
 		autoCompletetextView.setOnClickListener(this);
 
@@ -155,6 +158,40 @@ public class DialogActivity extends Activity implements OnClickListener {
 										}
 									}
 									editText_location.setText(locationSet);
+								}
+							}).setNegativeButton("取消", null)// 设置对话框[否定]按钮
+					.show();
+			break;
+		}
+		case R.id.changeEventButton: {
+			final boolean[] defaultSelectedStatus = new boolean[location.length];
+			for (int i = 0; i < location.length; i++)
+				defaultSelectedStatus[i] = false;
+			new AlertDialog.Builder(this)
+					.setTitle("设置地点")
+					// 设置对话框标题
+					.setMultiChoiceItems(location, defaultSelectedStatus,
+							new OnMultiChoiceClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which, boolean isChecked) {
+									// 来回重复选择取消，得相应去改变item对应的bool值，点击确定时，根据这个bool[],得到选择的内容
+									defaultSelectedStatus[which] = isChecked;
+								}
+							}) // 设置对话框[肯定]按钮
+					.setPositiveButton("确定",
+							new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+									// TODO Auto-generated method stub
+									StringBuffer locationSet = new StringBuffer();
+									for (int i = 0; i < defaultSelectedStatus.length; i++) {
+										if (defaultSelectedStatus[i]) {
+											locationSet.append(location[i]);
+										}
+									}
+									autoCompletetextView.setText(locationSet);
 								}
 							}).setNegativeButton("取消", null)// 设置对话框[否定]按钮
 					.show();
