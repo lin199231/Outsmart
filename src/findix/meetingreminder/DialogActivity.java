@@ -37,7 +37,7 @@ public class DialogActivity extends Activity implements OnClickListener {
 
 	private TextView smstextView = null;
 	private TextView timetextView = null;
-	private TextView locationtextView = null;
+	private EditText editText_location = null;
 	private EditText editText = null;
 	private Button btn_ok = null;
 	private Button btn_cancel = null;
@@ -50,7 +50,8 @@ public class DialogActivity extends Activity implements OnClickListener {
 	private String sender = new String();
 	private AutoCompleteTextView autoCompletetextView = null;
 
-	private boolean isClear = false;
+	private boolean isClear_Event = false;
+	private boolean isClear_Location = false;
 
 	private static String calanderURL = "";
 	private static String calanderEventURL = "";
@@ -79,7 +80,7 @@ public class DialogActivity extends Activity implements OnClickListener {
 		setContentView(R.layout.activity_dialog);
 		setTheme(R.style.translucent);
 		timetextView = (TextView) findViewById(R.id.timetextView);
-		locationtextView = (TextView) findViewById(R.id.locationtextView);
+		editText_location = (EditText) findViewById(R.id.locationedittext);
 		smstextView = (TextView) findViewById(R.id.smstextView);
 		btn_ok = (Button) findViewById(R.id.btn_ok);
 		btn_ok.setOnClickListener(this);
@@ -105,14 +106,15 @@ public class DialogActivity extends Activity implements OnClickListener {
 		Log.i("content", content);
 		Log.i("sender", sender);
 
-		//GetUserTime getUserTime = new GetUserTime(content);
-		//time = getUserTime.getTime();
+		GetUserTime getUserTime = new GetUserTime(content);
+		time = getUserTime.getTime();
 		GetUserLocation getUserLocation = new GetUserLocation(content);
 		location = getUserLocation.getLocation();
 		this.sender = sender;
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 		timetextView.setText("时间：" + format.format(time.getTime()));
-		locationtextView.setText("地点：" + getUserLocation.getUserLocation(this));
+		editText_location.setText(getUserLocation.getUserLocation(this));
+		editText_location.clearFocus();
 		smstextView.setText(content);
 
 		// TipHelper.PlaySound(this);// 响铃
@@ -152,7 +154,7 @@ public class DialogActivity extends Activity implements OnClickListener {
 											locationSet.append(location[i]);
 										}
 									}
-									locationtextView.setText("地点："+locationSet);
+									editText_location.setText("地点："+locationSet);
 								}
 							}).setNegativeButton("取消", null)// 设置对话框[否定]按钮
 					.show();
@@ -259,10 +261,18 @@ public class DialogActivity extends Activity implements OnClickListener {
 			break;
 		}
 		case R.id.AutoCompleteTextView: {
-			if (isClear == false) {
+			if (isClear_Event == false) {
 				autoCompletetextView.setText("");
-				isClear = true;
+				isClear_Event = true;
 			}
+			break;
+		}
+		case R.id.locationedittext: {
+			if (isClear_Location == false) {
+				editText_location.setText("");
+				isClear_Location = true;
+			}
+			break;
 		}
 		}
 	}

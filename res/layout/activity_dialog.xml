@@ -25,17 +25,49 @@
         android:text="Large Text"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
-    <TextView
-        android:id="@+id/locationtextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Large Text"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="地点："
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <LinearLayout
+            android:layout_width="0px"
+            android:layout_height="0px"
+            android:focusable="true"
+            android:focusableInTouchMode="true" />
+
+        <LinearLayout
+            android:layout_width="0px"
+            android:layout_height="0px"
+            android:focusable="true"
+            android:focusableInTouchMode="true" />
+        <!-- 获取焦点 -->
+
+        <EditText
+            android:id="@+id/locationedittext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ems="10"
+            android:text="Large Text"
+            android:textAppearance="?android:attr/textAppearanceLarge" >
+
+            <requestFocus />
+        </EditText>
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/linearLayout1"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         android:orientation="horizontal" >
 
         <TextView
@@ -56,8 +88,8 @@
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:layout_marginBottom="5dp" >
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="15dp" >
 
         <Button
             android:id="@+id/changeLocationButton"
@@ -84,7 +116,6 @@
             android:layout_alignParentTop="true"
             android:layout_marginLeft="18dp"
             android:text="更改日期" />
-
     </RelativeLayout>
 
     <TextView

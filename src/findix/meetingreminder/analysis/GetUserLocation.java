@@ -15,8 +15,10 @@ import findix.meetingreminder.segmentation.SegmentationByBloom;
 
 public class GetUserLocation {
 	String[] str;
+	String text;
 
 	public GetUserLocation(String text) {
+		this.text=text;
 		SegmentationByBloom seg = new SegmentationByBloom();
 		ArrayList<String> location = seg.getWordsbyArrayList(text);
 		NoPunctuation np = new NoPunctuation();
@@ -46,6 +48,9 @@ public class GetUserLocation {
 			i++;
 		}
 		db.close();
+		for (i=0;i<location.length;i++)
+			if (text.contains(location[i]))
+				return location[i];
 		return "ÇëÑ¡ÔñµØµã";
 	}
 }
