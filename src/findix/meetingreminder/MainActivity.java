@@ -1,17 +1,10 @@
 ﻿package findix.meetingreminder;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Calendar;
 
 import findix.meetingreminder.backup.BackupTask;
 import findix.meetingreminder.db.DatabaseHelper;
 import findix.meetingreminder.segmentation.CopyDic;
-import findix.meetingreminder.segmentation.MakeCharTogether;
-import findix.meetingreminder.segmentation.NoPunctuation;
-import findix.meetingreminder.segmentation.NoStopword;
-import findix.meetingreminder.segmentation.SegmentationByBloom;
-
 import android.os.Bundle;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -20,7 +13,6 @@ import android.content.*;
 import android.content.DialogInterface.OnMultiChoiceClickListener;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.*;
@@ -271,28 +263,28 @@ public class MainActivity extends Activity implements OnClickListener {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.activity_main, menu);
-		long ftime = Calendar.getInstance().getTimeInMillis();// 开始时间
+		//long ftime = Calendar.getInstance().getTimeInMillis();// 开始时间
 		// String a =
 		// "打印数组和对象数组为什么返回结果不一样为什么前者返回字符串后者返回地址而不返回地址这个实在是不科学啊不科学我现在打的这些都是为了测试你马上能不能用啊尼玛我想了这么多办法要是还不行那我就没话说了凑一百";
 		// String a
 		// ="民共和国技术的进步应该是真正能够带来用户体验的提升而进，而非为了让参数更加漂亮，吸引人。当然，也有的技术是越普及，体现的价值越明显。屏幕分辨率，就是一种这样的技术。一一道来";
-		//String a = "人民共和国技术的进步12345应该是真正能够带来FindiX用户体验的提升";
-		String a="明天下午3:00在南4304开会讨论Lambda表达式。";
-		NoPunctuation np = new NoPunctuation();
-		NoStopword ns = new NoStopword();
-		SegmentationByBloom seg = new SegmentationByBloom();
+		// String a = "人民共和国技术的进步12345应该是真正能够带来FindiX用户体验的提升";
+		//String a = "明天下午3:00在南4304开会讨论Lambda表达式。";
+		//NoPunctuation np = new NoPunctuation();
+		//NoStopword ns = new NoStopword();
+		//SegmentationByBloom seg = new SegmentationByBloom();
 		// String tempString="苹果";
-		//ArrayList<String> list = seg.getWordsbyArrayList(a);
-		//np.getNoPunctuationWords(list);
-		//ns.getNoStopwordWords(list);
-		//MakeCharTogether.getCharTogether(list);
-		//String[] b = (String[]) list.toArray(new String[list.size()]);
-		String[] b=seg.getWords(a);
-		for (int i = 0; i < b.length; i++) {
-			Log.i(i + "", b[i]);
-		}
-		Log.i("Whole Time", Calendar.getInstance().getTimeInMillis() - ftime
-				+ "");// 结束时间
+		// ArrayList<String> list = seg.getWordsbyArrayList(a);
+		// np.getNoPunctuationWords(list);
+		// ns.getNoStopwordWords(list);
+		// MakeCharTogether.getCharTogether(list);
+		// String[] b = (String[]) list.toArray(new String[list.size()]);
+		//String[] b = seg.getWords(a);
+		//for (int i = 0; i < b.length; i++) {
+		//	Log.i(i + "", b[i]);
+		//}
+		//Log.i("Whole Time", Calendar.getInstance().getTimeInMillis() - ftime
+		//		+ "");// 结束时间
 		return true;
 	}
 

@@ -154,7 +154,7 @@ public class DialogActivity extends Activity implements OnClickListener {
 											locationSet.append(location[i]);
 										}
 									}
-									editText_location.setText("地点："+locationSet);
+									editText_location.setText(locationSet);
 								}
 							}).setNegativeButton("取消", null)// 设置对话框[否定]按钮
 					.show();
@@ -292,7 +292,6 @@ public class DialogActivity extends Activity implements OnClickListener {
 					time.set(year, month, dayOfMonth);
 					SimpleDateFormat format = new SimpleDateFormat(
 							"yyyy-MM-dd HH:mm:ss");
-
 					timetextView.setText("时间：" + format.format(time.getTime()));
 				}
 			};

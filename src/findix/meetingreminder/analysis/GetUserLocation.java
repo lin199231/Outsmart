@@ -1,13 +1,11 @@
 package findix.meetingreminder.analysis;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import findix.meetingreminder.MainActivity;
 import findix.meetingreminder.db.DatabaseHelper;
 import findix.meetingreminder.segmentation.NoPunctuation;
 import findix.meetingreminder.segmentation.NoStopword;
