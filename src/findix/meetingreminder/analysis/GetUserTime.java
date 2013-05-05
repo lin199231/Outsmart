@@ -14,7 +14,7 @@ public class GetUserTime {
 
 	public GetUserTime(String msg) {
 		long ftime = Calendar.getInstance().getTimeInMillis();
-		NoDateMsg=msg;
+		NoDateMsg = msg;
 		msg = toAllNumic(msg);
 		Msg = msg;
 		// SegmentationByHash seg=new SegmentationByHash();
@@ -38,10 +38,12 @@ public class GetUserTime {
 	public String[] getText() {// 用于测试使用
 		return text;
 	}
-	public String getNoDateMsg(){
+
+	public String getNoDateMsg() {
 		dropAllDate();
 		return NoDateMsg;
 	}
+
 	public Calendar getTime() {// 返回日历对象
 		return time;
 		/*
@@ -226,21 +228,19 @@ public class GetUserTime {
 				time.set(Calendar.AM_PM, Calendar.PM);
 			else
 				time.set(Calendar.AM_PM, Calendar.AM);
-		} else {
-			if (time.get(Calendar.AM_PM) == Calendar.AM)
-				TSFix();
 		}
+		TSFix();
 		// 校准日期
 		DateFix();
-//		Calendar timepp = Calendar.getInstance();
-//		if (time.get(Calendar.YEAR) == timepp.get(Calendar.YEAR)
-//				&& time.get(Calendar.MONTH) == timepp.get(Calendar.YEAR)
-//				&& time.get(Calendar.DATE) == timepp.get(Calendar.DATE)
-//				&& time.get(Calendar.HOUR) == timepp.get(Calendar.HOUR)
-//				&& time.get(Calendar.MINUTE) == timepp.get(Calendar.MINUTE))
-//			isMeeting = false;
-//		else
-//			isMeeting = true;
+		Calendar timepp = Calendar.getInstance();
+		if (time.get(Calendar.YEAR) == timepp.get(Calendar.YEAR)
+				&& time.get(Calendar.MONTH) == timepp.get(Calendar.YEAR)
+				&& time.get(Calendar.DATE) == timepp.get(Calendar.DATE)
+				&& time.get(Calendar.HOUR) == timepp.get(Calendar.HOUR)
+				&& time.get(Calendar.MINUTE) == timepp.get(Calendar.MINUTE))
+			isMeeting = false;
+		else
+			isMeeting = true;
 	}
 
 	private void PhaseShiefPlace() {
@@ -324,13 +324,15 @@ public class GetUserTime {
 				time.set(Calendar.AM_PM, Calendar.AM);
 			else if (text[i].compareTo("中午") == 0)
 				time.set(Calendar.AM_PM, Calendar.AM);
-			else if (text[i].compareTo("下午") == 0)
+			if (text[i].compareTo("下午") == 0)
 				time.set(Calendar.AM_PM, Calendar.PM);
 			else if (text[i].compareTo("清晨") == 0)
 				time.set(Calendar.AM_PM, Calendar.AM);
 			else if (text[i].compareTo("早晨") == 0)
 				time.set(Calendar.AM_PM, Calendar.AM);
 			else if (text[i].compareTo("晚上") == 0)
+				time.set(Calendar.AM_PM, Calendar.PM);
+			else if (text[i].compareTo("今晚") == 0)
 				time.set(Calendar.AM_PM, Calendar.PM);
 			else if (text[i].compareTo("傍晚") == 0)
 				time.set(Calendar.AM_PM, Calendar.PM);
@@ -340,6 +342,10 @@ public class GetUserTime {
 				time.set(Calendar.AM_PM, Calendar.PM);
 			else if (text[i].compareTo("凌晨") == 0) {// 特殊
 				time.set(Calendar.AM_PM, Calendar.AM);
+				time.set(Calendar.DAY_OF_YEAR,
+						time.get(Calendar.DAY_OF_YEAR) + 1);
+			} else if (text[i].compareTo("明晚") == 0) {// 特殊
+				time.set(Calendar.AM_PM, Calendar.PM);
 				time.set(Calendar.DAY_OF_YEAR,
 						time.get(Calendar.DAY_OF_YEAR) + 1);
 			}
@@ -365,7 +371,8 @@ public class GetUserTime {
 			}
 		}
 	}
-	private void dropAllDate(){
+
+	private void dropAllDate() {
 		Pattern Year = Pattern.compile("\\d{2,4}[年\\.\\/\\-]");// xx-xxxx年
 		Pattern Month = Pattern.compile("\\d{1,2}[月\\.\\/\\-]");// x-xx月
 		Pattern Day = Pattern.compile("\\d{1,2}[日号]");// x-xx日
@@ -375,26 +382,28 @@ public class GetUserTime {
 		Pattern Time = Pattern
 				.compile("\\d{1,2}[：:点](\\d{1,2}|\\d{1,2}分|半|[123一二三]刻)?");// 精确时间
 		Pattern APM = Pattern.compile("(上午|中午|下午|清晨|早晨|晚上|傍晚|半夜|午夜|凌晨)");// am/pm
-		Pattern Date=Pattern.compile("(明天|后天|大后天)");
+		Pattern Date = Pattern.compile("(明天|后天|大后天)");
 		deleteDateWord(Year);
 		deleteDateWord(Month);
 		deleteDateWord(Day);
 		deleteDateWord(Week);
 		deleteDateWord(NextWeek);
-		deleteDateWord(TS);
+		// deleteDateWord(TS);
 		deleteDateWord(Time);
 		deleteDateWord(APM);
 		deleteDateWord(Date);
 	}
-	private void deleteDateWord(Pattern p){
-		Matcher MC=p.matcher(NoDateMsg);
-		StringBuffer strb=new StringBuffer(NoDateMsg);
-		while(MC.find()){
-			strb.replace(MC.start(),MC.end(), "");
-			NoDateMsg=strb.toString();
-			MC=p.matcher(NoDateMsg);
+
+	private void deleteDateWord(Pattern p) {
+		Matcher MC = p.matcher(NoDateMsg);
+		StringBuffer strb = new StringBuffer(NoDateMsg);
+		while (MC.find()) {
+			strb.replace(MC.start(), MC.end(), "");
+			NoDateMsg = strb.toString();
+			MC = p.matcher(NoDateMsg);
 		}
 	}
+
 	private String Msg;
 	private String NoDateMsg;
 	private String[] text;// 记录分词后的结果

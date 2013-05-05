@@ -1,8 +1,5 @@
 package findix.meetingreminder.segmentation;
 
-import java.io.*;
-import java.util.*;
-
 public class GetHash {
 	public GetHash() {
 	}

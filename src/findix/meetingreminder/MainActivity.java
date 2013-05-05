@@ -159,8 +159,10 @@ public class MainActivity extends Activity implements OnClickListener {
 										values.put("location", location);
 										db.insert("user", null, values);
 									} else
-										Toast.makeText(MainActivity.this,
-												"我已经知道"+"\""+location+"\""+"啦",
+										Toast.makeText(
+												MainActivity.this,
+												"我已经知道" + "\"" + location
+														+ "\"" + "啦",
 												Toast.LENGTH_LONG).show();
 									db.close();
 								}

@@ -34,6 +34,7 @@ public class BackupTask extends AsyncTask<String, Void, Integer> {
 		}
 		File backup = new File(exportDir, dbFile.getName());
 		String command = params[0];
+		System.out.println(backup.getAbsolutePath());
 		if (command.equals(COMMAND_BACKUP)) {
 			try {
 				backup.createNewFile();
