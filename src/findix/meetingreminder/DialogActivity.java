@@ -37,6 +37,7 @@ public class DialogActivity extends Activity implements OnClickListener {
 
 	private TextView smstextView = null;
 	private TextView timetextView = null;
+	private TextView datetextView = null;
 	private EditText editText_location = null;
 	private EditText editText = null;
 	private Button btn_ok = null;
@@ -47,7 +48,7 @@ public class DialogActivity extends Activity implements OnClickListener {
 	private Button btn_changeTime = null;
 	private Button btn_changeDate = null;
 	private String[] location;
-	private Calendar time=Calendar.getInstance();
+	private Calendar time = Calendar.getInstance();
 	private String sender = new String();
 	private AutoCompleteTextView autoCompletetextView = null;
 
@@ -81,6 +82,7 @@ public class DialogActivity extends Activity implements OnClickListener {
 		setContentView(R.layout.activity_dialog);
 		setTheme(R.style.translucent);
 		timetextView = (TextView) findViewById(R.id.timetextView);
+		datetextView = (TextView) findViewById(R.id.datetextView);
 		editText_location = (EditText) findViewById(R.id.locationedittext);
 		smstextView = (TextView) findViewById(R.id.smstextView);
 		btn_ok = (Button) findViewById(R.id.btn_ok);
@@ -109,13 +111,15 @@ public class DialogActivity extends Activity implements OnClickListener {
 		Log.i("content", content);
 		Log.i("sender", sender);
 
-		//GetUserTime getUserTime = new GetUserTime(content);
-		//time = getUserTime.getTime();
+		GetUserTime getUserTime = new GetUserTime(content);
+		time = getUserTime.getTime();
 		GetUserLocation getUserLocation = new GetUserLocation(content);
 		location = getUserLocation.getLocation();
 		this.sender = sender;
-		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-		timetextView.setText("时间：" + format.format(time.getTime()));
+		SimpleDateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd");
+		SimpleDateFormat formatTime = new SimpleDateFormat("H:mm");
+		datetextView.setText(formatTime.format(time.getTime()));
+		timetextView.setText(formatDate.format(time.getTime()));
 		editText_location.setText(getUserLocation.getUserLocation(this));
 		editText_location.clearFocus();
 		smstextView.setText(content);
@@ -222,9 +226,11 @@ public class DialogActivity extends Activity implements OnClickListener {
 			}
 			ContentValues event = new ContentValues();
 			event.put("title", autoCompletetextView.getText().toString());
-			event.put("description", "");
+			event.put("description", autoCompletetextView.getText().toString());
 			// 插入账户
+			event.put("eventLocation", editText_location.getText().toString());
 			event.put("calendar_id", calId);
+			event.put("transparency", 0);
 			Calendar mCalendar = Calendar.getInstance();
 			mCalendar.set(Calendar.HOUR_OF_DAY, 10);
 			long start = time.getTimeInMillis();
@@ -327,9 +333,8 @@ public class DialogActivity extends Activity implements OnClickListener {
 						int month, int dayOfMonth) {
 					// Calendar月份是从0开始,所以month要加1
 					time.set(year, month, dayOfMonth);
-					SimpleDateFormat format = new SimpleDateFormat(
-							"yyyy-MM-dd HH:mm:ss");
-					timetextView.setText("时间：" + format.format(time.getTime()));
+					SimpleDateFormat format = new SimpleDateFormat("H:mm");
+					datetextView.setText(format.format(time.getTime()));
 				}
 			};
 			dialog = new DatePickerDialog(this, dateListener,
@@ -344,14 +349,13 @@ public class DialogActivity extends Activity implements OnClickListener {
 						int minute) {
 					time.set(Calendar.HOUR_OF_DAY, hourOfDay);
 					time.set(Calendar.MINUTE, minute);
-					SimpleDateFormat format = new SimpleDateFormat(
-							"yyyy-MM-dd HH:mm:ss");
-					timetextView.setText("时间：" + format.format(time.getTime()));
+					SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+					timetextView.setText(format.format(time.getTime()));
 				}
 			};
 			dialog = new TimePickerDialog(this, timeListener,
 					calendar.get(Calendar.HOUR_OF_DAY),
-					calendar.get(Calendar.MINUTE), false); // 是否为二十四制
+					calendar.get(Calendar.MINUTE), true); // 是否为二十四制
 			break;
 		default:
 			break;

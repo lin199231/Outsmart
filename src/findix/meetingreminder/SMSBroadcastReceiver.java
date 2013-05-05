@@ -3,6 +3,8 @@
 import java.io.FileReader;
 import java.io.IOException;
 
+import findix.meetingreminder.analysis.GetUserTime;
+
 
 import android.content.*;
 import android.telephony.*;
@@ -37,7 +39,7 @@ public class SMSBroadcastReceiver extends BroadcastReceiver {
 			intent.setClass(context, DialogActivity.class);
 			intent.putExtra("content", content);
 			intent.putExtra("sender", sender);
-			if (isChecked == true ) {//&& msg.isMeeting()) {
+			if (isChecked == true && new GetUserTime(content).isMeeting()) {//&& msg.isMeeting()) {
 				context.startActivity(intent);
 				// 拦截短信
 				// abortBroadcast();
