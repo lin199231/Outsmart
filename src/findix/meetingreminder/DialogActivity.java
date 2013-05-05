@@ -2,9 +2,11 @@ package findix.meetingreminder;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.TimeZone;
 
 import findix.meetingreminder.analysis.GetUserLocation;
 import findix.meetingreminder.analysis.GetUserTime;
+import findix.meetingreminder.db.DatabaseHelper;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -16,6 +18,7 @@ import android.app.TimePickerDialog;
 import android.content.*;
 import android.content.DialogInterface.OnMultiChoiceClickListener;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -113,7 +116,8 @@ public class DialogActivity extends Activity implements OnClickListener {
 
 		GetUserTime getUserTime = new GetUserTime(content);
 		time = getUserTime.getTime();
-		GetUserLocation getUserLocation = new GetUserLocation(getUserTime.getNoDateMsg());
+		GetUserLocation getUserLocation = new GetUserLocation(
+				getUserTime.getNoDateMsg());
 		location = getUserLocation.getLocation();
 		this.sender = sender;
 		SimpleDateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd");
@@ -230,7 +234,6 @@ public class DialogActivity extends Activity implements OnClickListener {
 			// 插入账户
 			event.put("eventLocation", editText_location.getText().toString());
 			event.put("calendar_id", calId);
-			event.put("transparency", 0);
 			Calendar mCalendar = Calendar.getInstance();
 			mCalendar.set(Calendar.HOUR_OF_DAY, 10);
 			long start = time.getTimeInMillis();
@@ -238,6 +241,8 @@ public class DialogActivity extends Activity implements OnClickListener {
 			long end = time.getTimeInMillis() + 3600000;
 			event.put("dtstart", start);
 			event.put("dtend", end);
+			TimeZone tz = TimeZone.getDefault();
+			event.put("eventTimezone", tz.getID());
 			event.put("hasAlarm", 1);
 			Uri newEvent = getContentResolver().insert(
 					Uri.parse(calanderEventURL), event);
@@ -249,7 +254,26 @@ public class DialogActivity extends Activity implements OnClickListener {
 			getContentResolver().insert(Uri.parse(calanderRemiderURL), values);
 			Toast.makeText(DialogActivity.this, "添加提醒成功!!!", Toast.LENGTH_SHORT)
 					.show();
+			
 			// finish();
+
+			// 添加地点到数据库
+			// 建立数据库
+			DatabaseHelper dbHelper = new DatabaseHelper(this, "user.db3");
+			SQLiteDatabase db = dbHelper.getReadableDatabase();
+			String location_Temp = editText_location.getText().toString();
+			String raw = "select location from user where location=\'" + location_Temp + "\'";
+			Cursor cursor = db.rawQuery(raw, null);
+			if (!cursor.moveToNext()) {		
+				String sql = "insert or ignore into user(location) values('"
+						+ location_Temp + "');";
+				System.out.println(sql);
+				db.execSQL(sql);
+				Toast.makeText(this,
+						"我现在知道"+"\""+location+"\""+"这个地方啦",
+						Toast.LENGTH_LONG).show();
+			}
+			db.close();
 			break;
 		}
 		case R.id.btn_reply: {
