@@ -124,14 +124,29 @@ public class MainActivity extends Activity implements OnClickListener {
 			break;
 
 		case R.id.button2: {
-			Intent intent1 = new Intent();
-			intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-			intent1.setClass(this, DialogActivity.class);
-			// intent.setClass(this, ReplyActivity.class);
-			intent1.putExtra("content", "明天下午3:00在南4304开会讨论Lambda表达式。");
-			intent1.putExtra("sender", "18817353255");
-			if (toggleButton1.isChecked())
-				startActivity(intent1);
+			final Intent intent1 = new Intent();
+			final EditText et = new EditText(this);
+			new AlertDialog.Builder(this)
+					.setTitle("发送短信")
+					.setIcon(android.R.drawable.ic_dialog_info)
+					.setView(et)
+					.setPositiveButton("确定",
+							new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface arg0,
+										int arg1) {
+									// 数据获取
+									et.getText().toString();
+									intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+									intent1.setClass(MainActivity.this, DialogActivity.class);
+									intent1.putExtra("content", et.getText()
+											.toString());
+									intent1.putExtra("sender", "18817353255");
+									if (toggleButton1.isChecked())
+										startActivity(intent1);
+								}
+							}).setNegativeButton("取消", null).show();
+
 			break;
 		}
 		case R.id.insertbutton: {

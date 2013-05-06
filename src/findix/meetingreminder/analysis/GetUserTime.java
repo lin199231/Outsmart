@@ -303,19 +303,25 @@ public class GetUserTime {
 	}
 
 	private String[] toIKMode(String str) {
-		String[] IKMode = new String[2];
 		for (int i = 1; i < str.length(); i++) {
 			if (str.charAt(i) == ':' || str.charAt(i) == '：') {
+				String[] IKMode = new String[2];
 				IKMode[0] = str.substring(0, i);
 				IKMode[1] = str.substring(i + 1, str.length());
 				return IKMode;
 			} else if (str.charAt(i) == '点') {
-				IKMode[0] = str.substring(0, i + 1);
-				IKMode[1] = str.substring(i + 1, str.length());
-				return IKMode;
+				if (i + 1 == str.length()) {
+					String[] IKMode = new String[1];
+					IKMode[0] = str.substring(0, i + 1);
+				} else {
+					String[] IKMode = new String[2];
+					IKMode[0] = str.substring(0, i + 1);
+					IKMode[1] = str.substring(i + 1, str.length());
+					return IKMode;
+				}
 			}
 		}
-		return IKMode;
+		return null;
 	}
 
 	private void TSFix() {
@@ -380,7 +386,7 @@ public class GetUserTime {
 		Pattern NextWeek = Pattern.compile("下(星期|礼拜|周)[一二三四五六日天1-7]");// 下星期x
 		Pattern TS = Pattern.compile("[AaPp]\\.?[Mm]\\.?");// am/pm
 		Pattern Time = Pattern
-				.compile("\\d{1,2}[：:点](\\d{1,2}|\\d{1,2}分|半|[123一二三]刻)?");// 精确时间
+				.compile("\\d{1,2}(([：:]\\d{1,2})|([点](\\d{1,2}分|半|[123一二三]刻)?))");// 精确时间
 		Pattern APM = Pattern.compile("(上午|中午|下午|清晨|早晨|晚上|傍晚|半夜|午夜|凌晨)");// am/pm
 		Pattern Date = Pattern.compile("(明天|后天|大后天)");
 		deleteDateWord(Year);
