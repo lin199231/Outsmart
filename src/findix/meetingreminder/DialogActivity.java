@@ -210,13 +210,16 @@ public class DialogActivity extends Activity implements OnClickListener {
 
 			// 插入事件
 			String calId = "";
-			Persistence setCalendar=new Persistence("CalendarSet.db");
-			calId=(setCalendar.getValue())+"";
+			Persistence setCalendar = new Persistence("CalendarSet.db");
+			calId = (setCalendar.getValue()) + "";
 			ContentValues event = new ContentValues();
 			event.put("title", autoCompletetextView.getText().toString());
 			event.put("description", autoCompletetextView.getText().toString());
 			// 插入账户
-			event.put("eventLocation", editText_location.getText().toString());
+			if (!editText_location.equals("") && !editText_location.equals("请选择地点")) {
+				event.put("eventLocation", editText_location.getText()
+						.toString());
+			}
 			event.put("calendar_id", calId);
 			Calendar mCalendar = Calendar.getInstance();
 			mCalendar.set(Calendar.HOUR_OF_DAY, 10);
@@ -238,7 +241,7 @@ public class DialogActivity extends Activity implements OnClickListener {
 			getContentResolver().insert(Uri.parse(calanderRemiderURL), values);
 			Toast.makeText(DialogActivity.this, "添加提醒成功!!!", Toast.LENGTH_SHORT)
 					.show();
-			
+
 			// finish();
 
 			// 添加地点到数据库
@@ -246,15 +249,17 @@ public class DialogActivity extends Activity implements OnClickListener {
 			DatabaseHelper dbHelper = new DatabaseHelper(this, "user.db3");
 			SQLiteDatabase db = dbHelper.getReadableDatabase();
 			String location_Temp = editText_location.getText().toString();
-			String raw = "select location from user where location=\'" + location_Temp + "\'";
+			String raw = "select location from user where location=\'"
+					+ location_Temp + "\'";
 			Cursor cursor = db.rawQuery(raw, null);
-			if (!cursor.moveToNext()) {		
+			if (!cursor.moveToNext() && !location_Temp.equals("")
+					&& !location_Temp.equals("请选择地点")) {
 				String sql = "insert or ignore into user(location) values('"
 						+ location_Temp + "');";
 				System.out.println(sql);
 				db.execSQL(sql);
 				Toast.makeText(this,
-						"我现在知道"+"\""+location_Temp+"\""+"这个地方啦",
+						"我现在知道" + "\"" + location_Temp + "\"" + "这个地方啦",
 						Toast.LENGTH_LONG).show();
 			}
 			db.close();

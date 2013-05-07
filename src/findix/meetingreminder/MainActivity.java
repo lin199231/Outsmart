@@ -177,15 +177,22 @@ public class MainActivity extends Activity implements OnClickListener {
 									String raw = "select location from user where location=\'"
 											+ location + "\'";
 									Cursor cursor = db.rawQuery(raw, null);
-									if (!cursor.moveToNext()) {
-										values.put("location", location);
-										db.insert("user", null, values);
-									} else
+									if (location.equals("")) {
 										Toast.makeText(
 												MainActivity.this,
-												"我已经知道" + "\"" + location
-														+ "\"" + "啦",
+												"您什么都没有输入哦~",
 												Toast.LENGTH_LONG).show();
+									} else{
+										if (!cursor.moveToNext()) {
+											values.put("location", location);
+											db.insert("user", null, values);
+										} else
+											Toast.makeText(
+													MainActivity.this,
+													"我已经知道" + "\"" + location
+															+ "\"" + "啦",
+													Toast.LENGTH_LONG).show();}
+									
 									db.close();
 								}
 							}).setNegativeButton("取消", null).show();
@@ -295,7 +302,7 @@ public class MainActivity extends Activity implements OnClickListener {
 				} while (userCursor.moveToNext());
 			}
 			Persistence setCalendar = new Persistence("CalendarSet.db");
-			which = setCalendar.getValue()-1;
+			which = setCalendar.getValue() - 1;
 			// System.out.println(calName + " " + calId);
 			new AlertDialog.Builder(this)
 					.setTitle("请选择日历")
