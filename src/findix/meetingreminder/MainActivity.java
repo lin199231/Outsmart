@@ -2,8 +2,6 @@
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.TimeZone;
 
 import findix.meetingreminder.backup.BackupTask;
 import findix.meetingreminder.db.DatabaseHelper;
@@ -24,7 +22,6 @@ import android.view.View;
 import android.view.View.*;
 import android.widget.*;
 
-@SuppressLint("SdCardPath")
 public class MainActivity extends Activity implements OnClickListener {
 	private ToggleButton toggleButton1 = null;
 	private Button Button1 = null;
@@ -44,19 +41,19 @@ public class MainActivity extends Activity implements OnClickListener {
 	public int which = 1;
 
 	private static String calanderURL = "";
-	private static String calanderEventURL = "";
-	private static String calanderRemiderURL = "";
+	//private static String calanderEventURL = "";
+	//private static String calanderRemiderURL = "";
 
 	// 为了兼容不同版本的日历,2.2以后url发生改变
 	static {
 		if (Integer.parseInt(Build.VERSION.SDK) >= 8) {
 			calanderURL = "content://com.android.calendar/calendars";
-			calanderEventURL = "content://com.android.calendar/events";
-			calanderRemiderURL = "content://com.android.calendar/reminders";
+			//calanderEventURL = "content://com.android.calendar/events";
+			//calanderRemiderURL = "content://com.android.calendar/reminders";
 		} else {
 			calanderURL = "content://calendar/calendars";
-			calanderEventURL = "content://calendar/events";
-			calanderRemiderURL = "content://calendar/reminders";
+			//calanderEventURL = "content://calendar/events";
+			//calanderRemiderURL = "content://calendar/reminders";
 
 		}
 
@@ -95,9 +92,10 @@ public class MainActivity extends Activity implements OnClickListener {
 		}
 
 		// 设置日历
-		Persistence setCalendar = new Persistence("CalendarSet.db");
+		new Persistence("CalendarSet.db");
 	}
 
+	@SuppressLint("SdCardPath")
 	@Override
 	public void onClick(View v) {
 		// TODO Auto-generated method stub

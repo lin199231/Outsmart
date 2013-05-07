@@ -397,7 +397,7 @@ public class GetUserTime {
 		Pattern Day = Pattern.compile("\\d{1,2}[日号]");// x-xx日
 		Pattern Week = Pattern.compile("(星期|礼拜|周)[一二三四五六日天1-7]");// 星期x
 		Pattern NextWeek = Pattern.compile("下(星期|礼拜|周)[一二三四五六日天1-7]");// 下星期x
-		Pattern TS = Pattern.compile("[AaPp]\\.?[Mm]\\.?");// am/pm
+		//Pattern TS = Pattern.compile("[AaPp]\\.?[Mm]\\.?");// am/pm
 		Pattern Time = Pattern
 				.compile("\\d{1,2}(([：:]\\d{1,2})|([点](\\d{1,2}分|半|[123一二三]刻)?))");// 精确时间
 		Pattern APM = Pattern.compile("(上午|中午|下午|清晨|早晨|晚上|傍晚|半夜|午夜|凌晨)");// am/pm

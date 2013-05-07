@@ -37,6 +37,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+@SuppressLint("SimpleDateFormat")
 public class DialogActivity extends Activity implements OnClickListener {
 
 	private TextView smstextView = null;
@@ -59,17 +60,17 @@ public class DialogActivity extends Activity implements OnClickListener {
 	private boolean isClear_Event = false;
 	private boolean isClear_Location = false;
 
-	private static String calanderURL = "";
+	//private static String calanderURL = "";
 	private static String calanderEventURL = "";
 	private static String calanderRemiderURL = "";
 	// 为了兼容不同版本的日历,2.2以后url发生改变
 	static {
 		if (Integer.parseInt(Build.VERSION.SDK) >= 8) {
-			calanderURL = "content://com.android.calendar/calendars";
+			//calanderURL = "content://com.android.calendar/calendars";
 			calanderEventURL = "content://com.android.calendar/events";
 			calanderRemiderURL = "content://com.android.calendar/reminders";
 		} else {
-			calanderURL = "content://calendar/calendars";
+			//calanderURL = "content://calendar/calendars";
 			calanderEventURL = "content://calendar/events";
 			calanderRemiderURL = "content://calendar/reminders";
 
@@ -216,7 +217,8 @@ public class DialogActivity extends Activity implements OnClickListener {
 			event.put("title", autoCompletetextView.getText().toString());
 			event.put("description", autoCompletetextView.getText().toString());
 			// 插入账户
-			if (!editText_location.equals("") && !editText_location.equals("请选择地点")) {
+			if (!editText_location.equals("")
+					&& !editText_location.equals("请选择地点")) {
 				event.put("eventLocation", editText_location.getText()
 						.toString());
 			}
