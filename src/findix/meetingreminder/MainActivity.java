@@ -119,14 +119,39 @@ public class MainActivity extends Activity implements OnClickListener {
 			break;
 
 		case R.id.button1:
-			Intent intent = new Intent();
-			intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-			intent.setClass(this, DialogActivity.class);
-			// intent.setClass(this, ReplyActivity.class);
-			intent.putExtra("content", "明天下午3:00在南4304开会讨论Lambda表达式。");
-			intent.putExtra("sender", "18817353255");
-			if (toggleButton1.isChecked())
-				startActivity(intent);
+			final String SMS_URI_INBOX = "content://sms/inbox";
+			Uri uri = Uri.parse(SMS_URI_INBOX);
+			String[] projectionSMS = new String[] { "_id", "address", "person",
+					"body", "date", "type" };
+			final Cursor cur = getContentResolver().query(uri, projectionSMS,
+					null, null, "date desc");
+			new AlertDialog.Builder(this).setTitle("短信")
+					.setCursor(cur, new DialogInterface.OnClickListener() {
+
+						@Override
+						public void onClick(DialogInterface arg0, int arg1) {
+							// TODO Auto-generated method stub
+							cur.moveToFirst();
+							for (int i = 0; i <= arg1; i++) {
+								if (i == arg1) {
+									Intent intent = new Intent();
+									intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+									intent.setClass(MainActivity.this,
+											DialogActivity.class);
+									// intent.setClass(this,
+									// ReplyActivity.class);
+									intent.putExtra("content", cur
+											.getString(cur
+													.getColumnIndex("body")));
+									intent.putExtra("sender", "18817353255");
+									if (toggleButton1.isChecked())
+										startActivity(intent);
+								}
+								cur.moveToNext();
+							}
+						}
+					}, "body").show();
+
 			break;
 
 		case R.id.button2: {
@@ -178,11 +203,10 @@ public class MainActivity extends Activity implements OnClickListener {
 											+ location + "\'";
 									Cursor cursor = db.rawQuery(raw, null);
 									if (location.equals("")) {
-										Toast.makeText(
-												MainActivity.this,
-												"您什么都没有输入哦~",
-												Toast.LENGTH_LONG).show();
-									} else{
+										Toast.makeText(MainActivity.this,
+												"您什么都没有输入哦~", Toast.LENGTH_LONG)
+												.show();
+									} else {
 										if (!cursor.moveToNext()) {
 											values.put("location", location);
 											db.insert("user", null, values);
@@ -191,8 +215,9 @@ public class MainActivity extends Activity implements OnClickListener {
 													MainActivity.this,
 													"我已经知道" + "\"" + location
 															+ "\"" + "啦",
-													Toast.LENGTH_LONG).show();}
-									
+													Toast.LENGTH_LONG).show();
+									}
+
 									db.close();
 								}
 							}).setNegativeButton("取消", null).show();
