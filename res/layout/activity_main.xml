@@ -99,4 +99,12 @@
             android:text="从SD卡还原数据库" />
     </LinearLayout>
 
+    <Button
+        android:id="@+id/calendarSetButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/datetextView1"
+        android:layout_centerHorizontal="true"
+        android:text="设置日历" />
+
 </RelativeLayout>

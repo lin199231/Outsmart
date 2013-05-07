@@ -31,7 +31,7 @@ public class SegmentationByBloom {
 	public ArrayList<String> getWordsbyArrayList(String str) {
 		ArrayList<String> list = new ArrayList<String>();
 		String subString = null;
-		int max = 4;
+		int max = 5;
 		int i;
 		int point = str.length();
 		while (point != 0) {
@@ -51,13 +51,14 @@ public class SegmentationByBloom {
 			}
 		}
 		// 把分词结果倒序使其正序
-		Stack<String> stack=new Stack<String>();
-		for(i=0;i<list.size();i++)
+		Stack<String> stack = new Stack<String>();
+		for (i = 0; i < list.size(); i++)
 			stack.push(list.get(i));
 		list.clear();
-		while(!stack.empty())
-			list.add(stack.pop()+"");
-		getCharTogether(list);
+		while (!stack.empty())
+			list.add(stack.pop() + "");
+		list=getCharTogether(list);
+		list=makeNoSpace(list);
 		return list;
 	}
 
@@ -70,6 +71,18 @@ public class SegmentationByBloom {
 			return false;
 
 	}
+
+	public static ArrayList<String> makeNoSpace(ArrayList<String> list) {
+		for (int i = 0; i < list.size()-1; i++) {
+			System.out.println(list.get(i));
+			if (list.get(i).equals(" ")) {
+				list.remove(i);
+				i--;
+			}
+		}
+		return list;
+	}
+
 	public static ArrayList<String> getCharTogether(ArrayList<String> list) {
 		boolean flag = false;
 		for (int i = 0; i < list.size() - 1; i++) {
@@ -89,7 +102,9 @@ public class SegmentationByBloom {
 
 	private static boolean isW(String str) {
 		if (str.length() == 1
-				&& ((str.charAt(0)=='.')||(str.charAt(0)==':')||(str.charAt(0)=='：')||(str.charAt(0) >= '0' && str.charAt(0) <= '9')
+				&& ((str.charAt(0) == '.') || (str.charAt(0) == ':')
+						|| (str.charAt(0) == '：')
+						|| (str.charAt(0) >= '0' && str.charAt(0) <= '9')
 						|| (str.charAt(0) >= 'a' && str.charAt(0) <= 'z') || (str
 						.charAt(0) >= 'A' && str.charAt(0) <= 'Z')))
 			return true;

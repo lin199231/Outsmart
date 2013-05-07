@@ -60,6 +60,7 @@ public class GetUserTime {
 	 */
 	private void PhaseShiefTime() {// 用于解析出字符串中的时间和地点信息
 		time = Calendar.getInstance();// 获取系统当前时间
+		time.set(Calendar.AM_PM, Calendar.AM);
 		time.set(Calendar.SECOND, 0);
 		time.setFirstDayOfWeek(Calendar.MONDAY);
 		// 正则表达式确定
@@ -70,7 +71,7 @@ public class GetUserTime {
 		Pattern NextWeek = Pattern.compile("下(星期|礼拜|周)[一二三四五六日天1-7]");// 下星期x
 		Pattern TS = Pattern.compile("[AaPp]\\.?[Mm]\\.?");// am/pm
 		Pattern Time = Pattern
-				.compile("\\d{1,2}[：:点](\\d{1,2}|\\d{1,2}分|半|[123一二三]刻)?");// 精确时间
+				.compile("\\d{1,2}(([点](半|[123一二三]刻|\\d{1,2}分|\\d{1,2}))|([：:]\\d{1,2})|[点])");// 精确时间
 		// 明天 后天 大后天 晚上 分词后进行校正
 		// 提取xxxx年xx月xx日/号
 		Matcher MC = null;// 匹配器
@@ -215,7 +216,7 @@ public class GetUserTime {
 					time.set(Calendar.MINUTE, 45);
 					break;
 				}
-			} else if (IKTime.length == 1 && IKTime[1].charAt(0) == '半') {
+			} else if (IKTime.length == 2 && IKTime[1].charAt(0) == '半') {
 				time.set(Calendar.MINUTE, 30);
 			} else {
 				time.set(Calendar.MINUTE, Integer.valueOf(IKTime[1]));
@@ -252,6 +253,7 @@ public class GetUserTime {
 		String temp;
 		Pattern Single = Pattern.compile("[一二三四五六七八九]");// 一位数
 		Pattern Double = Pattern.compile("十[一二三四五六七八九]");// 两位数
+		Pattern Twenty = Pattern.compile("[一二三四五六七八九]十");// 二十这样的两位数
 		Pattern Triple = Pattern.compile("[一二三四五六七八九]十[一二三四五六七八九]");// 三位数
 		Matcher MC = null;// 匹配器
 		MC = Triple.matcher(msg);
@@ -261,6 +263,12 @@ public class GetUserTime {
 					+ "" + toNumic(temp.charAt(2)));
 			msg = strb.toString();
 			MC = Triple.matcher(msg);
+		}
+		MC = Twenty.matcher(msg);
+		while (MC.find()) {
+			temp = MC.group();
+			strb.replace(MC.start(), MC.start() + 2,
+					toNumic(temp.charAt(0)) + "0");
 		}
 		MC = Double.matcher(msg);
 		while (MC.find()) {
@@ -313,6 +321,7 @@ public class GetUserTime {
 				if (i + 1 == str.length()) {
 					String[] IKMode = new String[1];
 					IKMode[0] = str.substring(0, i + 1);
+					return IKMode;
 				} else {
 					String[] IKMode = new String[2];
 					IKMode[0] = str.substring(0, i + 1);
@@ -330,7 +339,11 @@ public class GetUserTime {
 				time.set(Calendar.AM_PM, Calendar.AM);
 			else if (text[i].compareTo("中午") == 0)
 				time.set(Calendar.AM_PM, Calendar.AM);
-			if (text[i].compareTo("下午") == 0)
+			else if (text[i].compareTo("下午") == 0)
+				time.set(Calendar.AM_PM, Calendar.PM);
+			else if (text[i].compareTo("今天上午") == 0)
+				time.set(Calendar.AM_PM, Calendar.AM);
+			else if (text[i].compareTo("今天下午") == 0)
 				time.set(Calendar.AM_PM, Calendar.PM);
 			else if (text[i].compareTo("清晨") == 0)
 				time.set(Calendar.AM_PM, Calendar.AM);

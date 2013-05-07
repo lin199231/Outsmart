@@ -1,10 +1,16 @@
 ﻿package findix.meetingreminder;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.TimeZone;
 
 import findix.meetingreminder.backup.BackupTask;
 import findix.meetingreminder.db.DatabaseHelper;
 import findix.meetingreminder.segmentation.CopyDic;
+import findix.meetingreminder.segmentation.Persistence;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -27,6 +33,7 @@ public class MainActivity extends Activity implements OnClickListener {
 	private Button cursorButton = null;
 	private Button backupButton = null;
 	private Button restoreButton = null;
+	private Button calendarSetButton = null;
 
 	// 建立数据库
 	SQLiteDatabase db;
@@ -34,6 +41,26 @@ public class MainActivity extends Activity implements OnClickListener {
 
 	// 全局变量
 	public boolean isCover = false;
+	public int which = 1;
+
+	private static String calanderURL = "";
+	private static String calanderEventURL = "";
+	private static String calanderRemiderURL = "";
+
+	// 为了兼容不同版本的日历,2.2以后url发生改变
+	static {
+		if (Integer.parseInt(Build.VERSION.SDK) >= 8) {
+			calanderURL = "content://com.android.calendar/calendars";
+			calanderEventURL = "content://com.android.calendar/events";
+			calanderRemiderURL = "content://com.android.calendar/reminders";
+		} else {
+			calanderURL = "content://calendar/calendars";
+			calanderEventURL = "content://calendar/events";
+			calanderRemiderURL = "content://calendar/reminders";
+
+		}
+
+	}
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -54,42 +81,21 @@ public class MainActivity extends Activity implements OnClickListener {
 		backupButton.setOnClickListener(this);
 		restoreButton = (Button) findViewById(R.id.restorebutton);
 		restoreButton.setOnClickListener(this);
+		calendarSetButton = (Button) findViewById(R.id.calendarSetButton);
+		calendarSetButton.setOnClickListener(this);
 
-		// 拷贝字典
-		// CopyAndGetSQL database = new CopyAndGetSQL();
-		// database.openDatabase(this);
 		new CopyDic(this);
 
 		// 控制开关
-		File settings = new File("/data/data/findix.meetingreminder/Setting.db");
-		if (!settings.exists()) {
-
-			try {
-				settings.createNewFile();
-				FileWriter io = null;
-				io = new FileWriter(
-						"/data/data/findix.meetingreminder/Setting.db");
-				io.write(1);
-				io.close();
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		try {
-			FileReader io = new FileReader(
-					"/data/data/findix.meetingreminder/Setting.db");
-			if (io.read() == 1) {
-				toggleButton1.setChecked(true);
-			} else {
-				toggleButton1.setChecked(false);
-			}
-			io.close();
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+		Persistence setToggle = new Persistence("Setting.db");
+		if (setToggle.getValue() == 1) {
+			toggleButton1.setChecked(true);
+		} else {
+			toggleButton1.setChecked(false);
 		}
 
+		// 设置日历
+		Persistence setCalendar = new Persistence("CalendarSet.db");
 	}
 
 	@Override
@@ -138,7 +144,8 @@ public class MainActivity extends Activity implements OnClickListener {
 									// 数据获取
 									et.getText().toString();
 									intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-									intent1.setClass(MainActivity.this, DialogActivity.class);
+									intent1.setClass(MainActivity.this,
+											DialogActivity.class);
 									intent1.putExtra("content", et.getText()
 											.toString());
 									intent1.putExtra("sender", "18817353255");
@@ -266,6 +273,58 @@ public class MainActivity extends Activity implements OnClickListener {
 								}
 							}).setNegativeButton("取消", null).show();
 			break;
+		}
+		case R.id.calendarSetButton: {
+			ArrayList<String> calName = new ArrayList<String>();
+			ArrayList<String> calId = new ArrayList<String>();
+			// 获取账户
+			String[] projection = new String[] { "_id", "name" };
+			Cursor userCursor = getContentResolver().query(
+					Uri.parse(calanderURL), projection, null, null, null);
+			if (userCursor.moveToFirst()) {
+
+				int nameColumn = userCursor.getColumnIndex("name");
+				int idColumn = userCursor.getColumnIndex("_id");
+				do {
+					if (userCursor.getString(nameColumn) == null) {
+						calName.add("默认日历");
+					} else {
+						calName.add(userCursor.getString(nameColumn));
+					}
+					calId.add(userCursor.getString(idColumn));
+				} while (userCursor.moveToNext());
+			}
+			Persistence setCalendar = new Persistence("CalendarSet.db");
+			which = setCalendar.getValue()-1;
+			// System.out.println(calName + " " + calId);
+			new AlertDialog.Builder(this)
+					.setTitle("请选择日历")
+					// 设置对话框标题
+					.setSingleChoiceItems(
+							calName.toArray(new String[calName.size()]),
+							setCalendar.getValue() - 1,
+							new DialogInterface.OnClickListener() {
+
+								@Override
+								public void onClick(DialogInterface arg0,
+										int args1) {
+									// TODO Auto-generated method stub
+									which = args1;
+								}
+
+							})
+					.setPositiveButton("確定",
+							new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog,
+										int args2) {
+									// TODO Auto-generated method stub
+									Persistence setCalendar = new Persistence(
+											"CalendarSet.db");
+									setCalendar.changeValue(which + 1);
+								}
+							}).setNegativeButton("取消", null).show();
+			userCursor.close();
 		}
 		}
 	}

@@ -7,6 +7,7 @@ import java.util.TimeZone;
 import findix.meetingreminder.analysis.GetUserLocation;
 import findix.meetingreminder.analysis.GetUserTime;
 import findix.meetingreminder.db.DatabaseHelper;
+import findix.meetingreminder.segmentation.Persistence;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -207,27 +208,10 @@ public class DialogActivity extends Activity implements OnClickListener {
 		}
 		case R.id.btn_ok: {
 
-			// 获取账户
-			Cursor userCursor = getContentResolver().query(
-					Uri.parse(calanderURL), null, null, null, null);
-			if (userCursor.getCount() > 0) {
-				userCursor.moveToFirst();
-				String userName = userCursor.getString(userCursor
-						.getColumnIndex("name"));
-				Toast.makeText(DialogActivity.this, userName,
-						Toast.LENGTH_SHORT).show();
-			}
-
 			// 插入事件
 			String calId = "";
-			Cursor userCursor1 = getContentResolver().query(
-					Uri.parse(calanderURL), null, null, null, null);
-			if (userCursor1.getCount() > 0) {
-				userCursor1.moveToFirst();
-				System.out.println(userCursor1.getCount());
-				calId = userCursor1
-						.getString(userCursor1.getColumnIndex("_id"));
-			}
+			Persistence setCalendar=new Persistence("CalendarSet.db");
+			calId=(setCalendar.getValue())+"";
 			ContentValues event = new ContentValues();
 			event.put("title", autoCompletetextView.getText().toString());
 			event.put("description", autoCompletetextView.getText().toString());
@@ -270,7 +254,7 @@ public class DialogActivity extends Activity implements OnClickListener {
 				System.out.println(sql);
 				db.execSQL(sql);
 				Toast.makeText(this,
-						"我现在知道"+"\""+location+"\""+"这个地方啦",
+						"我现在知道"+"\""+location_Temp+"\""+"这个地方啦",
 						Toast.LENGTH_LONG).show();
 			}
 			db.close();
