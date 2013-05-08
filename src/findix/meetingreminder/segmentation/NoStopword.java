@@ -78,6 +78,9 @@ public class NoStopword {
 				for (int j = 0; j < stopword.length; j++) {
 					if (stopword[j].equals(list.get(i))) {
 						list.remove(i);
+						if(i==0)
+							break;
+						i--;
 					}
 				}
 		}
