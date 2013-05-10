@@ -60,17 +60,17 @@ public class DialogActivity extends Activity implements OnClickListener {
 	private boolean isClear_Event = false;
 	private boolean isClear_Location = false;
 
-	//private static String calanderURL = "";
+	// private static String calanderURL = "";
 	private static String calanderEventURL = "";
 	private static String calanderRemiderURL = "";
 	// 为了兼容不同版本的日历,2.2以后url发生改变
 	static {
 		if (Integer.parseInt(Build.VERSION.SDK) >= 8) {
-			//calanderURL = "content://com.android.calendar/calendars";
+			// calanderURL = "content://com.android.calendar/calendars";
 			calanderEventURL = "content://com.android.calendar/events";
 			calanderRemiderURL = "content://com.android.calendar/reminders";
 		} else {
-			//calanderURL = "content://calendar/calendars";
+			// calanderURL = "content://calendar/calendars";
 			calanderEventURL = "content://calendar/events";
 			calanderRemiderURL = "content://calendar/reminders";
 
@@ -285,29 +285,44 @@ public class DialogActivity extends Activity implements OnClickListener {
 											.findViewById(R.id.EditText);
 									String reply = editText.getText()
 											.toString();
-									System.out.println(reply);
+									// System.out.println(reply);
 									PendingIntent sentIntent = PendingIntent
 											.getBroadcast(DialogActivity.this,
-													0, new Intent(),
-
-													0);
+													0, new Intent(), 0);
 									if (PhoneNumberUtils
 											.isGlobalPhoneNumber(sender)
-											&& sender.length() > 0) {
+											&& sender.length() > 0
+											&& reply.length() > 0) {
 										SmsManager sms = SmsManager
 												.getDefault();
 										sms.sendTextMessage(sender, null,
 												reply, sentIntent, null);
-										Toast.makeText(DialogActivity.this,
-												"短信发送成功",
-
+										Toast.makeText(
+												DialogActivity.this,
+												"向号码 \"" + sender + "\" 发送短信 \""
+														+ reply + "\" 成功",
 												Toast.LENGTH_LONG).show();
-										// finish();
-									} else
-										Toast.makeText(DialogActivity.this,
-												"短信发送失败，请重新尝试",
-												Toast.LENGTH_LONG).show();
-									finish();
+										 finish();
+									} else {
+										if (sender.length() == 0) {
+											Toast.makeText(DialogActivity.this,
+													"这条信息没有发件人，所以是没法回复的哦~",
+													Toast.LENGTH_LONG).show();
+										} else if (reply.length() == 0) {
+											Toast.makeText(DialogActivity.this,
+													"这条信息什么都没写哦，我应该回复什么呢？",
+													Toast.LENGTH_LONG).show();
+										} else {
+											Toast.makeText(
+													DialogActivity.this,
+													"向号码 \"" + sender
+															+ "\" 发送短信 \""
+															+ reply
+															+ "\" 失败，请重新尝试",
+													Toast.LENGTH_LONG).show();
+										}
+									}
+									//finish();
 								}
 							}).setNegativeButton("取消", null).create();
 			alertDialog.show();

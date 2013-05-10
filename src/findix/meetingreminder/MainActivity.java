@@ -41,19 +41,19 @@ public class MainActivity extends Activity implements OnClickListener {
 	public int which = 1;
 
 	private static String calanderURL = "";
-	//private static String calanderEventURL = "";
-	//private static String calanderRemiderURL = "";
+	// private static String calanderEventURL = "";
+	// private static String calanderRemiderURL = "";
 
 	// 为了兼容不同版本的日历,2.2以后url发生改变
 	static {
 		if (Integer.parseInt(Build.VERSION.SDK) >= 8) {
 			calanderURL = "content://com.android.calendar/calendars";
-			//calanderEventURL = "content://com.android.calendar/events";
-			//calanderRemiderURL = "content://com.android.calendar/reminders";
+			// calanderEventURL = "content://com.android.calendar/events";
+			// calanderRemiderURL = "content://com.android.calendar/reminders";
 		} else {
 			calanderURL = "content://calendar/calendars";
-			//calanderEventURL = "content://calendar/events";
-			//calanderRemiderURL = "content://calendar/reminders";
+			// calanderEventURL = "content://calendar/events";
+			// calanderRemiderURL = "content://calendar/reminders";
 
 		}
 
@@ -141,7 +141,10 @@ public class MainActivity extends Activity implements OnClickListener {
 									intent.putExtra("content", cur
 											.getString(cur
 													.getColumnIndex("body")));
-									intent.putExtra("sender", "18817353255");
+									intent.putExtra("sender", cur.getString(cur
+											.getColumnIndex("address")));
+									System.out.println(cur.getString(cur
+											.getColumnIndex("address")));
 									if (toggleButton1.isChecked())
 										startActivity(intent);
 								}
@@ -171,7 +174,7 @@ public class MainActivity extends Activity implements OnClickListener {
 											DialogActivity.class);
 									intent1.putExtra("content", et.getText()
 											.toString());
-									intent1.putExtra("sender", "18817353255");
+									intent1.putExtra("sender", "");
 									if (toggleButton1.isChecked())
 										startActivity(intent1);
 								}
