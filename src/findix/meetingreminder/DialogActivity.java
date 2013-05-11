@@ -118,6 +118,7 @@ public class DialogActivity extends Activity implements OnClickListener {
 
 		GetUserTime getUserTime = new GetUserTime(content);
 		time = getUserTime.getTime();
+		System.out.println(getUserTime.isMeeting()?"【是会议】"+content:"【不是会议】"+content);
 		GetUserLocation getUserLocation = new GetUserLocation(
 				getUserTime.getNoDateMsg());
 		location = getUserLocation.getLocation();

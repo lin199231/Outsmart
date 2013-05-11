@@ -1,9 +1,6 @@
 package findix.meetingreminder.segmentation;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-
-import android.util.Log;
 
 public class NoStopword {
 	final String[] stopword = { "一", "一些", "一何", "一切", "一则", "一方面", "一旦", "一来",
@@ -73,7 +70,6 @@ public class NoStopword {
 			"随时", "随着", "难道说", "非但", "非徒", "非特", "非独", "靠", "顺", "顺着", "首先", };
 
 	public ArrayList<String> getNoStopwordWords(ArrayList<String> list) {
-		long ftime = Calendar.getInstance().getTimeInMillis();
 		for (int i = 0; i < list.size(); i++) {
 				for (int j = 0; j < stopword.length; j++) {
 					if (stopword[j].equals(list.get(i))) {
@@ -84,8 +80,6 @@ public class NoStopword {
 					}
 				}
 		}
-		Log.i("去stopword时间", Calendar.getInstance().getTimeInMillis() - ftime
-				+ "");// 结束时间
 		return list;
 	}
 }
