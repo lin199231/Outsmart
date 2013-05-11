@@ -1,8 +1,9 @@
-﻿package findix.meetingreminder;
+﻿package findix.meetingreminder.sms;
 
 import java.io.FileReader;
 import java.io.IOException;
 
+import findix.meetingreminder.DialogActivity;
 import findix.meetingreminder.analysis.GetUserTime;
 
 

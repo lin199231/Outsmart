@@ -1,4 +1,4 @@
-﻿package findix.meetingreminder;
+﻿package findix.meetingreminder.sms;
 
 import android.app.Activity;
 import android.app.NotificationManager;

@@ -29,7 +29,7 @@
         android:theme="@style/AppTheme" >
 
         <!-- 广播接收者注册————————————————————————————————————————————————————————————————————————————————— -->
-        <receiver android:name=".SMSBroadcastReceiver" >
+        <receiver android:name="findix.meetingreminder.sms.SMSBroadcastReceiver" >
             <intent-filter android:priority="10000" >
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
             </intent-filter>

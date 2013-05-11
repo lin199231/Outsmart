@@ -19,7 +19,7 @@ public class SegmentationByBloom {
 
 	public static void getDic() {
 		for (int i = 0; i <= dic.length; i++) {
-			System.out.println(i + " " + (dic[i] - 48));
+			//System.out.println(i + " " + (dic[i] - 48));
 		}
 	}
 
@@ -74,7 +74,7 @@ public class SegmentationByBloom {
 
 	public static ArrayList<String> makeNoSpace(ArrayList<String> list) {
 		for (int i = 0; i < list.size()-1; i++) {
-			System.out.println(list.get(i));
+			//System.out.println(list.get(i));
 			if (list.get(i).equals(" ")) {
 				list.remove(i);
 				i--;
