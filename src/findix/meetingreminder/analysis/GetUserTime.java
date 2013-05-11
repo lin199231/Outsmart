@@ -66,13 +66,12 @@ public class GetUserTime {
 		// 正则表达式确定
 		boolean setWeek = false, setSureDate = false;
 		int start;
-		int year , month, day , hour , minute ;
-		year= time.get(Calendar.YEAR);
-		month= time.get(Calendar.MONTH);
-		day= time.get(Calendar.DATE);
-		hour= time.get(Calendar.HOUR_OF_DAY);
-		minute= time
-				.get(Calendar.MINUTE);
+		int year, month, day, hour, minute;
+		year = time.get(Calendar.YEAR);
+		month = time.get(Calendar.MONTH);
+		day = time.get(Calendar.DATE);
+		hour = time.get(Calendar.HOUR_OF_DAY);
+		minute = time.get(Calendar.MINUTE);
 		Pattern Date = Pattern
 				.compile("((\\d{4}|\\d{2})[年.\\\\/-])?((\\d{1,2}[月.\\\\/-]\\d{1,2}[日号]?)|(\\d{1,2}[日号]))");
 		// xx/xxxx年x-xx月x-xx日
@@ -284,7 +283,7 @@ public class GetUserTime {
 			if (minute >= 0 && minute <= 60)
 				time.set(Calendar.MINUTE, minute);
 		}
-		System.out.println(time.get(Calendar.HOUR_OF_DAY)+"点");
+		System.out.println(time.get(Calendar.HOUR_OF_DAY) + "点");
 		TSFix();// 早上等
 		// 校准日期
 		if (setSureDate = false)// 如果未定确定一个确切的日期则匹配明天等
@@ -430,19 +429,20 @@ public class GetUserTime {
 
 	private void TSFix() {
 		for (int i = 0; i < text.length; i++) {
-			if (text[i].compareTo("上午") == 0 || text[i].compareTo("中午") == 0
-					|| text[i].compareTo("清晨") == 0
+			if (text[i].compareTo("上午") == 0 || text[i].compareTo("清晨") == 0
 					|| text[i].compareTo("早晨") == 0
 					|| text[i].compareTo("今天上午") == 0) {
 				time.set(Calendar.AM_PM, Calendar.AM);
 				setAPM = 0;
-			} else if (text[i].compareTo("下午") == 0
+			} else if (text[i].compareTo("中午") == 0
+					|| text[i].compareTo("下午") == 0
 					|| text[i].compareTo("晚上") == 0
 					|| text[i].compareTo("今晚") == 0
 					|| text[i].compareTo("傍晚") == 0
 					|| text[i].compareTo("半夜") == 0
 					|| text[i].compareTo("午夜") == 0
-					|| text[i].compareTo("今天下午") == 0) {
+					|| text[i].compareTo("今天下午") == 0
+					|| text[i].compareTo("今天中午") == 0) {
 				time.set(Calendar.AM_PM, Calendar.PM);
 				setAPM = 1;
 			} else if (text[i].compareTo("凌晨") == 0) {// 特殊
