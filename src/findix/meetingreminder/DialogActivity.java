@@ -63,7 +63,7 @@ public class DialogActivity extends Activity implements OnClickListener {
 	// private static String calanderURL = "";
 	private static String calanderEventURL = "";
 	private static String calanderRemiderURL = "";
-	// ä¸ºäº†å…¼å®¹ä¸åŒç‰ˆæœ¬çš„æ—¥å†,2.2ä»¥åurlå‘ç”Ÿæ”¹å˜
+	// ÎªÁË¼æÈİ²»Í¬°æ±¾µÄÈÕÀú,2.2ÒÔºóurl·¢Éú¸Ä±ä
 	static {
 		if (Integer.parseInt(Build.VERSION.SDK) >= 8) {
 			// calanderURL = "content://com.android.calendar/calendars";
@@ -109,7 +109,7 @@ public class DialogActivity extends Activity implements OnClickListener {
 		autoCompletetextView = (AutoCompleteTextView) findViewById(R.id.AutoCompleteTextView);
 		autoCompletetextView.setOnClickListener(this);
 
-		// æ¥å—intent
+		// ½ÓÊÜintent
 		Intent intent = getIntent();
 		String content = intent.getStringExtra("content");
 		String sender = intent.getStringExtra("sender");
@@ -130,9 +130,9 @@ public class DialogActivity extends Activity implements OnClickListener {
 		editText_location.clearFocus();
 		smstextView.setText(content);
 
-		// TipHelper.PlaySound(this);// å“é“ƒ
+		// TipHelper.PlaySound(this);// ÏìÁå
 		// long ring[]={1000,500,1000};
-		// TipHelper.Vibrate(this, ring, false);//éœ‡åŠ¨
+		// TipHelper.Vibrate(this, ring, false);//Õğ¶¯
 	}
 
 	@Override
@@ -144,18 +144,18 @@ public class DialogActivity extends Activity implements OnClickListener {
 			for (int i = 0; i < location.length; i++)
 				defaultSelectedStatus[i] = false;
 			new AlertDialog.Builder(this)
-					.setTitle("è®¾ç½®åœ°ç‚¹")
-					// è®¾ç½®å¯¹è¯æ¡†æ ‡é¢˜
+					.setTitle("ÉèÖÃµØµã")
+					// ÉèÖÃ¶Ô»°¿ò±êÌâ
 					.setMultiChoiceItems(location, defaultSelectedStatus,
 							new OnMultiChoiceClickListener() {
 								@Override
 								public void onClick(DialogInterface dialog,
 										int which, boolean isChecked) {
-									// æ¥å›é‡å¤é€‰æ‹©å–æ¶ˆï¼Œå¾—ç›¸åº”å»æ”¹å˜itemå¯¹åº”çš„boolå€¼ï¼Œç‚¹å‡»ç¡®å®šæ—¶ï¼Œæ ¹æ®è¿™ä¸ªbool[],å¾—åˆ°é€‰æ‹©çš„å†…å®¹
+									// À´»ØÖØ¸´Ñ¡ÔñÈ¡Ïû£¬µÃÏàÓ¦È¥¸Ä±äitem¶ÔÓ¦µÄboolÖµ£¬µã»÷È·¶¨Ê±£¬¸ù¾İÕâ¸öbool[],µÃµ½Ñ¡ÔñµÄÄÚÈİ
 									defaultSelectedStatus[which] = isChecked;
 								}
-							}) // è®¾ç½®å¯¹è¯æ¡†[è‚¯å®š]æŒ‰é’®
-					.setPositiveButton("ç¡®å®š",
+							}) // ÉèÖÃ¶Ô»°¿ò[¿Ï¶¨]°´Å¥
+					.setPositiveButton("È·¶¨",
 							new DialogInterface.OnClickListener() {
 								@Override
 								public void onClick(DialogInterface dialog,
@@ -169,7 +169,7 @@ public class DialogActivity extends Activity implements OnClickListener {
 									}
 									editText_location.setText(locationSet);
 								}
-							}).setNegativeButton("å–æ¶ˆ", null)// è®¾ç½®å¯¹è¯æ¡†[å¦å®š]æŒ‰é’®
+							}).setNegativeButton("È¡Ïû", null)// ÉèÖÃ¶Ô»°¿ò[·ñ¶¨]°´Å¥
 					.show();
 			break;
 		}
@@ -178,18 +178,18 @@ public class DialogActivity extends Activity implements OnClickListener {
 			for (int i = 0; i < location.length; i++)
 				defaultSelectedStatus[i] = false;
 			new AlertDialog.Builder(this)
-					.setTitle("è®¾ç½®åœ°ç‚¹")
-					// è®¾ç½®å¯¹è¯æ¡†æ ‡é¢˜
+					.setTitle("ÉèÖÃµØµã")
+					// ÉèÖÃ¶Ô»°¿ò±êÌâ
 					.setMultiChoiceItems(location, defaultSelectedStatus,
 							new OnMultiChoiceClickListener() {
 								@Override
 								public void onClick(DialogInterface dialog,
 										int which, boolean isChecked) {
-									// æ¥å›é‡å¤é€‰æ‹©å–æ¶ˆï¼Œå¾—ç›¸åº”å»æ”¹å˜itemå¯¹åº”çš„boolå€¼ï¼Œç‚¹å‡»ç¡®å®šæ—¶ï¼Œæ ¹æ®è¿™ä¸ªbool[],å¾—åˆ°é€‰æ‹©çš„å†…å®¹
+									// À´»ØÖØ¸´Ñ¡ÔñÈ¡Ïû£¬µÃÏàÓ¦È¥¸Ä±äitem¶ÔÓ¦µÄboolÖµ£¬µã»÷È·¶¨Ê±£¬¸ù¾İÕâ¸öbool[],µÃµ½Ñ¡ÔñµÄÄÚÈİ
 									defaultSelectedStatus[which] = isChecked;
 								}
-							}) // è®¾ç½®å¯¹è¯æ¡†[è‚¯å®š]æŒ‰é’®
-					.setPositiveButton("ç¡®å®š",
+							}) // ÉèÖÃ¶Ô»°¿ò[¿Ï¶¨]°´Å¥
+					.setPositiveButton("È·¶¨",
 							new DialogInterface.OnClickListener() {
 								@Override
 								public void onClick(DialogInterface dialog,
@@ -203,22 +203,22 @@ public class DialogActivity extends Activity implements OnClickListener {
 									}
 									autoCompletetextView.setText(locationSet);
 								}
-							}).setNegativeButton("å–æ¶ˆ", null)// è®¾ç½®å¯¹è¯æ¡†[å¦å®š]æŒ‰é’®
+							}).setNegativeButton("È¡Ïû", null)// ÉèÖÃ¶Ô»°¿ò[·ñ¶¨]°´Å¥
 					.show();
 			break;
 		}
 		case R.id.btn_ok: {
 
-			// æ’å…¥äº‹ä»¶
+			// ²åÈëÊÂ¼ş
 			String calId = "";
 			Persistence setCalendar = new Persistence("CalendarSet.db");
 			calId = (setCalendar.getValue()) + "";
 			ContentValues event = new ContentValues();
 			event.put("title", autoCompletetextView.getText().toString());
 			event.put("description", autoCompletetextView.getText().toString());
-			// æ’å…¥è´¦æˆ·
+			// ²åÈëÕË»§
 			if (!editText_location.equals("")
-					&& !editText_location.equals("è¯·é€‰æ‹©åœ°ç‚¹")) {
+					&& !editText_location.equals("ÇëÑ¡ÔñµØµã")) {
 				event.put("eventLocation", editText_location.getText()
 						.toString());
 			}
@@ -239,15 +239,15 @@ public class DialogActivity extends Activity implements OnClickListener {
 			ContentValues values = new ContentValues();
 			values.put("event_id", id);
 			values.put("minutes", 10);
-			// æ’å…¥æ—¥å†
+			// ²åÈëÈÕÀú
 			getContentResolver().insert(Uri.parse(calanderRemiderURL), values);
-			Toast.makeText(DialogActivity.this, "æ·»åŠ æé†’æˆåŠŸ!!!", Toast.LENGTH_SHORT)
+			Toast.makeText(DialogActivity.this, "Ìí¼ÓÌáĞÑ³É¹¦!!!", Toast.LENGTH_SHORT)
 					.show();
 
 			// finish();
 
-			// æ·»åŠ åœ°ç‚¹åˆ°æ•°æ®åº“
-			// å»ºç«‹æ•°æ®åº“
+			// Ìí¼ÓµØµãµ½Êı¾İ¿â
+			// ½¨Á¢Êı¾İ¿â
 			DatabaseHelper dbHelper = new DatabaseHelper(this, "user.db3");
 			SQLiteDatabase db = dbHelper.getReadableDatabase();
 			String location_Temp = editText_location.getText().toString();
@@ -255,13 +255,13 @@ public class DialogActivity extends Activity implements OnClickListener {
 					+ location_Temp + "\'";
 			Cursor cursor = db.rawQuery(raw, null);
 			if (!cursor.moveToNext() && !location_Temp.equals("")
-					&& !location_Temp.equals("è¯·é€‰æ‹©åœ°ç‚¹")) {
+					&& !location_Temp.equals("ÇëÑ¡ÔñµØµã")) {
 				String sql = "insert or ignore into user(location) values('"
 						+ location_Temp + "');";
 				System.out.println(sql);
 				db.execSQL(sql);
 				Toast.makeText(this,
-						"æˆ‘ç°åœ¨çŸ¥é“" + "\"" + location_Temp + "\"" + "è¿™ä¸ªåœ°æ–¹å•¦",
+						"ÎÒÏÖÔÚÖªµÀ" + "\"" + location_Temp + "\"" + "Õâ¸öµØ·½À²",
 						Toast.LENGTH_LONG).show();
 			}
 			db.close();
@@ -273,8 +273,8 @@ public class DialogActivity extends Activity implements OnClickListener {
 					R.layout.activity_reply, null);
 			Dialog alertDialog = new AlertDialog.Builder(this)
 					.setView(myLoginView)
-					.setTitle("ç¡®è®¤å›å¤")
-					.setPositiveButton("ç¡®å®š",
+					.setTitle("È·ÈÏ»Ø¸´")
+					.setPositiveButton("È·¶¨",
 							new DialogInterface.OnClickListener() {
 
 								@Override
@@ -299,32 +299,32 @@ public class DialogActivity extends Activity implements OnClickListener {
 												reply, sentIntent, null);
 										Toast.makeText(
 												DialogActivity.this,
-												"å‘å·ç  \"" + sender + "\" å‘é€çŸ­ä¿¡ \""
-														+ reply + "\" æˆåŠŸ",
+												"ÏòºÅÂë \"" + sender + "\" ·¢ËÍ¶ÌĞÅ \""
+														+ reply + "\" ³É¹¦",
 												Toast.LENGTH_LONG).show();
 										 finish();
 									} else {
 										if (sender.length() == 0) {
 											Toast.makeText(DialogActivity.this,
-													"è¿™æ¡ä¿¡æ¯æ²¡æœ‰å‘ä»¶äººï¼Œæ‰€ä»¥æ˜¯æ²¡æ³•å›å¤çš„å“¦~",
+													"ÕâÌõĞÅÏ¢Ã»ÓĞ·¢¼şÈË£¬ËùÒÔÊÇÃ»·¨»Ø¸´µÄÅ¶~",
 													Toast.LENGTH_LONG).show();
 										} else if (reply.length() == 0) {
 											Toast.makeText(DialogActivity.this,
-													"è¿™æ¡ä¿¡æ¯ä»€ä¹ˆéƒ½æ²¡å†™å“¦ï¼Œæˆ‘åº”è¯¥å›å¤ä»€ä¹ˆå‘¢ï¼Ÿ",
+													"ÕâÌõĞÅÏ¢Ê²Ã´¶¼Ã»Ğ´Å¶£¬ÎÒÓ¦¸Ã»Ø¸´Ê²Ã´ÄØ£¿",
 													Toast.LENGTH_LONG).show();
 										} else {
 											Toast.makeText(
 													DialogActivity.this,
-													"å‘å·ç  \"" + sender
-															+ "\" å‘é€çŸ­ä¿¡ \""
+													"ÏòºÅÂë \"" + sender
+															+ "\" ·¢ËÍ¶ÌĞÅ \""
 															+ reply
-															+ "\" å¤±è´¥ï¼Œè¯·é‡æ–°å°è¯•",
+															+ "\" Ê§°Ü£¬ÇëÖØĞÂ³¢ÊÔ",
 													Toast.LENGTH_LONG).show();
 										}
 									}
 									//finish();
 								}
-							}).setNegativeButton("å–æ¶ˆ", null).create();
+							}).setNegativeButton("È¡Ïû", null).create();
 			alertDialog.show();
 			break;
 		}
@@ -351,7 +351,7 @@ public class DialogActivity extends Activity implements OnClickListener {
 	}
 
 	protected Dialog onCreateDialog(int id) {
-		// ç”¨æ¥è·å–æ—¥æœŸå’Œæ—¶é—´çš„
+		// ÓÃÀ´»ñÈ¡ÈÕÆÚºÍÊ±¼äµÄ
 		Calendar calendar = Calendar.getInstance();
 
 		Dialog dialog = null;
@@ -361,7 +361,7 @@ public class DialogActivity extends Activity implements OnClickListener {
 				@Override
 				public void onDateSet(DatePicker datePicker, int year,
 						int month, int dayOfMonth) {
-					// Calendaræœˆä»½æ˜¯ä»0å¼€å§‹,æ‰€ä»¥monthè¦åŠ 1
+					// CalendarÔÂ·İÊÇ´Ó0¿ªÊ¼,ËùÒÔmonthÒª¼Ó1
 					time.set(year, month, dayOfMonth);
 					SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 					datetextView.setText(format.format(time.getTime()));
@@ -385,7 +385,7 @@ public class DialogActivity extends Activity implements OnClickListener {
 			};
 			dialog = new TimePickerDialog(this, timeListener,
 					calendar.get(Calendar.HOUR_OF_DAY),
-					calendar.get(Calendar.MINUTE), true); // æ˜¯å¦ä¸ºäºŒåå››åˆ¶
+					calendar.get(Calendar.MINUTE), true); // ÊÇ·ñÎª¶şÊ®ËÄÖÆ
 			break;
 		default:
 			break;
@@ -394,11 +394,11 @@ public class DialogActivity extends Activity implements OnClickListener {
 	}
 
 	/*
-	 * æˆå‘˜å†…éƒ¨ç±»,æ­¤å¤„ä¸ºæé«˜å¯é‡ç”¨æ€§ï¼Œä¹Ÿå¯ä»¥æ¢æˆåŒ¿åå†…éƒ¨ç±»
+	 * ³ÉÔ±ÄÚ²¿Àà,´Ë´¦ÎªÌá¸ß¿ÉÖØÓÃĞÔ£¬Ò²¿ÉÒÔ»»³ÉÄäÃûÄÚ²¿Àà
 	 */
 	private class BtnOnClickListener implements View.OnClickListener {
 
-		private int dialogId = 0; // é»˜è®¤ä¸º0åˆ™ä¸æ˜¾ç¤ºå¯¹è¯æ¡†
+		private int dialogId = 0; // Ä¬ÈÏÎª0Ôò²»ÏÔÊ¾¶Ô»°¿ò
 
 		public BtnOnClickListener(int dialogId) {
 			this.dialogId = dialogId;
