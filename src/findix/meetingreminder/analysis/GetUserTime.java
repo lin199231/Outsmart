@@ -210,7 +210,7 @@ public class GetUserTime {
 					|| IKTime[0].charAt(IKTime[0].length() - 1) == '时') {
 				if (IKTime[0].length() == 2)// x点只有2个字符 无法确定是否为24时制
 					hour = Integer.valueOf(IKTime[0].substring(0, 1));
-				else if (Integer.valueOf(IKTime[0].substring(0, 2)) <= 12)
+				else if (Integer.valueOf(IKTime[0].substring(0, 2)) < 12)
 					hour = Integer.valueOf(IKTime[0].substring(0, 2));
 				else {// 一定表示24时制
 					hour = Integer.valueOf(IKTime[0].substring(0, 2));
