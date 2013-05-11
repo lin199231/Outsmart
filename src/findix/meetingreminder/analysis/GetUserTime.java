@@ -60,13 +60,19 @@ public class GetUserTime {
 	 */
 	private void PhaseShiefTime() {// 用于解析出字符串中的时间和地点信息
 		time = Calendar.getInstance();// 获取系统当前时间
-		time.set(Calendar.AM_PM, Calendar.AM);
+		// time.set(Calendar.AM_PM, Calendar.AM);
 		time.set(Calendar.SECOND, 0);
 		time.setFirstDayOfWeek(Calendar.MONDAY);
 		// 正则表达式确定
+		boolean setWeek = false, setSureDate = false;
 		int start;
-		int year = time.get(Calendar.YEAR), month = time.get(Calendar.MONTH), day = time
-				.get(Calendar.DATE), hour = time.get(Calendar.HOUR_OF_DAY);
+		int year , month, day , hour , minute ;
+		year= time.get(Calendar.YEAR);
+		month= time.get(Calendar.MONTH);
+		day= time.get(Calendar.DATE);
+		hour= time.get(Calendar.HOUR_OF_DAY);
+		minute= time
+				.get(Calendar.MINUTE);
 		Pattern Date = Pattern
 				.compile("((\\d{4}|\\d{2})[年.\\\\/-])?((\\d{1,2}[月.\\\\/-]\\d{1,2}[日号]?)|(\\d{1,2}[日号]))");
 		// xx/xxxx年x-xx月x-xx日
@@ -75,7 +81,7 @@ public class GetUserTime {
 		Pattern Day = Pattern.compile("\\d{1,2}[日号]?");// x-xx日
 		Pattern NextWeek = Pattern.compile("下(星期|礼拜|周)[一二三四五六日天1-7]");// 下星期x
 		Pattern Week = Pattern.compile("(星期|礼拜|周)[一二三四五六日天1-7]");// 星期x
-		Pattern TS = Pattern.compile("[AaPp]\\.?[Mm]\\.?");// am/pm
+		Pattern TS = Pattern.compile("[AaPp].?[Mm].?");// am/pm
 		Pattern Time = Pattern
 				.compile("\\d{1,2}(([点时](半|[123一二三]刻|\\d{1,2}分|\\d{1,2}))|([：:]\\d{1,2})|[点])");// 精确时间
 		// 明天 后天 大后天 晚上 分词后进行校正
@@ -84,11 +90,9 @@ public class GetUserTime {
 
 		MC = Date.matcher(Msg);
 		if (MC.find()) {
-			System.out.println(MC.group());
 			start = MC.start();// 从匹配位置开始分解匹配
 			MC = Year.matcher(Msg);
 			if (MC.find(start)) {
-				System.out.println(MC.group());
 				start = MC.end();// 从年份之后匹配月份
 				if (MC.group().length() == 5)
 					year = Integer.valueOf(MC.group().substring(0, 4));
@@ -97,14 +101,12 @@ public class GetUserTime {
 			}// 提取年份
 			MC = Month.matcher(Msg);
 			if (MC.find(start)) {
-				System.out.println(MC.group());
 				start = MC.end();// 从月份之后匹配日期
 				month = Integer.valueOf(MC.group().substring(0,
 						MC.group().length() - 1)) - 1;
 			}// 提取月份
 			MC = Day.matcher(Msg);
 			if (MC.find(start)) {
-				System.out.println(MC.group());
 				if (MC.group().charAt(MC.group().length() - 1) == '日'
 						|| MC.group().charAt(MC.group().length() - 1) == '号')
 					day = Integer.valueOf(MC.group().substring(0,
@@ -112,15 +114,16 @@ public class GetUserTime {
 				else
 					day = Integer.valueOf(MC.group().substring(0,
 							MC.group().length()));
+				setSureDate = true;
 			}// 提取日期
 		}
 		// 提取下星期\星期x
 		MC = NextWeek.matcher(Msg);
 		if (MC.find()) {
-			time.set(Calendar.WEEK_OF_YEAR, time.get(Calendar.WEEK_OF_YEAR) + 1);
-			year = time.get(Calendar.YEAR);
-			month = time.get(Calendar.MONTH);
-			day = time.get(Calendar.DATE);//超级疑问为什么这里不运行  时间就不能改为下星期 
+
+			// year = time.get(Calendar.YEAR);
+			// month = time.get(Calendar.MONTH);
+			// day = time.get(Calendar.DATE);//超级疑问为什么这里不运行 时间就不能改为下星期
 			switch (MC.group().charAt(MC.group().length() - 1)) {
 			case '一':
 			case '1':
@@ -152,6 +155,9 @@ public class GetUserTime {
 				time.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
 				break;
 			}
+			setWeek = true;
+			setSureDate = true;
+			time.set(Calendar.WEEK_OF_YEAR, time.get(Calendar.WEEK_OF_YEAR) + 1);
 			year = time.get(Calendar.YEAR);
 			month = time.get(Calendar.MONTH);
 			day = time.get(Calendar.DATE);
@@ -189,6 +195,8 @@ public class GetUserTime {
 					time.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
 					break;
 				}
+				setWeek = true;
+				setSureDate = true;
 				year = time.get(Calendar.YEAR);
 				month = time.get(Calendar.MONTH);
 				day = time.get(Calendar.DATE);
@@ -198,7 +206,6 @@ public class GetUserTime {
 		MC = Time.matcher(Msg);
 		if (MC.find()) {
 			String[] IKTime = toIKMode(MC.group());
-
 			if (IKTime[0].charAt(IKTime[0].length() - 1) == '点'
 					|| IKTime[0].charAt(IKTime[0].length() - 1) == '时') {
 				if (IKTime[0].length() == 2)// x点只有2个字符 无法确定是否为24时制
@@ -222,52 +229,31 @@ public class GetUserTime {
 			}
 			// 确定分钟
 			if (IKTime.length == 1)
-				time.set(Calendar.MINUTE, 0);
+				minute = 0;
 			else if (IKTime[1].charAt(IKTime[1].length() - 1) == '分') {
 				if (IKTime[1].length() == 2)
-					time.set(Calendar.MINUTE,
-							Integer.valueOf(IKTime[1].substring(0, 1)));
+					minute = Integer.valueOf(IKTime[1].substring(0, 1));
 				else
-					time.set(Calendar.MINUTE,
-							Integer.valueOf(IKTime[1].substring(0, 2)));
+					minute = Integer.valueOf(IKTime[1].substring(0, 2));
 			} else if (IKTime[1].charAt(IKTime[1].length() - 1) == '刻') {
 				switch (IKTime[1].charAt(0)) {
 				case '一':
 				case '1':
-					time.set(Calendar.MINUTE, 15);
+					minute = 15;
 					break;
 				case '二':
 				case '2':
-					time.set(Calendar.MINUTE, 30);
+					minute = 30;
 					break;
 				case '三':
 				case '3':
-					time.set(Calendar.MINUTE, 45);
+					minute = 45;
 					break;
 				}
-			} else if (IKTime.length == 2 && IKTime[1].charAt(0) == '半') {
-				time.set(Calendar.MINUTE, 30);
-			} else {
-				time.set(Calendar.MINUTE, Integer.valueOf(IKTime[1]));
-			}
-		}
-
-		// 如果不等于原时间且hour>12证明不需要改时制
-		if ((hour != time.get(Calendar.HOUR_OF_DAY)) && setAPM == -1) {
-			// 校准时制
-			MC = TS.matcher(Msg);
-			if (MC.find()) {
-				if ((MC.group().charAt(MC.start() - 1) >= '0' && MC.group()
-						.charAt(MC.start() - 1) <= '9')
-						&& MC.group().charAt(MC.end()) >= '0'
-						&& MC.group().charAt(MC.end()) <= '9') {
-					if (MC.group().charAt(0) == 'P'
-							|| MC.group().charAt(0) == 'p')
-						time.set(Calendar.AM_PM, Calendar.PM);
-					else
-						time.set(Calendar.AM_PM, Calendar.AM);
-				}
-			}
+			} else if (IKTime.length == 2 && IKTime[1].charAt(0) == '半')
+				minute = 30;
+			else
+				minute = Integer.valueOf(IKTime[1]);
 		}
 		// 处理年月日
 		if (year > 1970) {
@@ -278,9 +264,31 @@ public class GetUserTime {
 					time.set(Calendar.DATE, day);
 			}
 		}
+		// 如果不等于原时间且hour>12证明不需要改时制
+		MC = TS.matcher(Msg);
+		if (hour != time.get(Calendar.HOUR_OF_DAY) && setAPM == -1 && MC.find()) {
+			// 校准时制
+			if ((MC.group().charAt(MC.start() - 1) >= '0' && MC.group().charAt(
+					MC.start() - 1) <= '9')
+					&& MC.group().charAt(MC.end()) >= '0'
+					&& MC.group().charAt(MC.end()) <= '9') {
+				if (MC.group().charAt(0) == 'P' || MC.group().charAt(0) == 'p')
+					time.set(Calendar.AM_PM, Calendar.PM);
+				else
+					time.set(Calendar.AM_PM, Calendar.AM);
+			}
+		}
+		// 处理小时分钟
+		if (hour >= 0 && hour <= 24) {
+			time.set(Calendar.HOUR_OF_DAY, hour);
+			if (minute >= 0 && minute <= 60)
+				time.set(Calendar.MINUTE, minute);
+		}
+		System.out.println(time.get(Calendar.HOUR_OF_DAY)+"点");
 		TSFix();// 早上等
 		// 校准日期
-		DateFix();// 明天等
+		if (setSureDate = false)// 如果未定确定一个确切的日期则匹配明天等
+			DateFix();// 明天等
 
 		// 千年虫问题及判断时间是否被匹配
 		Calendar timepp = Calendar.getInstance();
@@ -304,13 +312,17 @@ public class GetUserTime {
 				time.set(Calendar.DATE, time.get(Calendar.DATE) + 1);
 				time.set(Calendar.AM_PM, Calendar.AM);
 			} else {
-				// 用户确定时间为上午，则时间改为明天的这个时间
+				// 用户确定时间，则时间改为明天的这个时间
 				time.set(Calendar.DATE, time.get(Calendar.DATE) + 1);
 			}
 		} else if (time.get(Calendar.YEAR) == timepp.get(Calendar.YEAR)
 				&& time.get(Calendar.MONTH) == timepp.get(Calendar.MONTH)
 				&& time.get(Calendar.DATE) < timepp.get(Calendar.DATE)) {
-			time.set(Calendar.MONTH, time.get(Calendar.MONTH) + 1);
+			if (setWeek = false)
+				time.set(Calendar.MONTH, time.get(Calendar.MONTH) + 1);
+			else
+				time.set(Calendar.WEEK_OF_YEAR,
+						time.get(Calendar.WEEK_OF_YEAR) + 1);
 		} else if (time.get(Calendar.YEAR) == timepp.get(Calendar.YEAR)
 				&& time.get(Calendar.MONTH) < timepp.get(Calendar.MONTH)) {
 			time.set(Calendar.YEAR, time.get(Calendar.YEAR) + 1);
