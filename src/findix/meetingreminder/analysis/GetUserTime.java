@@ -82,7 +82,7 @@ public class GetUserTime {
 		Pattern Week = Pattern.compile("(星期|礼拜|周)[一二三四五六日天1-7]");// 星期x
 		Pattern TS = Pattern.compile("[AaPp].?[Mm].?");// am/pm
 		Pattern Time = Pattern
-				.compile("\\d{1,2}(([点时](半|[123一二三]刻|\\d{1,2}分|\\d{1,2}))|([：:]\\d{1,2})|[点])");// 精确时间
+				.compile("\\d{1,2}(([点时](半|[123一二三]刻|\\d{1,2}分|\\d{1,2}))|([：:]\\d{1,2})|[点 ])");// 精确时间
 		// 明天 后天 大后天 晚上 分词后进行校正
 		// 提取xxxx年xx月xx日/号
 		Matcher MC = null;// 匹配器
@@ -345,8 +345,9 @@ public class GetUserTime {
 	private static String toAllNumic(String msg) {
 		StringBuffer strb = new StringBuffer(msg);
 		String temp;
+		Pattern Zero = Pattern.compile("零[一二三四五六七八九]");// 零数
 		Pattern Single = Pattern.compile("[一二三四五六七八九]");// 一位数
-		Pattern Double = Pattern.compile("十[一二三四五六七八九]");// 两位数
+		Pattern Double = Pattern.compile("十[一二三四五六七八九]?");// 两位数
 		Pattern Twenty = Pattern.compile("[一二三四五六七八九]十");// 二十这样的两位数
 		Pattern Triple = Pattern.compile("[一二三四五六七八九]十[一二三四五六七八九]");// 三位数
 		Matcher MC = null;// 匹配器
@@ -367,8 +368,17 @@ public class GetUserTime {
 		MC = Double.matcher(msg);
 		while (MC.find()) {
 			temp = MC.group();
+			if (temp.length() == 2)
+				strb.replace(MC.start(), MC.start() + 2,
+						"1" + toNumic(temp.charAt(1)));
+			else
+				strb.replace(MC.start(), MC.start() + 2, "10");
+		}
+		MC = Zero.matcher(msg);
+		while (MC.find()) {
+			temp = MC.group();
 			strb.replace(MC.start(), MC.start() + 2,
-					"1" + toNumic(temp.charAt(1)));
+					"0" + toNumic(temp.charAt(1)));
 		}
 		MC = Single.matcher(msg);
 		while (MC.find()) {
@@ -435,14 +445,14 @@ public class GetUserTime {
 				time.set(Calendar.AM_PM, Calendar.AM);
 				setAPM = 0;
 			} else if (text[i].compareTo("中午") == 0
-					|| text[i].compareTo("下午") == 0
+					||text[i].compareTo("下午") == 0
 					|| text[i].compareTo("晚上") == 0
 					|| text[i].compareTo("今晚") == 0
 					|| text[i].compareTo("傍晚") == 0
 					|| text[i].compareTo("半夜") == 0
-					|| text[i].compareTo("午夜") == 0
-					|| text[i].compareTo("今天下午") == 0
-					|| text[i].compareTo("今天中午") == 0) {
+					|| text[i].compareTo("午夜") == 0 
+					|| text[i].compareTo("今天中午") == 0
+					|| text[i].compareTo("今天下午") == 0) {
 				time.set(Calendar.AM_PM, Calendar.PM);
 				setAPM = 1;
 			} else if (text[i].compareTo("凌晨") == 0) {// 特殊
