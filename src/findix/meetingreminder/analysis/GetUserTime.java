@@ -66,13 +66,12 @@ public class GetUserTime {
 		// 正则表达式确定
 		boolean setWeek = false, setSureDate = false;
 		int start;
-		int year , month, day , hour , minute ;
-		year= time.get(Calendar.YEAR);
-		month= time.get(Calendar.MONTH);
-		day= time.get(Calendar.DATE);
-		hour= time.get(Calendar.HOUR_OF_DAY);
-		minute= time
-				.get(Calendar.MINUTE);
+		int year, month, day, hour, minute;
+		year = time.get(Calendar.YEAR);
+		month = time.get(Calendar.MONTH);
+		day = time.get(Calendar.DATE);
+		hour = time.get(Calendar.HOUR_OF_DAY);
+		minute = time.get(Calendar.MINUTE);
 		Pattern Date = Pattern
 				.compile("((\\d{4}|\\d{2})[年.\\\\/-])?((\\d{1,2}[月.\\\\/-]\\d{1,2}[日号]?)|(\\d{1,2}[日号]))");
 		// xx/xxxx年x-xx月x-xx日
@@ -83,7 +82,7 @@ public class GetUserTime {
 		Pattern Week = Pattern.compile("(星期|礼拜|周)[一二三四五六日天1-7]");// 星期x
 		Pattern TS = Pattern.compile("[AaPp].?[Mm].?");// am/pm
 		Pattern Time = Pattern
-				.compile("\\d{1,2}(([点时](半|[123一二三]刻|\\d{1,2}分|\\d{1,2}))|([：:]\\d{1,2})|[点])");// 精确时间
+				.compile("\\d{1,2}(([点时](半|[123一二三]刻|\\d{1,2}分|\\d{1,2}))|([：:]\\d{1,2})|[点 ])");// 精确时间
 		// 明天 后天 大后天 晚上 分词后进行校正
 		// 提取xxxx年xx月xx日/号
 		Matcher MC = null;// 匹配器
@@ -210,7 +209,7 @@ public class GetUserTime {
 					|| IKTime[0].charAt(IKTime[0].length() - 1) == '时') {
 				if (IKTime[0].length() == 2)// x点只有2个字符 无法确定是否为24时制
 					hour = Integer.valueOf(IKTime[0].substring(0, 1));
-				else if (Integer.valueOf(IKTime[0].substring(0, 2)) <= 12)
+				else if (Integer.valueOf(IKTime[0].substring(0, 2)) < 12)
 					hour = Integer.valueOf(IKTime[0].substring(0, 2));
 				else {// 一定表示24时制
 					hour = Integer.valueOf(IKTime[0].substring(0, 2));
@@ -284,7 +283,7 @@ public class GetUserTime {
 			if (minute >= 0 && minute <= 60)
 				time.set(Calendar.MINUTE, minute);
 		}
-		System.out.println(time.get(Calendar.HOUR_OF_DAY)+"点");
+		System.out.println(time.get(Calendar.HOUR_OF_DAY) + "点");
 		TSFix();// 早上等
 		// 校准日期
 		if (setSureDate = false)// 如果未定确定一个确切的日期则匹配明天等
@@ -346,8 +345,9 @@ public class GetUserTime {
 	private static String toAllNumic(String msg) {
 		StringBuffer strb = new StringBuffer(msg);
 		String temp;
+		Pattern Zero = Pattern.compile("零[一二三四五六七八九]");// 零数
 		Pattern Single = Pattern.compile("[一二三四五六七八九]");// 一位数
-		Pattern Double = Pattern.compile("十[一二三四五六七八九]");// 两位数
+		Pattern Double = Pattern.compile("十[一二三四五六七八九]?");// 两位数
 		Pattern Twenty = Pattern.compile("[一二三四五六七八九]十");// 二十这样的两位数
 		Pattern Triple = Pattern.compile("[一二三四五六七八九]十[一二三四五六七八九]");// 三位数
 		Matcher MC = null;// 匹配器
@@ -368,8 +368,17 @@ public class GetUserTime {
 		MC = Double.matcher(msg);
 		while (MC.find()) {
 			temp = MC.group();
+			if (temp.length() == 2)
+				strb.replace(MC.start(), MC.start() + 2,
+						"1" + toNumic(temp.charAt(1)));
+			else
+				strb.replace(MC.start(), MC.start() + 2, "10");
+		}
+		MC = Zero.matcher(msg);
+		while (MC.find()) {
+			temp = MC.group();
 			strb.replace(MC.start(), MC.start() + 2,
-					"1" + toNumic(temp.charAt(1)));
+					"0" + toNumic(temp.charAt(1)));
 		}
 		MC = Single.matcher(msg);
 		while (MC.find()) {
@@ -430,8 +439,7 @@ public class GetUserTime {
 
 	private void TSFix() {
 		for (int i = 0; i < text.length; i++) {
-			if (text[i].compareTo("上午") == 0 || text[i].compareTo("中午") == 0
-					|| text[i].compareTo("清晨") == 0
+			if (text[i].compareTo("上午") == 0 || text[i].compareTo("清晨") == 0
 					|| text[i].compareTo("早晨") == 0
 					|| text[i].compareTo("今天上午") == 0) {
 				time.set(Calendar.AM_PM, Calendar.AM);
@@ -442,6 +450,8 @@ public class GetUserTime {
 					|| text[i].compareTo("傍晚") == 0
 					|| text[i].compareTo("半夜") == 0
 					|| text[i].compareTo("午夜") == 0
+					|| text[i].compareTo("中午") == 0
+					|| text[i].compareTo("今天中午") == 0
 					|| text[i].compareTo("今天下午") == 0) {
 				time.set(Calendar.AM_PM, Calendar.PM);
 				setAPM = 1;
