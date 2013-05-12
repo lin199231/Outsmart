@@ -444,13 +444,13 @@ public class GetUserTime {
 					|| text[i].compareTo("今天上午") == 0) {
 				time.set(Calendar.AM_PM, Calendar.AM);
 				setAPM = 0;
-			} else if (text[i].compareTo("下午") == 0
+			} else if (text[i].compareTo("中午") == 0
+					||text[i].compareTo("下午") == 0
 					|| text[i].compareTo("晚上") == 0
 					|| text[i].compareTo("今晚") == 0
 					|| text[i].compareTo("傍晚") == 0
 					|| text[i].compareTo("半夜") == 0
-					|| text[i].compareTo("午夜") == 0
-					|| text[i].compareTo("中午") == 0
+					|| text[i].compareTo("午夜") == 0 
 					|| text[i].compareTo("今天中午") == 0
 					|| text[i].compareTo("今天下午") == 0) {
 				time.set(Calendar.AM_PM, Calendar.PM);

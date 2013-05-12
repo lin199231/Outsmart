@@ -353,7 +353,8 @@ public class DialogActivity extends Activity implements OnClickListener {
 
 	protected Dialog onCreateDialog(int id) {
 		// 用来获取日期和时间的
-		Calendar calendar = Calendar.getInstance();
+		//Calendar calendar = Calendar.getInstance();
+		Calendar calendar =time;
 
 		Dialog dialog = null;
 		switch (id) {
