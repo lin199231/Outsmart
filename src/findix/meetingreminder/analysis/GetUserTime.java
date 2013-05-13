@@ -291,14 +291,15 @@ public class GetUserTime {
 
 		// 千年虫问题及判断时间是否被匹配
 		Calendar timepp = Calendar.getInstance();
-		if (time.get(Calendar.YEAR) == timepp.get(Calendar.YEAR)
-				&& time.get(Calendar.MONTH) == timepp.get(Calendar.MONTH)
-				&& time.get(Calendar.DATE) == timepp.get(Calendar.DATE)
-				&& time.get(Calendar.HOUR_OF_DAY) == timepp
-						.get(Calendar.HOUR_OF_DAY)
-				&& time.get(Calendar.MINUTE) < timepp.get(Calendar.MINUTE)) {
-			time.set(Calendar.HOUR_OF_DAY, time.get(Calendar.HOUR_OF_DAY) + 1);
-		} else if (time.get(Calendar.YEAR) == timepp.get(Calendar.YEAR)
+//		if (time.get(Calendar.YEAR) == timepp.get(Calendar.YEAR)
+//				&& time.get(Calendar.MONTH) == timepp.get(Calendar.MONTH)
+//				&& time.get(Calendar.DATE) == timepp.get(Calendar.DATE)
+//				&& time.get(Calendar.HOUR_OF_DAY) == timepp
+//						.get(Calendar.HOUR_OF_DAY)
+//				&& time.get(Calendar.MINUTE) < timepp.get(Calendar.MINUTE)) {
+//			time.set(Calendar.HOUR_OF_DAY, time.get(Calendar.HOUR_OF_DAY) + 1);
+//		} else 
+			if (time.get(Calendar.YEAR) == timepp.get(Calendar.YEAR)
 				&& time.get(Calendar.MONTH) == timepp.get(Calendar.MONTH)
 				&& time.get(Calendar.DATE) == timepp.get(Calendar.DATE)
 				&& time.get(Calendar.HOUR_OF_DAY) < timepp
