@@ -8,13 +8,13 @@ import findix.meetingreminder.analysis.GetUserLocation;
 import findix.meetingreminder.analysis.GetUserTime;
 import findix.meetingreminder.db.DatabaseHelper;
 import findix.meetingreminder.segmentation.Persistence;
+import findix.meetingreminder.sms.SendSMS;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.*;
 import android.content.DialogInterface.OnMultiChoiceClickListener;
@@ -24,7 +24,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.telephony.PhoneNumberUtils;
-import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.*;
 import android.view.View.*;
@@ -55,10 +54,15 @@ public class DialogActivity extends Activity implements OnClickListener {
 	private String[] location;
 	private Calendar time = Calendar.getInstance();
 	private String sender = new String();
+	private String replyText = new String();
 	private AutoCompleteTextView autoCompletetextView = null;
 
 	private boolean isClear_Event = false;
 	private boolean isClear_Location = false;
+
+	/** 发送与接收的广播 **/
+	String SENT_SMS_ACTION = "SENT_SMS_ACTION";
+	String DELIVERED_SMS_ACTION = "DELIVERED_SMS_ACTION";
 
 	// private static String calanderURL = "";
 	private static String calanderEventURL = "";
@@ -118,7 +122,8 @@ public class DialogActivity extends Activity implements OnClickListener {
 
 		GetUserTime getUserTime = new GetUserTime(content);
 		time = getUserTime.getTime();
-		System.out.println(getUserTime.isMeeting()?"【是会议】"+content:"【不是会议】"+content);
+		System.out.println(getUserTime.isMeeting() ? "【是会议】" + content
+				: "【不是会议】" + content);
 		GetUserLocation getUserLocation = new GetUserLocation(
 				getUserTime.getNoDateMsg());
 		location = getUserLocation.getLocation();
@@ -131,9 +136,22 @@ public class DialogActivity extends Activity implements OnClickListener {
 		editText_location.clearFocus();
 		smstextView.setText(content);
 
+		// 注册广播
+		registerReceiver(sendMessage, new IntentFilter(SENT_SMS_ACTION));
+		registerReceiver(receiver, new IntentFilter(DELIVERED_SMS_ACTION));
+
 		// TipHelper.PlaySound(this);// 响铃
 		// long ring[]={1000,500,1000};
 		// TipHelper.Vibrate(this, ring, false);//震动
+	}
+
+	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		super.onDestroy();
+		// 解除注册广播
+		unregisterReceiver(sendMessage);
+		unregisterReceiver(receiver);
 	}
 
 	@Override
@@ -259,7 +277,7 @@ public class DialogActivity extends Activity implements OnClickListener {
 					&& !location_Temp.equals("请选择地点")) {
 				String sql = "insert or ignore into user(location) values('"
 						+ location_Temp + "');";
-				//System.out.println(sql);
+				// System.out.println(sql);
 				db.execSQL(sql);
 				Toast.makeText(this,
 						"我现在知道" + "\"" + location_Temp + "\"" + "这个地方啦",
@@ -286,24 +304,31 @@ public class DialogActivity extends Activity implements OnClickListener {
 											.findViewById(R.id.EditText);
 									String reply = editText.getText()
 											.toString();
-									// System.out.println(reply);
-									PendingIntent sentIntent = PendingIntent
-											.getBroadcast(DialogActivity.this,
-													0, new Intent(), 0);
+									replyText = reply;
 									if (PhoneNumberUtils
 											.isGlobalPhoneNumber(sender)
 											&& sender.length() > 0
 											&& reply.length() > 0) {
-										SmsManager sms = SmsManager
-												.getDefault();
-										sms.sendTextMessage(sender, null,
-												reply, sentIntent, null);
-										Toast.makeText(
-												DialogActivity.this,
-												"向号码 \"" + sender + "\" 发送短信 \""
-														+ reply + "\" 成功",
-												Toast.LENGTH_LONG).show();
-										 finish();
+										new SendSMS(DialogActivity.this,
+												sender, reply);
+										/** 将发送的短信插入数据库 **/
+										ContentValues values = new ContentValues();
+										// 发送时间
+										values.put("date",
+												System.currentTimeMillis());
+										// 阅读状态
+										values.put("read", 0);
+										// 1为收 2为发
+										values.put("type", 2);
+										// 送达号码
+										values.put("address", sender);
+										// 送达内容
+										values.put("body", replyText);
+										// 插入短信库
+										getContentResolver().insert(
+												Uri.parse("content://sms"),
+												values);
+										finish();
 									} else {
 										if (sender.length() == 0) {
 											Toast.makeText(DialogActivity.this,
@@ -323,7 +348,7 @@ public class DialogActivity extends Activity implements OnClickListener {
 													Toast.LENGTH_LONG).show();
 										}
 									}
-									//finish();
+									// finish();
 								}
 							}).setNegativeButton("取消", null).create();
 			alertDialog.show();
@@ -353,8 +378,8 @@ public class DialogActivity extends Activity implements OnClickListener {
 
 	protected Dialog onCreateDialog(int id) {
 		// 用来获取日期和时间的
-		//Calendar calendar = Calendar.getInstance();
-		Calendar calendar =time;
+		// Calendar calendar = Calendar.getInstance();
+		Calendar calendar = time;
 
 		Dialog dialog = null;
 		switch (id) {
@@ -412,4 +437,40 @@ public class DialogActivity extends Activity implements OnClickListener {
 		}
 
 	}
+
+	public BroadcastReceiver sendMessage = new BroadcastReceiver() {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			// 判断短信是否发送成功
+			switch (getResultCode()) {
+			case Activity.RESULT_OK:
+				Toast.makeText(context, "短信发送成功", Toast.LENGTH_SHORT).show();
+				Log.i("短信发送", "成功！");
+				break;
+			default:
+				Toast.makeText(DialogActivity.this, "发送失败", Toast.LENGTH_LONG)
+						.show();
+				Log.i("短信发送", "失败！");
+				break;
+			}
+		}
+	};
+
+	public BroadcastReceiver receiver = new BroadcastReceiver() {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			// 表示对方成功收到短信
+			Toast.makeText(DialogActivity.this, "对方接收成功", Toast.LENGTH_LONG)
+					.show();
+			Log.i("短信接收", "成功！");
+		}
+	};
+
+	/**
+	 * 参数说明 destinationAddress:收信人的手机号码 scAddress:发信人的手机号码 text:发送信息的内容
+	 * sentIntent:发送是否成功的回执，用于监听短信是否发送成功。
+	 * DeliveryIntent:接收是否成功的回执，用于监听短信对方是否接收成功。
+	 */
 }

@@ -4,14 +4,12 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Calendar;
 
 import android.content.Context;
-import android.util.Log;
 
 public class CopyDic {
 	public CopyDic(Context context) {
-		long ftime = Calendar.getInstance().getTimeInMillis();// 开始时间
+		//long ftime = Calendar.getInstance().getTimeInMillis();// 开始时间
 		final String FILE_NAME = "dic2012.db";
 		File dir = new File("data/data/" + context.getPackageName()
 				+ "/databases");
@@ -49,6 +47,6 @@ public class CopyDic {
 				e.printStackTrace();
 			}
 		}
-		Log.i("Time of Copy Dic", Calendar.getInstance().getTimeInMillis() - ftime + "");
+		//Log.i("Time of Copy Dic", Calendar.getInstance().getTimeInMillis() - ftime + "");
 	}
 }
