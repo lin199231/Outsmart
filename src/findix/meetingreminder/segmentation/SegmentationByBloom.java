@@ -1,20 +1,17 @@
 package findix.meetingreminder.segmentation;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Stack;
 
-import android.util.Log;
 
 public class SegmentationByBloom {
 	static byte[] dic = null;
 	static GetHash GH = new GetHash();
 
 	public SegmentationByBloom() {
-		long ftime = Calendar.getInstance().getTimeInMillis();// 开始时间
+		//long ftime = Calendar.getInstance().getTimeInMillis();// 开始时间
 		dic = GetDicBloom.getBloom();
-		Log.i("Input Dic Time", Calendar.getInstance().getTimeInMillis()
-				- ftime + "");// 结束时间
+		//Log.i("Input Dic Time", Calendar.getInstance().getTimeInMillis()- ftime + "");// 结束时间
 	}
 
 	public static void getDic() {

@@ -143,7 +143,7 @@ public class MainActivity extends Activity implements OnClickListener {
 													.getColumnIndex("body")));
 									intent.putExtra("sender", cur.getString(cur
 											.getColumnIndex("address")));
-									//System.out.println(cur.getString(cur.getColumnIndex("address")));
+									// System.out.println(cur.getString(cur.getColumnIndex("address")));
 									if (toggleButton1.isChecked())
 										startActivity(intent);
 								}
@@ -151,7 +151,6 @@ public class MainActivity extends Activity implements OnClickListener {
 							}
 						}
 					}, "body").show();
-
 			break;
 
 		case R.id.button2: {
