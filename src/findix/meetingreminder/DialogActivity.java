@@ -328,7 +328,7 @@ public class DialogActivity extends Activity implements OnClickListener {
 										getContentResolver().insert(
 												Uri.parse("content://sms"),
 												values);
-										finish();
+										//finish();
 									} else {
 										if (sender.length() == 0) {
 											Toast.makeText(DialogActivity.this,
