@@ -17,13 +17,14 @@ import android.content.*;
 import android.content.DialogInterface.OnMultiChoiceClickListener;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.*;
 import android.widget.*;
 
 public class MainActivity extends Activity implements OnClickListener {
-	private ToggleButton toggleButton1 = null;
+	private ToggleButton toggleButton = null;
 	private Button Button1 = null;
 	private Button Button2 = null;
 	private Button insertButton = null;
@@ -31,6 +32,7 @@ public class MainActivity extends Activity implements OnClickListener {
 	private Button backupButton = null;
 	private Button restoreButton = null;
 	private Button calendarSetButton = null;
+	private LinearLayout toggleButtonLayout = null;
 
 	// 建立数据库
 	SQLiteDatabase db;
@@ -62,10 +64,11 @@ public class MainActivity extends Activity implements OnClickListener {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
+		// setContentView(R.layout.activity_main);
+		setContentView(R.layout.activity_main_wp);
 
-		toggleButton1 = (ToggleButton) findViewById(R.id.toggleButton1);
-		toggleButton1.setOnClickListener(this);
+		toggleButton = (ToggleButton) findViewById(R.id.toggleButton);
+		toggleButton.setOnClickListener(this);
 		Button1 = (Button) findViewById(R.id.button1);
 		Button1.setOnClickListener(this);
 		Button2 = (Button) findViewById(R.id.button2);
@@ -80,15 +83,16 @@ public class MainActivity extends Activity implements OnClickListener {
 		restoreButton.setOnClickListener(this);
 		calendarSetButton = (Button) findViewById(R.id.calendarSetButton);
 		calendarSetButton.setOnClickListener(this);
+		toggleButtonLayout = (LinearLayout) findViewById(R.id.toggleButtonLayout);
 
 		new CopyDic(this);
 
 		// 控制开关
 		Persistence setToggle = new Persistence("Setting.db");
 		if (setToggle.getValue() == 1) {
-			toggleButton1.setChecked(true);
+			toggleButton.setChecked(true);
 		} else {
-			toggleButton1.setChecked(false);
+			toggleButton.setChecked(false);
 		}
 
 		// 设置日历
@@ -102,13 +106,20 @@ public class MainActivity extends Activity implements OnClickListener {
 		// 按钮监听器
 		switch (v.getId()) {
 
-		case R.id.toggleButton1:
+		case R.id.toggleButton:
 			FileWriter io = null;
 			try {
 				io = new FileWriter(
 						"/data/data/findix.meetingreminder/Setting.db");
-				io.write(toggleButton1.isChecked() ? 1 : 0);
+				io.write(toggleButton.isChecked() ? 1 : 0);
 				io.close();
+				if (toggleButton.isChecked()) {
+					toggleButtonLayout.setBackgroundColor(Color
+							.parseColor("#FF7F24"));
+				} else {
+					toggleButtonLayout.setBackgroundColor(Color
+							.parseColor("#3399ff"));
+				}
 			} catch (IOException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -144,7 +155,7 @@ public class MainActivity extends Activity implements OnClickListener {
 									intent.putExtra("sender", cur.getString(cur
 											.getColumnIndex("address")));
 									// System.out.println(cur.getString(cur.getColumnIndex("address")));
-									if (toggleButton1.isChecked())
+									if (toggleButton.isChecked())
 										startActivity(intent);
 								}
 								cur.moveToNext();
@@ -173,7 +184,7 @@ public class MainActivity extends Activity implements OnClickListener {
 									intent1.putExtra("content", et.getText()
 											.toString());
 									intent1.putExtra("sender", "");
-									if (toggleButton1.isChecked())
+									if (toggleButton.isChecked())
 										startActivity(intent1);
 								}
 							}).setNegativeButton("取消", null).show();

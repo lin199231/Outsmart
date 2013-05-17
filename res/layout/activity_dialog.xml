@@ -1,4 +1,4 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
@@ -8,19 +8,24 @@
         android:id="@+id/gettextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="主人，我收到了一条会议提醒~~"
+        android:text="会议提醒"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
         android:id="@+id/smstextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/gettextView"
         android:text="Small Text"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <LinearLayout
+        android:id="@+id/linearLayout_date"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/smstextView" >
 
         <Button
             android:id="@+id/changeDateButton"
@@ -35,12 +40,14 @@
             android:layout_height="wrap_content"
             android:text="Large Text"
             android:textAppearance="?android:attr/textAppearanceLarge" />
-
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/linearLayout_time"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/linearLayout_date" >
 
         <Button
             android:id="@+id/changeTimeButton"
@@ -55,25 +62,21 @@
             android:layout_height="wrap_content"
             android:text="Large Text"
             android:textAppearance="?android:attr/textAppearanceLarge" />
-
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/linearLayout_location"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/linearLayout_time" >
 
         <LinearLayout
             android:layout_width="0px"
             android:layout_height="0px"
             android:focusable="true"
-            android:focusableInTouchMode="true" />
-
-        <LinearLayout
-            android:layout_width="0px"
-            android:layout_height="0px"
-            android:focusable="true"
-            android:focusableInTouchMode="true" />
-        <!-- 获取焦点 -->
+            android:focusableInTouchMode="true" >
+        </LinearLayout>
 
         <Button
             android:id="@+id/changeLocationButton"
@@ -96,9 +99,11 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/linearLayout1"
+        android:id="@+id/linearLayout_event"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/linearLayout_location"
         android:orientation="horizontal" >
 
         <Button
@@ -116,24 +121,11 @@
     </LinearLayout>
 
     <RelativeLayout
+        android:id="@+id/relativeLayout1"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp"
-        android:layout_marginTop="15dp" >
-
-    </RelativeLayout>
-
-    <TextView
-        android:id="@+id/qustextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="是否添加到日历提醒？"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
-
-    <RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp" >
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/linearLayout_event" >
 
         <Button
             android:id="@+id/btn_ok"
@@ -171,4 +163,4 @@
             android:textSize="16dp" />
     </RelativeLayout>
 
-</LinearLayout>
+</RelativeLayout>
