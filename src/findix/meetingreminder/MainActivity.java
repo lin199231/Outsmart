@@ -15,9 +15,11 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.*;
 import android.content.DialogInterface.OnMultiChoiceClickListener;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.*;
@@ -32,7 +34,9 @@ public class MainActivity extends Activity implements OnClickListener {
 	private Button backupButton = null;
 	private Button restoreButton = null;
 	private Button calendarSetButton = null;
+	private ImageButton set_btn = null;
 	private LinearLayout toggleButtonLayout = null;
+	private LinearLayout mainLayout = null;
 
 	// 建立数据库
 	SQLiteDatabase db;
@@ -84,8 +88,37 @@ public class MainActivity extends Activity implements OnClickListener {
 		calendarSetButton = (Button) findViewById(R.id.calendarSetButton);
 		calendarSetButton.setOnClickListener(this);
 		toggleButtonLayout = (LinearLayout) findViewById(R.id.toggleButtonLayout);
+		set_btn = (ImageButton) findViewById(R.id.set_btn);
+		set_btn.setOnClickListener(this);
+		mainLayout = (LinearLayout) findViewById(R.id.mainLayout);
 
 		new CopyDic(this);
+		// 设置背景
+		Persistence setBackGround = new Persistence("SetBackGround.db");
+		int bg = setBackGround.getValue();
+		// setBackGround.changeValue(bg == 5 ? 1 : bg + 1);
+		switch (bg) {
+		case 1:
+			mainLayout.setBackgroundDrawable(getResources().getDrawable(
+					R.drawable.main_bg1));
+			break;
+		case 2:
+			mainLayout.setBackgroundDrawable(getResources().getDrawable(
+					R.drawable.main_bg2));
+			break;
+		case 3:
+			mainLayout.setBackgroundDrawable(getResources().getDrawable(
+					R.drawable.main_bg3));
+			break;
+		case 4:
+			mainLayout.setBackgroundDrawable(getResources().getDrawable(
+					R.drawable.main_bg4));
+			break;
+		case 5:
+			mainLayout.setBackgroundDrawable(getResources().getDrawable(
+					R.drawable.main_bg5));
+			break;
+		}
 
 		// 控制开关
 		Persistence setToggle = new Persistence("Setting.db");
@@ -168,7 +201,7 @@ public class MainActivity extends Activity implements OnClickListener {
 			final Intent intent1 = new Intent();
 			final EditText et = new EditText(this);
 			new AlertDialog.Builder(this)
-					.setTitle("发送短信")
+					.setTitle("创建自定义提醒")
 					.setIcon(android.R.drawable.ic_dialog_info)
 					.setView(et)
 					.setPositiveButton("确定",
@@ -367,6 +400,34 @@ public class MainActivity extends Activity implements OnClickListener {
 								}
 							}).setNegativeButton("取消", null).show();
 			userCursor.close();
+		}
+		case R.id.set_btn: {
+			Persistence setBackGround = new Persistence("SetBackGround.db");
+			int bg = setBackGround.getValue();
+			setBackGround.changeValue(bg >= 5 ? bg = 1 : ++bg);
+			switch (bg) {
+			case 1:
+				mainLayout.setBackgroundDrawable(getResources().getDrawable(
+						R.drawable.main_bg1));
+				break;
+			case 2:
+				mainLayout.setBackgroundDrawable(getResources().getDrawable(
+						R.drawable.main_bg2));
+				break;
+			case 3:
+				mainLayout.setBackgroundDrawable(getResources().getDrawable(
+						R.drawable.main_bg3));
+				break;
+			case 4:
+				mainLayout.setBackgroundDrawable(getResources().getDrawable(
+						R.drawable.main_bg4));
+				break;
+			case 5:
+				mainLayout.setBackgroundDrawable(getResources().getDrawable(
+						R.drawable.main_bg5));
+				break;
+			}
+
 		}
 		}
 	}
