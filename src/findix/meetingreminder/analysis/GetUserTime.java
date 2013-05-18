@@ -283,7 +283,7 @@ public class GetUserTime {
 			if (minute >= 0 && minute <= 60)
 				time.set(Calendar.MINUTE, minute);
 		}
-		//System.out.println(time.get(Calendar.HOUR_OF_DAY) + "点");
+		time.get(Calendar.HOUR_OF_DAY);
 		TSFix();// 早上等
 		// 校准日期
 		if (setSureDate = false)// 如果未定确定一个确切的日期则匹配明天等
