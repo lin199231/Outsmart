@@ -3,6 +3,12 @@
 import java.io.*;
 import java.util.ArrayList;
 
+import com.adsmogo.adapters.AdsMogoAdapter;
+import com.adsmogo.adapters.AdsMogoCustomEventPlatformEnum;
+import com.adsmogo.adview.AdsMogoLayout;
+import com.adsmogo.controller.listener.AdsMogoListener;
+import com.adsmogo.util.AdsMogoUtil;
+
 import findix.meetingreminder.backup.BackupTask;
 import findix.meetingreminder.db.DatabaseHelper;
 import findix.meetingreminder.segmentation.CopyDic;
@@ -20,12 +26,15 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.View.*;
 import android.widget.*;
 
-public class MainActivity extends Activity implements OnClickListener {
+public class MainActivity extends Activity implements OnClickListener,
+		AdsMogoListener {
 	private ToggleButton toggleButton = null;
 	private Button Button1 = null;
 	private Button Button2 = null;
@@ -37,6 +46,8 @@ public class MainActivity extends Activity implements OnClickListener {
 	private ImageButton set_btn = null;
 	private LinearLayout toggleButtonLayout = null;
 	private LinearLayout mainLayout = null;
+
+	AdsMogoLayout adsMogoLayoutCode;
 
 	// 建立数据库
 	SQLiteDatabase db;
@@ -130,6 +141,13 @@ public class MainActivity extends Activity implements OnClickListener {
 
 		// 设置日历
 		new Persistence("CalendarSet.db");
+	}
+
+	@Override
+	protected void onStart() {
+		// TODO Auto-generated method stub
+		super.onStart();
+		init();
 	}
 
 	@SuppressLint("SdCardPath")
@@ -468,5 +486,188 @@ public class MainActivity extends Activity implements OnClickListener {
 			new BackupTask(this).execute("restroeDatabase");
 			Toast.makeText(MainActivity.this, "还原成功", Toast.LENGTH_LONG).show();
 		}
+	}
+
+	private void init() {
+
+		// 注意：因单一平台SDK有互相冲突现象，所以demo中的jar文件不全，详细请查看libs.zip
+
+		/*------------------------------------------------------------*/
+		// 初始化AdsMogoLayout 初始化分为以下几种方式
+		// 构造方法，设置广告类型，如全屏广告，banner广告
+		// public AdsMogoLayout(final Activity context, final String keyAdMogo,
+		// final int ad_type) {
+		// }
+
+		// 默认的构造方法，默认开启快速模式，banner广告
+		// public AdsMogoLayout(final Activity context, final String keyAdMogo)
+		// {
+		// }
+
+		// 构造方法，设置快速模式
+		// public AdsMogoLayout(final Activity context, final String keyAdMogo,
+		// boolean expressMode) {
+		// }
+
+		// 构造方法，设置广告类型和快速模式
+		// public AdsMogoLayout(final Activity context, final String keyAdMogo,
+		// final int ad_type, final boolean expressMode) {
+		// }
+		/*------------------------------------------------------------*/
+
+		// 构造方法，设置快速模式
+		adsMogoLayoutCode = new AdsMogoLayout(this,
+				"1c1e5e36250943d48c898a0aa311da62", false);
+
+		// 设置监听回调 其中包括 请求 展示 请求失败等事件的回调
+		adsMogoLayoutCode.setAdsMogoListener(this);
+
+		/*------------------------------------------------------------*/
+		// 通过Code方式添加广告条 本例的结构如下(仅供参考)
+		// -RelativeLayout/(FILL_PARENT,FILL_PARENT)
+		// |
+		// +RelativeLayout/(FILL_PARENT,WRAP_CONTENT)
+		// |
+		// +AdsMogoLayout(FILL_PARENT,WRAP_CONTENT)
+		// |
+		// \
+		// |
+		// \
+		/*------------------------------------------------------------*/
+		RelativeLayout parentLayput = new RelativeLayout(this);
+		RelativeLayout.LayoutParams parentLayputParams = new RelativeLayout.LayoutParams(
+				RelativeLayout.LayoutParams.FILL_PARENT,
+				RelativeLayout.LayoutParams.FILL_PARENT);
+		RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
+				RelativeLayout.LayoutParams.FILL_PARENT,
+				RelativeLayout.LayoutParams.WRAP_CONTENT);
+		layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM,
+				RelativeLayout.TRUE);
+		parentLayput.addView(adsMogoLayoutCode, layoutParams);
+
+		this.addContentView(parentLayput, parentLayputParams);
+	}
+
+	/**
+	 * 当用户点击广告*(Mogo服务根据次记录点击数，次点击是过滤过的点击，一条广告一次展示只能对应一次点击)
+	 */
+	@Override
+	public void onClickAd(String arg0) {
+		Log.d(AdsMogoUtil.ADMOGO, "-=onClickAd=-");
+
+	}
+
+	// 当用户点击了广告关闭按钮时回调(关闭广告按钮功能可以在Mogo的App管理中设置)
+	// return false 则广告关闭 return true 广告将不会关闭
+
+	@Override
+	public boolean onCloseAd() {
+		Log.d(AdsMogoUtil.ADMOGO, "-=onCloseAd=-");
+		AlertDialog dialog = new AlertDialog.Builder(this).create();
+
+		dialog.setMessage("是否关闭广告？");
+
+		dialog.setButton("是", new DialogInterface.OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				// TODO Auto-generated method stub
+				// return true;
+
+				dialog.dismiss();
+
+				if (adsMogoLayoutCode != null) {
+					// 关闭当前广告
+					adsMogoLayoutCode.setADEnable(false);
+				}
+
+			}
+		});
+
+		dialog.setButton2("否", new DialogInterface.OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				// TODO Auto-generated method stub
+
+				dialog.dismiss();
+			}
+		});
+
+		dialog.show();
+
+		return true;
+	}
+
+	/**
+	 * 当用户关闭了下载类型广告的详细界面时回调(广告物料类型为下载广告并且是弹出简介下载的才会有此Dialog)
+	 */
+	@Override
+	public void onCloseMogoDialog() {
+		Log.d(AdsMogoUtil.ADMOGO, "-=onCloseMogoDialog=-");
+	}
+
+	/**
+	 * 所有广告平台请求失败时回调
+	 */
+	@Override
+	public void onFailedReceiveAd() {
+		Log.d(AdsMogoUtil.ADMOGO, "-=onFailedReceiveAd=-");
+
+	}
+
+	/**
+	 * 当用户点击广告*(真实点击 Mogo不会根据此回调时记录点击数，次点击是无过滤过的点击)
+	 */
+	@Override
+	public void onRealClickAd() {
+		Log.d(AdsMogoUtil.ADMOGO, "-=onRealClickAd=-");
+
+	}
+
+	/**
+	 * 请求广告成功时回调 arg0为单一平台的广告视图 arg1为请求平台名称
+	 */
+
+	@Override
+	public void onReceiveAd(ViewGroup arg0, String arg1) {
+		Log.d(AdsMogoUtil.ADMOGO, "-=onReceiveAd=-");
+
+	}
+
+	/**
+	 * 开始请求广告时回调 arg0为请求平台名称
+	 */
+	@Override
+	public void onRequestAd(String arg0) {
+		Log.d(AdsMogoUtil.ADMOGO, "-=onRequestAd=-");
+
+	}
+
+	@Override
+	protected void onDestroy() {
+		// 清除 adsMogoLayout 实例 所产生用于多线程缓冲机制的线程池
+		// 此方法请不要轻易调用，如果调用时间不当，会造成无法统计计数
+		if (adsMogoLayoutCode != null) {
+			adsMogoLayoutCode.clearThread();
+		}
+		super.onDestroy();
+	}
+
+	// 自定义平台功能：关联自定义Adapter
+	// 如不需要自定义平台功能， 返回 null
+	// AdsMogoCustomEventPlatform_1对应平台一
+	// AdsMogoCustomEventPlatform_2对应平台二，如果开发者修改平台名称的话，需备注一下以免弄混
+	// 如不需要自定义平台功能， 返回 null
+
+	@Override
+	public Class<? extends AdsMogoAdapter> getCustomEvemtPlatformAdapterClass(
+			AdsMogoCustomEventPlatformEnum enumIndex) {
+		Class<? extends AdsMogoAdapter> clazz = null;
+		if (AdsMogoCustomEventPlatformEnum.AdsMogoCustomEventPlatform_1
+				.equals(enumIndex)) {
+			// clazz = DianDongAdapter.class;
+		}
+		return clazz;
 	}
 }
