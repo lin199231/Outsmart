@@ -45,13 +45,14 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 @SuppressLint("SimpleDateFormat")
-public class DialogActivity extends Activity implements OnClickListener, AdsMogoListener
- {
+public class DialogActivity extends Activity implements OnClickListener,
+		AdsMogoListener {
 
 	private TextView smstextView = null;
 	private TextView timetextView = null;
 	private TextView datetextView = null;
 	private EditText editText_location = null;
+	private EditText editText_event = null;
 	private EditText editText = null;
 	private Button btn_ok = null;
 	private Button btn_cancel = null;
@@ -64,7 +65,6 @@ public class DialogActivity extends Activity implements OnClickListener, AdsMogo
 	private Calendar time = Calendar.getInstance();
 	private String sender = new String();
 	private String replyText = new String();
-	private AutoCompleteTextView autoCompletetextView = null;
 
 	private boolean isClear_Event = false;
 	private boolean isClear_Location = false;
@@ -103,7 +103,6 @@ public class DialogActivity extends Activity implements OnClickListener, AdsMogo
 		setTheme(R.style.translucent);
 		datetextView = (TextView) findViewById(R.id.datetextView);
 		timetextView = (TextView) findViewById(R.id.timetextView);
-		editText_location = (EditText) findViewById(R.id.locationedittext);
 		smstextView = (TextView) findViewById(R.id.smstextView);
 		btn_ok = (Button) findViewById(R.id.btn_ok);
 		btn_ok.setOnClickListener(this);
@@ -121,13 +120,15 @@ public class DialogActivity extends Activity implements OnClickListener, AdsMogo
 		btn_changeLocation.setOnClickListener(this);
 		btn_changeEvent = (Button) findViewById(R.id.changeEventButton);
 		btn_changeEvent.setOnClickListener(this);
-		autoCompletetextView = (AutoCompleteTextView) findViewById(R.id.AutoCompleteTextView);
-		autoCompletetextView.setOnClickListener(this);
+		editText_location = (EditText) findViewById(R.id.locationEditText);
+		editText_location.setOnClickListener(this);
+		editText_event = (EditText) findViewById(R.id.eventEditText);
+		editText_event.setOnClickListener(this);
 
 		// 芒果广告
 		adsMogoLayout = ((AdsMogoLayout) this.findViewById(R.id.adsMogoView));
 		adsMogoLayout.setAdsMogoListener(this);
-		adsMogoLayout.downloadIsShowDialog=true;
+		adsMogoLayout.downloadIsShowDialog = true;
 
 		// 接受intent
 		Intent intent = getIntent();
@@ -160,7 +161,6 @@ public class DialogActivity extends Activity implements OnClickListener, AdsMogo
 		// long ring[]={1000,500,1000};
 		// TipHelper.Vibrate(this, ring, false);//震动
 	}
-
 
 	@Override
 	protected void onDestroy() {
@@ -214,7 +214,7 @@ public class DialogActivity extends Activity implements OnClickListener, AdsMogo
 			for (int i = 0; i < location.length; i++)
 				defaultSelectedStatus[i] = false;
 			new AlertDialog.Builder(this)
-					.setTitle("设置地点")
+					.setTitle("设置事件")
 					// 设置对话框标题
 					.setMultiChoiceItems(location, defaultSelectedStatus,
 							new OnMultiChoiceClickListener() {
@@ -237,7 +237,7 @@ public class DialogActivity extends Activity implements OnClickListener, AdsMogo
 											locationSet.append(location[i]);
 										}
 									}
-									autoCompletetextView.setText(locationSet);
+									editText_event.setText(locationSet);
 								}
 							}).setNegativeButton("取消", null)// 设置对话框[否定]按钮
 					.show();
@@ -250,8 +250,8 @@ public class DialogActivity extends Activity implements OnClickListener, AdsMogo
 			Persistence setCalendar = new Persistence("CalendarSet.db");
 			calId = (setCalendar.getValue()) + "";
 			ContentValues event = new ContentValues();
-			event.put("title", autoCompletetextView.getText().toString());
-			event.put("description", autoCompletetextView.getText().toString());
+			event.put("title", editText_event.getText().toString());
+			event.put("description", editText_event.getText().toString());
 			// 插入账户
 			if (!editText_location.equals("")
 					&& !editText_location.equals("请选择地点")) {
@@ -376,14 +376,14 @@ public class DialogActivity extends Activity implements OnClickListener, AdsMogo
 			finish();
 			break;
 		}
-		case R.id.AutoCompleteTextView: {
+		case R.id.eventEditText: {
 			if (isClear_Event == false) {
-				autoCompletetextView.setText("");
+				editText_event.setText("");
 				isClear_Event = true;
 			}
 			break;
 		}
-		case R.id.locationedittext: {
+		case R.id.locationEditText: {
 			if (isClear_Location == false) {
 				editText_location.setText("");
 				isClear_Location = true;
@@ -489,6 +489,7 @@ public class DialogActivity extends Activity implements OnClickListener, AdsMogo
 			Log.i("短信接收", "成功！");
 		}
 	};
+
 	/**
 	 * 当用户点击广告*(Mogo服务根据次记录点击数，次点击是过滤过的点击，一条广告一次展示只能对应一次点击)
 	 */
@@ -549,6 +550,7 @@ public class DialogActivity extends Activity implements OnClickListener, AdsMogo
 		Log.d(AdsMogoUtil.ADMOGO, "-=onRequestAd=-");
 
 	}
+
 	@Override
 	public Class getCustomEvemtPlatformAdapterClass(
 			AdsMogoCustomEventPlatformEnum arg0) {

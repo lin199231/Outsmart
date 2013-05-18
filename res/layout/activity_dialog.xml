@@ -123,8 +123,8 @@
             </LinearLayout>
 
             <EditText
-                android:id="@+id/locationedittext"
-                android:layout_width="fill_parent"
+                android:id="@+id/locationEditText"
+                android:layout_width="0dip"
                 android:layout_height="fill_parent"
                 android:layout_marginLeft="20dp"
                 android:layout_weight="1"
@@ -157,9 +157,9 @@
                     android:textSize="20dp" />
             </LinearLayout>
 
-            <AutoCompleteTextView
-                android:id="@+id/AutoCompleteTextView"
-                android:layout_width="fill_parent"
+            <EditText
+                android:id="@+id/eventEditText"
+                android:layout_width="0dip"
                 android:layout_height="fill_parent"
                 android:layout_marginLeft="20dp"
                 android:layout_weight="1"
