@@ -4,6 +4,13 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.TimeZone;
 
+import com.adsmogo.adapters.AdsMogoAdapter;
+import com.adsmogo.adapters.AdsMogoCustomEventPlatformEnum;
+import com.adsmogo.adapters.sdk.DomobAdapter;
+import com.adsmogo.adview.AdsMogoLayout;
+import com.adsmogo.controller.listener.AdsMogoListener;
+import com.adsmogo.util.AdsMogoUtil;
+
 import findix.meetingreminder.analysis.GetUserLocation;
 import findix.meetingreminder.analysis.GetUserTime;
 import findix.meetingreminder.db.DatabaseHelper;
@@ -32,12 +39,14 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
 @SuppressLint("SimpleDateFormat")
-public class DialogActivity extends Activity implements OnClickListener {
+public class DialogActivity extends Activity implements OnClickListener, AdsMogoListener
+ {
 
 	private TextView smstextView = null;
 	private TextView timetextView = null;
@@ -59,6 +68,8 @@ public class DialogActivity extends Activity implements OnClickListener {
 
 	private boolean isClear_Event = false;
 	private boolean isClear_Location = false;
+
+	AdsMogoLayout adsMogoLayout;
 
 	/** 发送与接收的广播 **/
 	String SENT_SMS_ACTION = "SENT_SMS_ACTION";
@@ -113,6 +124,11 @@ public class DialogActivity extends Activity implements OnClickListener {
 		autoCompletetextView = (AutoCompleteTextView) findViewById(R.id.AutoCompleteTextView);
 		autoCompletetextView.setOnClickListener(this);
 
+		// 芒果广告
+		adsMogoLayout = ((AdsMogoLayout) this.findViewById(R.id.adsMogoView));
+		adsMogoLayout.setAdsMogoListener(this);
+		adsMogoLayout.downloadIsShowDialog=true;
+
 		// 接受intent
 		Intent intent = getIntent();
 		String content = intent.getStringExtra("content");
@@ -122,8 +138,8 @@ public class DialogActivity extends Activity implements OnClickListener {
 
 		GetUserTime getUserTime = new GetUserTime(content);
 		time = getUserTime.getTime();
-		System.out.println(getUserTime.isMeeting() ? "【是会议】" + content
-				: "【不是会议】" + content);
+		// System.out.println(getUserTime.isMeeting() ? "【是会议】" + content:
+		// "【不是会议】" + content);
 		GetUserLocation getUserLocation = new GetUserLocation(
 				getUserTime.getNoDateMsg());
 		location = getUserLocation.getLocation();
@@ -144,6 +160,7 @@ public class DialogActivity extends Activity implements OnClickListener {
 		// long ring[]={1000,500,1000};
 		// TipHelper.Vibrate(this, ring, false);//震动
 	}
+
 
 	@Override
 	protected void onDestroy() {
@@ -328,7 +345,7 @@ public class DialogActivity extends Activity implements OnClickListener {
 										getContentResolver().insert(
 												Uri.parse("content://sms"),
 												values);
-										finish();
+										// finish();
 									} else {
 										if (sender.length() == 0) {
 											Toast.makeText(DialogActivity.this,
@@ -438,6 +455,11 @@ public class DialogActivity extends Activity implements OnClickListener {
 
 	}
 
+	/**
+	 * 参数说明 destinationAddress:收信人的手机号码 scAddress:发信人的手机号码 text:发送信息的内容
+	 * sentIntent:发送是否成功的回执，用于监听短信是否发送成功。
+	 * DeliveryIntent:接收是否成功的回执，用于监听短信对方是否接收成功。
+	 */
 	public BroadcastReceiver sendMessage = new BroadcastReceiver() {
 
 		@Override
@@ -467,10 +489,70 @@ public class DialogActivity extends Activity implements OnClickListener {
 			Log.i("短信接收", "成功！");
 		}
 	};
+	/**
+	 * 当用户点击广告*(Mogo服务根据次记录点击数，次点击是过滤过的点击，一条广告一次展示只能对应一次点击)
+	 */
+	@Override
+	public void onClickAd(String arg0) {
+		Log.d(AdsMogoUtil.ADMOGO, "-=onClickAd=-");
+
+	}
+
+	// 当用户点击了广告关闭按钮时回调(关闭广告按钮功能可以在Mogo的App管理中设置)
+	// return false 则广告关闭 return true 广告将不会关闭
+	@Override
+	public boolean onCloseAd() {
+		Log.d(AdsMogoUtil.ADMOGO, "-=onCloseAd=-");
+		return false;
+	}
 
 	/**
-	 * 参数说明 destinationAddress:收信人的手机号码 scAddress:发信人的手机号码 text:发送信息的内容
-	 * sentIntent:发送是否成功的回执，用于监听短信是否发送成功。
-	 * DeliveryIntent:接收是否成功的回执，用于监听短信对方是否接收成功。
+	 * 当用户关闭了下载类型广告的详细界面时回调(广告物料类型为下载广告并且是弹出简介下载的才会有此Dialog)
 	 */
+	@Override
+	public void onCloseMogoDialog() {
+		Log.d(AdsMogoUtil.ADMOGO, "-=onCloseMogoDialog=-");
+	}
+
+	/**
+	 * 所有广告平台请求失败时回调
+	 */
+	@Override
+	public void onFailedReceiveAd() {
+		Log.d(AdsMogoUtil.ADMOGO, "-=onFailedReceiveAd=-");
+
+	}
+
+	/**
+	 * 当用户点击广告*(真实点击 Mogo不会根据此回调时记录点击数，次点击是无过滤过的点击)
+	 */
+	@Override
+	public void onRealClickAd() {
+		Log.d(AdsMogoUtil.ADMOGO, "-=onRealClickAd=-");
+
+	}
+
+	/**
+	 * 请求广告成功时回调 arg0为单一平台的广告视图 arg1为请求平台名称
+	 */
+	@Override
+	public void onReceiveAd(ViewGroup arg0, String arg1) {
+		Log.d(AdsMogoUtil.ADMOGO, "-=onReceiveAd=-");
+
+	}
+
+	/**
+	 * 开始请求广告时回调 arg0为请求平台名称
+	 */
+	@Override
+	public void onRequestAd(String arg0) {
+		Log.d(AdsMogoUtil.ADMOGO, "-=onRequestAd=-");
+
+	}
+	@Override
+	public Class getCustomEvemtPlatformAdapterClass(
+			AdsMogoCustomEventPlatformEnum arg0) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

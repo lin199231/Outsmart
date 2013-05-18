@@ -3,6 +3,12 @@
 import java.io.*;
 import java.util.ArrayList;
 
+import com.adsmogo.adapters.AdsMogoAdapter;
+import com.adsmogo.adapters.AdsMogoCustomEventPlatformEnum;
+import com.adsmogo.adview.AdsMogoLayout;
+import com.adsmogo.controller.listener.AdsMogoListener;
+import com.adsmogo.util.AdsMogoUtil;
+
 import findix.meetingreminder.backup.BackupTask;
 import findix.meetingreminder.db.DatabaseHelper;
 import findix.meetingreminder.segmentation.CopyDic;
@@ -15,15 +21,21 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.*;
 import android.content.DialogInterface.OnMultiChoiceClickListener;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.View.*;
 import android.widget.*;
 
-public class MainActivity extends Activity implements OnClickListener {
-	private ToggleButton toggleButton1 = null;
+public class MainActivity extends Activity implements OnClickListener,
+		AdsMogoListener {
+	private ToggleButton toggleButton = null;
 	private Button Button1 = null;
 	private Button Button2 = null;
 	private Button insertButton = null;
@@ -31,6 +43,11 @@ public class MainActivity extends Activity implements OnClickListener {
 	private Button backupButton = null;
 	private Button restoreButton = null;
 	private Button calendarSetButton = null;
+	private ImageButton set_btn = null;
+	private LinearLayout toggleButtonLayout = null;
+	private LinearLayout mainLayout = null;
+
+	AdsMogoLayout adsMogoLayoutCode;
 
 	// 建立数据库
 	SQLiteDatabase db;
@@ -62,10 +79,11 @@ public class MainActivity extends Activity implements OnClickListener {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
+		// setContentView(R.layout.activity_main);
+		setContentView(R.layout.activity_main_wp);
 
-		toggleButton1 = (ToggleButton) findViewById(R.id.toggleButton1);
-		toggleButton1.setOnClickListener(this);
+		toggleButton = (ToggleButton) findViewById(R.id.toggleButton);
+		toggleButton.setOnClickListener(this);
 		Button1 = (Button) findViewById(R.id.button1);
 		Button1.setOnClickListener(this);
 		Button2 = (Button) findViewById(R.id.button2);
@@ -80,19 +98,56 @@ public class MainActivity extends Activity implements OnClickListener {
 		restoreButton.setOnClickListener(this);
 		calendarSetButton = (Button) findViewById(R.id.calendarSetButton);
 		calendarSetButton.setOnClickListener(this);
+		toggleButtonLayout = (LinearLayout) findViewById(R.id.toggleButtonLayout);
+		set_btn = (ImageButton) findViewById(R.id.set_btn);
+		set_btn.setOnClickListener(this);
+		mainLayout = (LinearLayout) findViewById(R.id.mainLayout);
 
 		new CopyDic(this);
+		// 设置背景
+		Persistence setBackGround = new Persistence("SetBackGround.db");
+		int bg = setBackGround.getValue();
+		// setBackGround.changeValue(bg == 5 ? 1 : bg + 1);
+		switch (bg) {
+		case 1:
+			mainLayout.setBackgroundDrawable(getResources().getDrawable(
+					R.drawable.main_bg1));
+			break;
+		case 2:
+			mainLayout.setBackgroundDrawable(getResources().getDrawable(
+					R.drawable.main_bg2));
+			break;
+		case 3:
+			mainLayout.setBackgroundDrawable(getResources().getDrawable(
+					R.drawable.main_bg3));
+			break;
+		case 4:
+			mainLayout.setBackgroundDrawable(getResources().getDrawable(
+					R.drawable.main_bg4));
+			break;
+		case 5:
+			mainLayout.setBackgroundDrawable(getResources().getDrawable(
+					R.drawable.main_bg5));
+			break;
+		}
 
 		// 控制开关
 		Persistence setToggle = new Persistence("Setting.db");
 		if (setToggle.getValue() == 1) {
-			toggleButton1.setChecked(true);
+			toggleButton.setChecked(true);
 		} else {
-			toggleButton1.setChecked(false);
+			toggleButton.setChecked(false);
 		}
 
 		// 设置日历
 		new Persistence("CalendarSet.db");
+	}
+
+	@Override
+	protected void onStart() {
+		// TODO Auto-generated method stub
+		super.onStart();
+		init();
 	}
 
 	@SuppressLint("SdCardPath")
@@ -102,20 +157,79 @@ public class MainActivity extends Activity implements OnClickListener {
 		// 按钮监听器
 		switch (v.getId()) {
 
-		case R.id.toggleButton1:
+		case R.id.toggleButton:
 			FileWriter io = null;
 			try {
 				io = new FileWriter(
 						"/data/data/findix.meetingreminder/Setting.db");
-				io.write(toggleButton1.isChecked() ? 1 : 0);
+				io.write(toggleButton.isChecked() ? 1 : 0);
 				io.close();
+				if (toggleButton.isChecked()) {
+					toggleButtonLayout.setBackgroundColor(Color
+							.parseColor("#FF7F24"));
+				} else {
+					toggleButtonLayout.setBackgroundColor(Color
+							.parseColor("#3399ff"));
+				}
 			} catch (IOException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 
 			}
 			break;
+		case R.id.calendarSetButton: {
+			ArrayList<String> calName = new ArrayList<String>();
+			ArrayList<String> calId = new ArrayList<String>();
+			// 获取账户
+			String[] projection = new String[] { "_id", "name" };
+			Cursor userCursor = getContentResolver().query(
+					Uri.parse(calanderURL), projection, null, null, null);
+			if (userCursor.moveToFirst()) {
 
+				int nameColumn = userCursor.getColumnIndex("name");
+				int idColumn = userCursor.getColumnIndex("_id");
+				do {
+					if (userCursor.getString(nameColumn) == null) {
+						calName.add("默认日历");
+					} else {
+						calName.add(userCursor.getString(nameColumn));
+					}
+					calId.add(userCursor.getString(idColumn));
+				} while (userCursor.moveToNext());
+			}
+			Persistence setCalendar = new Persistence("CalendarSet.db");
+			which = setCalendar.getValue() - 1;
+			// System.out.println(calName + " " + calId);
+			new AlertDialog.Builder(this)
+					.setTitle("请选择日历")
+					// 设置对话框标题
+					.setSingleChoiceItems(
+							calName.toArray(new String[calName.size()]),
+							setCalendar.getValue() - 1,
+							new DialogInterface.OnClickListener() {
+
+								@Override
+								public void onClick(DialogInterface arg0,
+										int args1) {
+									// TODO Auto-generated method stub
+									which = args1;
+								}
+
+							})
+					.setPositiveButton("確定",
+							new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog,
+										int args2) {
+									// TODO Auto-generated method stub
+									Persistence setCalendar = new Persistence(
+											"CalendarSet.db");
+									setCalendar.changeValue(which + 1);
+								}
+							}).setNegativeButton("取消", null).show();
+			userCursor.close();
+			break;
+		}
 		case R.id.button1:
 			final String SMS_URI_INBOX = "content://sms/inbox";
 			Uri uri = Uri.parse(SMS_URI_INBOX);
@@ -144,7 +258,7 @@ public class MainActivity extends Activity implements OnClickListener {
 									intent.putExtra("sender", cur.getString(cur
 											.getColumnIndex("address")));
 									// System.out.println(cur.getString(cur.getColumnIndex("address")));
-									if (toggleButton1.isChecked())
+									if (toggleButton.isChecked())
 										startActivity(intent);
 								}
 								cur.moveToNext();
@@ -157,7 +271,7 @@ public class MainActivity extends Activity implements OnClickListener {
 			final Intent intent1 = new Intent();
 			final EditText et = new EditText(this);
 			new AlertDialog.Builder(this)
-					.setTitle("发送短信")
+					.setTitle("创建自定义提醒")
 					.setIcon(android.R.drawable.ic_dialog_info)
 					.setView(et)
 					.setPositiveButton("确定",
@@ -173,7 +287,7 @@ public class MainActivity extends Activity implements OnClickListener {
 									intent1.putExtra("content", et.getText()
 											.toString());
 									intent1.putExtra("sender", "");
-									if (toggleButton1.isChecked())
+									if (toggleButton.isChecked())
 										startActivity(intent1);
 								}
 							}).setNegativeButton("取消", null).show();
@@ -305,57 +419,34 @@ public class MainActivity extends Activity implements OnClickListener {
 							}).setNegativeButton("取消", null).show();
 			break;
 		}
-		case R.id.calendarSetButton: {
-			ArrayList<String> calName = new ArrayList<String>();
-			ArrayList<String> calId = new ArrayList<String>();
-			// 获取账户
-			String[] projection = new String[] { "_id", "name" };
-			Cursor userCursor = getContentResolver().query(
-					Uri.parse(calanderURL), projection, null, null, null);
-			if (userCursor.moveToFirst()) {
 
-				int nameColumn = userCursor.getColumnIndex("name");
-				int idColumn = userCursor.getColumnIndex("_id");
-				do {
-					if (userCursor.getString(nameColumn) == null) {
-						calName.add("默认日历");
-					} else {
-						calName.add(userCursor.getString(nameColumn));
-					}
-					calId.add(userCursor.getString(idColumn));
-				} while (userCursor.moveToNext());
+		case R.id.set_btn: {
+			Persistence setBackGround = new Persistence("SetBackGround.db");
+			int bg = setBackGround.getValue();
+			setBackGround.changeValue(bg >= 5 ? bg = 1 : ++bg);
+			switch (bg) {
+			case 1:
+				mainLayout.setBackgroundDrawable(getResources().getDrawable(
+						R.drawable.main_bg1));
+				break;
+			case 2:
+				mainLayout.setBackgroundDrawable(getResources().getDrawable(
+						R.drawable.main_bg2));
+				break;
+			case 3:
+				mainLayout.setBackgroundDrawable(getResources().getDrawable(
+						R.drawable.main_bg3));
+				break;
+			case 4:
+				mainLayout.setBackgroundDrawable(getResources().getDrawable(
+						R.drawable.main_bg4));
+				break;
+			case 5:
+				mainLayout.setBackgroundDrawable(getResources().getDrawable(
+						R.drawable.main_bg5));
+				break;
 			}
-			Persistence setCalendar = new Persistence("CalendarSet.db");
-			which = setCalendar.getValue() - 1;
-			// System.out.println(calName + " " + calId);
-			new AlertDialog.Builder(this)
-					.setTitle("请选择日历")
-					// 设置对话框标题
-					.setSingleChoiceItems(
-							calName.toArray(new String[calName.size()]),
-							setCalendar.getValue() - 1,
-							new DialogInterface.OnClickListener() {
 
-								@Override
-								public void onClick(DialogInterface arg0,
-										int args1) {
-									// TODO Auto-generated method stub
-									which = args1;
-								}
-
-							})
-					.setPositiveButton("確定",
-							new DialogInterface.OnClickListener() {
-								@Override
-								public void onClick(DialogInterface dialog,
-										int args2) {
-									// TODO Auto-generated method stub
-									Persistence setCalendar = new Persistence(
-											"CalendarSet.db");
-									setCalendar.changeValue(which + 1);
-								}
-							}).setNegativeButton("取消", null).show();
-			userCursor.close();
 		}
 		}
 	}
@@ -396,5 +487,188 @@ public class MainActivity extends Activity implements OnClickListener {
 			new BackupTask(this).execute("restroeDatabase");
 			Toast.makeText(MainActivity.this, "还原成功", Toast.LENGTH_LONG).show();
 		}
+	}
+
+	private void init() {
+
+		// 注意：因单一平台SDK有互相冲突现象，所以demo中的jar文件不全，详细请查看libs.zip
+
+		/*------------------------------------------------------------*/
+		// 初始化AdsMogoLayout 初始化分为以下几种方式
+		// 构造方法，设置广告类型，如全屏广告，banner广告
+		// public AdsMogoLayout(final Activity context, final String keyAdMogo,
+		// final int ad_type) {
+		// }
+
+		// 默认的构造方法，默认开启快速模式，banner广告
+		// public AdsMogoLayout(final Activity context, final String keyAdMogo)
+		// {
+		// }
+
+		// 构造方法，设置快速模式
+		// public AdsMogoLayout(final Activity context, final String keyAdMogo,
+		// boolean expressMode) {
+		// }
+
+		// 构造方法，设置广告类型和快速模式
+		// public AdsMogoLayout(final Activity context, final String keyAdMogo,
+		// final int ad_type, final boolean expressMode) {
+		// }
+		/*------------------------------------------------------------*/
+
+		// 构造方法，设置快速模式
+		adsMogoLayoutCode = new AdsMogoLayout(this,
+				"1c1e5e36250943d48c898a0aa311da62", false);
+
+		// 设置监听回调 其中包括 请求 展示 请求失败等事件的回调
+		adsMogoLayoutCode.setAdsMogoListener(this);
+		adsMogoLayoutCode.downloadIsShowDialog=true;
+		/*------------------------------------------------------------*/
+		// 通过Code方式添加广告条 本例的结构如下(仅供参考)
+		// -RelativeLayout/(FILL_PARENT,FILL_PARENT)
+		// |
+		// +RelativeLayout/(FILL_PARENT,WRAP_CONTENT)
+		// |
+		// +AdsMogoLayout(FILL_PARENT,WRAP_CONTENT)
+		// |
+		// \
+		// |
+		// \
+		/*------------------------------------------------------------*/
+		RelativeLayout parentLayput = new RelativeLayout(this);
+		RelativeLayout.LayoutParams parentLayputParams = new RelativeLayout.LayoutParams(
+				RelativeLayout.LayoutParams.FILL_PARENT,
+				RelativeLayout.LayoutParams.FILL_PARENT);
+		RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
+				RelativeLayout.LayoutParams.FILL_PARENT,
+				RelativeLayout.LayoutParams.WRAP_CONTENT);
+		layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM,
+				RelativeLayout.TRUE);
+		parentLayput.addView(adsMogoLayoutCode, layoutParams);
+
+		this.addContentView(parentLayput, parentLayputParams);
+	}
+
+	/**
+	 * 当用户点击广告*(Mogo服务根据次记录点击数，次点击是过滤过的点击，一条广告一次展示只能对应一次点击)
+	 */
+	@Override
+	public void onClickAd(String arg0) {
+		Log.d(AdsMogoUtil.ADMOGO, "-=onClickAd=-");
+
+	}
+
+	// 当用户点击了广告关闭按钮时回调(关闭广告按钮功能可以在Mogo的App管理中设置)
+	// return false 则广告关闭 return true 广告将不会关闭
+
+	@Override
+	public boolean onCloseAd() {
+		Log.d(AdsMogoUtil.ADMOGO, "-=onCloseAd=-");
+		AlertDialog dialog = new AlertDialog.Builder(this).create();
+
+		dialog.setMessage("是否关闭广告？");
+
+		dialog.setButton("是", new DialogInterface.OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				// TODO Auto-generated method stub
+				// return true;
+
+				dialog.dismiss();
+
+				if (adsMogoLayoutCode != null) {
+					// 关闭当前广告
+					adsMogoLayoutCode.setADEnable(false);
+				}
+
+			}
+		});
+
+		dialog.setButton2("否", new DialogInterface.OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				// TODO Auto-generated method stub
+
+				dialog.dismiss();
+			}
+		});
+
+		dialog.show();
+
+		return true;
+	}
+
+	/**
+	 * 当用户关闭了下载类型广告的详细界面时回调(广告物料类型为下载广告并且是弹出简介下载的才会有此Dialog)
+	 */
+	@Override
+	public void onCloseMogoDialog() {
+		Log.d(AdsMogoUtil.ADMOGO, "-=onCloseMogoDialog=-");
+	}
+
+	/**
+	 * 所有广告平台请求失败时回调
+	 */
+	@Override
+	public void onFailedReceiveAd() {
+		Log.d(AdsMogoUtil.ADMOGO, "-=onFailedReceiveAd=-");
+
+	}
+
+	/**
+	 * 当用户点击广告*(真实点击 Mogo不会根据此回调时记录点击数，次点击是无过滤过的点击)
+	 */
+	@Override
+	public void onRealClickAd() {
+		Log.d(AdsMogoUtil.ADMOGO, "-=onRealClickAd=-");
+
+	}
+
+	/**
+	 * 请求广告成功时回调 arg0为单一平台的广告视图 arg1为请求平台名称
+	 */
+
+	@Override
+	public void onReceiveAd(ViewGroup arg0, String arg1) {
+		Log.d(AdsMogoUtil.ADMOGO, "-=onReceiveAd=-");
+
+	}
+
+	/**
+	 * 开始请求广告时回调 arg0为请求平台名称
+	 */
+	@Override
+	public void onRequestAd(String arg0) {
+		Log.d(AdsMogoUtil.ADMOGO, "-=onRequestAd=-");
+
+	}
+
+	@Override
+	protected void onDestroy() {
+		// 清除 adsMogoLayout 实例 所产生用于多线程缓冲机制的线程池
+		// 此方法请不要轻易调用，如果调用时间不当，会造成无法统计计数
+		if (adsMogoLayoutCode != null) {
+			adsMogoLayoutCode.clearThread();
+		}
+		super.onDestroy();
+	}
+
+	// 自定义平台功能：关联自定义Adapter
+	// 如不需要自定义平台功能， 返回 null
+	// AdsMogoCustomEventPlatform_1对应平台一
+	// AdsMogoCustomEventPlatform_2对应平台二，如果开发者修改平台名称的话，需备注一下以免弄混
+	// 如不需要自定义平台功能， 返回 null
+
+	@Override
+	public Class<? extends AdsMogoAdapter> getCustomEvemtPlatformAdapterClass(
+			AdsMogoCustomEventPlatformEnum enumIndex) {
+		Class<? extends AdsMogoAdapter> clazz = null;
+		if (AdsMogoCustomEventPlatformEnum.AdsMogoCustomEventPlatform_1
+				.equals(enumIndex)) {
+			// clazz = DianDongAdapter.class;
+		}
+		return clazz;
 	}
 }
