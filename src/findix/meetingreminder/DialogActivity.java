@@ -127,6 +127,7 @@ public class DialogActivity extends Activity implements OnClickListener, AdsMogo
 		// 芒果广告
 		adsMogoLayout = ((AdsMogoLayout) this.findViewById(R.id.adsMogoView));
 		adsMogoLayout.setAdsMogoListener(this);
+		adsMogoLayout.downloadIsShowDialog=true;
 
 		// 接受intent
 		Intent intent = getIntent();

@@ -177,7 +177,59 @@ public class MainActivity extends Activity implements OnClickListener,
 
 			}
 			break;
+		case R.id.calendarSetButton: {
+			ArrayList<String> calName = new ArrayList<String>();
+			ArrayList<String> calId = new ArrayList<String>();
+			// 获取账户
+			String[] projection = new String[] { "_id", "name" };
+			Cursor userCursor = getContentResolver().query(
+					Uri.parse(calanderURL), projection, null, null, null);
+			if (userCursor.moveToFirst()) {
 
+				int nameColumn = userCursor.getColumnIndex("name");
+				int idColumn = userCursor.getColumnIndex("_id");
+				do {
+					if (userCursor.getString(nameColumn) == null) {
+						calName.add("默认日历");
+					} else {
+						calName.add(userCursor.getString(nameColumn));
+					}
+					calId.add(userCursor.getString(idColumn));
+				} while (userCursor.moveToNext());
+			}
+			Persistence setCalendar = new Persistence("CalendarSet.db");
+			which = setCalendar.getValue() - 1;
+			// System.out.println(calName + " " + calId);
+			new AlertDialog.Builder(this)
+					.setTitle("请选择日历")
+					// 设置对话框标题
+					.setSingleChoiceItems(
+							calName.toArray(new String[calName.size()]),
+							setCalendar.getValue() - 1,
+							new DialogInterface.OnClickListener() {
+
+								@Override
+								public void onClick(DialogInterface arg0,
+										int args1) {
+									// TODO Auto-generated method stub
+									which = args1;
+								}
+
+							})
+					.setPositiveButton("確定",
+							new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog,
+										int args2) {
+									// TODO Auto-generated method stub
+									Persistence setCalendar = new Persistence(
+											"CalendarSet.db");
+									setCalendar.changeValue(which + 1);
+								}
+							}).setNegativeButton("取消", null).show();
+			userCursor.close();
+			break;
+		}
 		case R.id.button1:
 			final String SMS_URI_INBOX = "content://sms/inbox";
 			Uri uri = Uri.parse(SMS_URI_INBOX);
@@ -367,58 +419,7 @@ public class MainActivity extends Activity implements OnClickListener,
 							}).setNegativeButton("取消", null).show();
 			break;
 		}
-		case R.id.calendarSetButton: {
-			ArrayList<String> calName = new ArrayList<String>();
-			ArrayList<String> calId = new ArrayList<String>();
-			// 获取账户
-			String[] projection = new String[] { "_id", "name" };
-			Cursor userCursor = getContentResolver().query(
-					Uri.parse(calanderURL), projection, null, null, null);
-			if (userCursor.moveToFirst()) {
 
-				int nameColumn = userCursor.getColumnIndex("name");
-				int idColumn = userCursor.getColumnIndex("_id");
-				do {
-					if (userCursor.getString(nameColumn) == null) {
-						calName.add("默认日历");
-					} else {
-						calName.add(userCursor.getString(nameColumn));
-					}
-					calId.add(userCursor.getString(idColumn));
-				} while (userCursor.moveToNext());
-			}
-			Persistence setCalendar = new Persistence("CalendarSet.db");
-			which = setCalendar.getValue() - 1;
-			// System.out.println(calName + " " + calId);
-			new AlertDialog.Builder(this)
-					.setTitle("请选择日历")
-					// 设置对话框标题
-					.setSingleChoiceItems(
-							calName.toArray(new String[calName.size()]),
-							setCalendar.getValue() - 1,
-							new DialogInterface.OnClickListener() {
-
-								@Override
-								public void onClick(DialogInterface arg0,
-										int args1) {
-									// TODO Auto-generated method stub
-									which = args1;
-								}
-
-							})
-					.setPositiveButton("確定",
-							new DialogInterface.OnClickListener() {
-								@Override
-								public void onClick(DialogInterface dialog,
-										int args2) {
-									// TODO Auto-generated method stub
-									Persistence setCalendar = new Persistence(
-											"CalendarSet.db");
-									setCalendar.changeValue(which + 1);
-								}
-							}).setNegativeButton("取消", null).show();
-			userCursor.close();
-		}
 		case R.id.set_btn: {
 			Persistence setBackGround = new Persistence("SetBackGround.db");
 			int bg = setBackGround.getValue();
@@ -521,7 +522,7 @@ public class MainActivity extends Activity implements OnClickListener,
 
 		// 设置监听回调 其中包括 请求 展示 请求失败等事件的回调
 		adsMogoLayoutCode.setAdsMogoListener(this);
-
+		adsMogoLayoutCode.downloadIsShowDialog=true;
 		/*------------------------------------------------------------*/
 		// 通过Code方式添加广告条 本例的结构如下(仅供参考)
 		// -RelativeLayout/(FILL_PARENT,FILL_PARENT)
