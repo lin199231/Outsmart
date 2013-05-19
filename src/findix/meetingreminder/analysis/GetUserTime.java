@@ -263,6 +263,7 @@ public class GetUserTime {
 					time.set(Calendar.DATE, day);
 			}
 		}
+
 		// 如果不等于原时间且hour>12证明不需要改时制
 		MC = TS.matcher(Msg);
 		if (hour != time.get(Calendar.HOUR_OF_DAY) && setAPM == -1 && MC.find()) {
@@ -286,20 +287,19 @@ public class GetUserTime {
 		time.get(Calendar.HOUR_OF_DAY);
 		TSFix();// 早上等
 		// 校准日期
-		if (setSureDate = false)// 如果未定确定一个确切的日期则匹配明天等
+		if (setSureDate == false)// 如果未定确定一个确切的日期则匹配明天等
 			DateFix();// 明天等
-
 		// 千年虫问题及判断时间是否被匹配
 		Calendar timepp = Calendar.getInstance();
-//		if (time.get(Calendar.YEAR) == timepp.get(Calendar.YEAR)
-//				&& time.get(Calendar.MONTH) == timepp.get(Calendar.MONTH)
-//				&& time.get(Calendar.DATE) == timepp.get(Calendar.DATE)
-//				&& time.get(Calendar.HOUR_OF_DAY) == timepp
-//						.get(Calendar.HOUR_OF_DAY)
-//				&& time.get(Calendar.MINUTE) < timepp.get(Calendar.MINUTE)) {
-//			time.set(Calendar.HOUR_OF_DAY, time.get(Calendar.HOUR_OF_DAY) + 1);
-//		} else 
-			if (time.get(Calendar.YEAR) == timepp.get(Calendar.YEAR)
+		// if (time.get(Calendar.YEAR) == timepp.get(Calendar.YEAR)
+		// && time.get(Calendar.MONTH) == timepp.get(Calendar.MONTH)
+		// && time.get(Calendar.DATE) == timepp.get(Calendar.DATE)
+		// && time.get(Calendar.HOUR_OF_DAY) == timepp
+		// .get(Calendar.HOUR_OF_DAY)
+		// && time.get(Calendar.MINUTE) < timepp.get(Calendar.MINUTE)) {
+		// time.set(Calendar.HOUR_OF_DAY, time.get(Calendar.HOUR_OF_DAY) + 1);
+		// } else
+		if (time.get(Calendar.YEAR) == timepp.get(Calendar.YEAR)
 				&& time.get(Calendar.MONTH) == timepp.get(Calendar.MONTH)
 				&& time.get(Calendar.DATE) == timepp.get(Calendar.DATE)
 				&& time.get(Calendar.HOUR_OF_DAY) < timepp
@@ -318,7 +318,7 @@ public class GetUserTime {
 		} else if (time.get(Calendar.YEAR) == timepp.get(Calendar.YEAR)
 				&& time.get(Calendar.MONTH) == timepp.get(Calendar.MONTH)
 				&& time.get(Calendar.DATE) < timepp.get(Calendar.DATE)) {
-			if (setWeek = false)
+			if (setWeek == false)
 				time.set(Calendar.MONTH, time.get(Calendar.MONTH) + 1);
 			else
 				time.set(Calendar.WEEK_OF_YEAR,
@@ -365,6 +365,7 @@ public class GetUserTime {
 			temp = MC.group();
 			strb.replace(MC.start(), MC.start() + 2, toNumic(temp.charAt(0))
 					+ "0");
+			msg = strb.toString();
 		}
 		MC = Double.matcher(msg);
 		while (MC.find()) {
@@ -446,12 +447,12 @@ public class GetUserTime {
 				time.set(Calendar.AM_PM, Calendar.AM);
 				setAPM = 0;
 			} else if (text[i].compareTo("中午") == 0
-					||text[i].compareTo("下午") == 0
+					|| text[i].compareTo("下午") == 0
 					|| text[i].compareTo("晚上") == 0
 					|| text[i].compareTo("今晚") == 0
 					|| text[i].compareTo("傍晚") == 0
 					|| text[i].compareTo("半夜") == 0
-					|| text[i].compareTo("午夜") == 0 
+					|| text[i].compareTo("午夜") == 0
 					|| text[i].compareTo("今天中午") == 0
 					|| text[i].compareTo("今天下午") == 0) {
 				time.set(Calendar.AM_PM, Calendar.PM);
@@ -473,18 +474,13 @@ public class GetUserTime {
 	private void DateFix() {
 		for (int i = 0; i < text.length; i++) {
 			if (text[i].compareTo("明天") == 0) {
-				time.set(Calendar.DAY_OF_YEAR,
-						time.get(Calendar.DAY_OF_YEAR) + 1);
+				time.set(Calendar.DATE, time.get(Calendar.DATE) + 1);
 				break;
-			}
-			if (text[i].compareTo("后天") == 0) {
-				time.set(Calendar.DAY_OF_YEAR,
-						time.get(Calendar.DAY_OF_YEAR) + 2);
+			} else if (text[i].compareTo("后天") == 0) {
+				time.set(Calendar.DATE, time.get(Calendar.DATE) + 2);
 				break;
-			}
-			if (text[i].compareTo("大后天") == 0) {
-				time.set(Calendar.DAY_OF_YEAR,
-						time.get(Calendar.DAY_OF_YEAR) + 3);
+			} else if (text[i].compareTo("大后天") == 0) {
+				time.set(Calendar.DATE, time.get(Calendar.DATE) + 3);
 				break;
 			}
 		}
