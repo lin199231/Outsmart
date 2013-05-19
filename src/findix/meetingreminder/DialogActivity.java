@@ -429,7 +429,7 @@ public class DialogActivity extends Activity implements OnClickListener,
 			};
 			dialog = new TimePickerDialog(this, timeListener,
 					calendar.get(Calendar.HOUR_OF_DAY),
-					calendar.get(Calendar.MINUTE), true); // 是否为二十四制
+					calendar.get(Calendar.MINUTE), false); // 是否为二十四制
 			break;
 		default:
 			break;
