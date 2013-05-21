@@ -4,9 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.TimeZone;
 
-import com.adsmogo.adapters.AdsMogoAdapter;
 import com.adsmogo.adapters.AdsMogoCustomEventPlatformEnum;
-import com.adsmogo.adapters.sdk.DomobAdapter;
 import com.adsmogo.adview.AdsMogoLayout;
 import com.adsmogo.controller.listener.AdsMogoListener;
 import com.adsmogo.util.AdsMogoUtil;
@@ -35,11 +33,9 @@ import android.util.Log;
 import android.view.*;
 import android.view.View.*;
 import android.view.Window;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -552,7 +548,7 @@ public class DialogActivity extends Activity implements OnClickListener,
 	}
 
 	@Override
-	public Class getCustomEvemtPlatformAdapterClass(
+	public Class<?> getCustomEvemtPlatformAdapterClass(
 			AdsMogoCustomEventPlatformEnum arg0) {
 		// TODO Auto-generated method stub
 		return null;

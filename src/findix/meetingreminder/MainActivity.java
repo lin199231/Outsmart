@@ -47,7 +47,7 @@ public class MainActivity extends Activity implements OnClickListener,
 	private LinearLayout toggleButtonLayout = null;
 	private LinearLayout mainLayout = null;
 
-	AdsMogoLayout adsMogoLayoutCode;
+	AdsMogoLayout adsMogoLayout;
 
 	// 建立数据库
 	SQLiteDatabase db;
@@ -135,19 +135,28 @@ public class MainActivity extends Activity implements OnClickListener,
 		Persistence setToggle = new Persistence("Setting.db");
 		if (setToggle.getValue() == 1) {
 			toggleButton.setChecked(true);
+			toggleButtonLayout
+					.setBackgroundColor(Color.parseColor("#CCFF7F24"));
 		} else {
 			toggleButton.setChecked(false);
+			toggleButtonLayout
+					.setBackgroundColor(Color.parseColor("#AA3399ff"));
 		}
 
 		// 设置日历
 		new Persistence("CalendarSet.db");
+
+		// 芒果广告
+		adsMogoLayout = ((AdsMogoLayout) this
+				.findViewById(R.id.adsMogoView_main));
+		adsMogoLayout.setAdsMogoListener(this);
+		adsMogoLayout.downloadIsShowDialog = true;
 	}
 
 	@Override
 	protected void onStart() {
 		// TODO Auto-generated method stub
 		super.onStart();
-		init();
 	}
 
 	@SuppressLint("SdCardPath")
@@ -166,10 +175,10 @@ public class MainActivity extends Activity implements OnClickListener,
 				io.close();
 				if (toggleButton.isChecked()) {
 					toggleButtonLayout.setBackgroundColor(Color
-							.parseColor("#FF7F24"));
+							.parseColor("#CCFF7F24"));
 				} else {
 					toggleButtonLayout.setBackgroundColor(Color
-							.parseColor("#3399ff"));
+							.parseColor("#AA3399ff"));
 				}
 			} catch (IOException e1) {
 				// TODO Auto-generated catch block
@@ -489,66 +498,6 @@ public class MainActivity extends Activity implements OnClickListener,
 		}
 	}
 
-	private void init() {
-
-		// 注意：因单一平台SDK有互相冲突现象，所以demo中的jar文件不全，详细请查看libs.zip
-
-		/*------------------------------------------------------------*/
-		// 初始化AdsMogoLayout 初始化分为以下几种方式
-		// 构造方法，设置广告类型，如全屏广告，banner广告
-		// public AdsMogoLayout(final Activity context, final String keyAdMogo,
-		// final int ad_type) {
-		// }
-
-		// 默认的构造方法，默认开启快速模式，banner广告
-		// public AdsMogoLayout(final Activity context, final String keyAdMogo)
-		// {
-		// }
-
-		// 构造方法，设置快速模式
-		// public AdsMogoLayout(final Activity context, final String keyAdMogo,
-		// boolean expressMode) {
-		// }
-
-		// 构造方法，设置广告类型和快速模式
-		// public AdsMogoLayout(final Activity context, final String keyAdMogo,
-		// final int ad_type, final boolean expressMode) {
-		// }
-		/*------------------------------------------------------------*/
-
-		// 构造方法，设置快速模式
-		adsMogoLayoutCode = new AdsMogoLayout(this,
-				"1c1e5e36250943d48c898a0aa311da62", false);
-
-		// 设置监听回调 其中包括 请求 展示 请求失败等事件的回调
-		adsMogoLayoutCode.setAdsMogoListener(this);
-		adsMogoLayoutCode.downloadIsShowDialog=true;
-		/*------------------------------------------------------------*/
-		// 通过Code方式添加广告条 本例的结构如下(仅供参考)
-		// -RelativeLayout/(FILL_PARENT,FILL_PARENT)
-		// |
-		// +RelativeLayout/(FILL_PARENT,WRAP_CONTENT)
-		// |
-		// +AdsMogoLayout(FILL_PARENT,WRAP_CONTENT)
-		// |
-		// \
-		// |
-		// \
-		/*------------------------------------------------------------*/
-		RelativeLayout parentLayput = new RelativeLayout(this);
-		RelativeLayout.LayoutParams parentLayputParams = new RelativeLayout.LayoutParams(
-				RelativeLayout.LayoutParams.FILL_PARENT,
-				RelativeLayout.LayoutParams.FILL_PARENT);
-		RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
-				RelativeLayout.LayoutParams.FILL_PARENT,
-				RelativeLayout.LayoutParams.WRAP_CONTENT);
-		layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM,
-				RelativeLayout.TRUE);
-		parentLayput.addView(adsMogoLayoutCode, layoutParams);
-
-		this.addContentView(parentLayput, parentLayputParams);
-	}
-
 	/**
 	 * 当用户点击广告*(Mogo服务根据次记录点击数，次点击是过滤过的点击，一条广告一次展示只能对应一次点击)
 	 */
@@ -577,9 +526,9 @@ public class MainActivity extends Activity implements OnClickListener,
 
 				dialog.dismiss();
 
-				if (adsMogoLayoutCode != null) {
+				if (adsMogoLayout != null) {
 					// 关闭当前广告
-					adsMogoLayoutCode.setADEnable(false);
+					adsMogoLayout.setADEnable(false);
 				}
 
 			}
@@ -649,8 +598,8 @@ public class MainActivity extends Activity implements OnClickListener,
 	protected void onDestroy() {
 		// 清除 adsMogoLayout 实例 所产生用于多线程缓冲机制的线程池
 		// 此方法请不要轻易调用，如果调用时间不当，会造成无法统计计数
-		if (adsMogoLayoutCode != null) {
-			adsMogoLayoutCode.clearThread();
+		if (adsMogoLayout != null) {
+			adsMogoLayout.clearThread();
 		}
 		super.onDestroy();
 	}
