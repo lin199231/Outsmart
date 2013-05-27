@@ -5,7 +5,12 @@
     android:layout_height="fill_parent"
     android:orientation="vertical" >
 
-    <LinearLayout
+    <ScrollView
+        android:id="@+id/scrollView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
+
+        <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="#953399ff"
@@ -237,5 +242,6 @@
             adsmogo:express_mode="false" >
         </com.adsmogo.adview.AdsMogoLayout>
     </LinearLayout>
+    </ScrollView>
 
 </RelativeLayout>
