@@ -81,7 +81,7 @@ public class MainActivity extends Activity implements OnClickListener,
 		super.onCreate(savedInstanceState);
 		// setContentView(R.layout.activity_main);
 		setContentView(R.layout.activity_main_wp);
-
+		setTheme(R.style.MainTheme);
 		toggleButton = (ToggleButton) findViewById(R.id.toggleButton);
 		toggleButton.setOnClickListener(this);
 		Button1 = (Button) findViewById(R.id.button1);

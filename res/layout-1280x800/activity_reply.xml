@@ -16,14 +16,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="回复："
-            android:textAppearance="?android:attr/textAppearanceLarge" />
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textSize="30dp" />
 
         <EditText
             android:id="@+id/EditText"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:text="收到" >
+            android:text="收到"
+            android:textSize="30sp" >
+
         </EditText>
     </LinearLayout>
 

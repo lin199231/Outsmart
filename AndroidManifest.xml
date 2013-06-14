@@ -69,7 +69,8 @@
         <activity
             android:name=".MainActivity"
             android:excludeFromRecents="true"
-            android:label="@string/title_activity_main" >
+            android:label="@string/title_activity_main"
+            android:theme="@style/MainTheme" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -79,7 +80,7 @@
         <activity
             android:name=".DialogActivity"
             android:excludeFromRecents="true"
-            android:theme="@style/translucent" >
+            android:theme="@style/DialogTheme">
         </activity>
         <!-- 声明Mogo的Activity -->
         <activity

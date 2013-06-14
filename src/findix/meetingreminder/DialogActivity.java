@@ -96,7 +96,7 @@ public class DialogActivity extends Activity implements OnClickListener,
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_dialog);
-		setTheme(R.style.translucent);
+		setTheme(R.style.DialogTheme);
 		datetextView = (TextView) findViewById(R.id.datetextView);
 		timetextView = (TextView) findViewById(R.id.timetextView);
 		smstextView = (TextView) findViewById(R.id.smstextView);
@@ -393,7 +393,6 @@ public class DialogActivity extends Activity implements OnClickListener,
 		// 用来获取日期和时间的
 		// Calendar calendar = Calendar.getInstance();
 		Calendar calendar = time;
-
 		Dialog dialog = null;
 		switch (id) {
 		case R.id.changeDateButton:
