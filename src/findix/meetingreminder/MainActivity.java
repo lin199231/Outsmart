@@ -13,15 +13,18 @@ import findix.meetingreminder.backup.BackupTask;
 import findix.meetingreminder.db.DatabaseHelper;
 import findix.meetingreminder.segmentation.CopyDic;
 import findix.meetingreminder.segmentation.Persistence;
+import findix.meetingreminder.sms.SmsReceiver;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.*;
 import android.content.DialogInterface.OnMultiChoiceClickListener;
 import android.content.res.Resources;
+import android.database.ContentObserver;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
@@ -76,6 +79,7 @@ public class MainActivity extends Activity implements OnClickListener,
 
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -103,9 +107,27 @@ public class MainActivity extends Activity implements OnClickListener,
 		set_btn.setOnClickListener(this);
 		mainLayout = (LinearLayout) findViewById(R.id.mainLayout);
 
+		// 复制字典
 		new CopyDic(this);
+		
+		// 注册短信数据库接收监听器
+		SmsReceiver smsReceiver = new SmsReceiver(new Handler(), this);
+		this.getContentResolver().registerContentObserver(
+				Uri.parse("content://sms"), true, smsReceiver);
+		
+		//初始化最新短信_id
+		final String SMS_URI_INBOX = "content://sms/inbox";
+		Uri uri = Uri.parse(SMS_URI_INBOX);
+		String[] projectionSMS = new String[] { "_id", "address", "person",
+				"body", "date", "type" };
+		final Cursor cur = getContentResolver().query(uri,
+				projectionSMS, null, null, "date desc");
+		cur.moveToFirst();
+		String id = cur.getString(cur.getColumnIndex("_id"));
+		Persistence smsId=new Persistence(id);
+
 		// 设置背景
-		Persistence setBackGround = new Persistence("SetBackGround.db");
+		Persistence setBackGround = new Persistence("sms.db");
 		int bg = setBackGround.getValue();
 		// setBackGround.changeValue(bg == 5 ? 1 : bg + 1);
 		switch (bg) {

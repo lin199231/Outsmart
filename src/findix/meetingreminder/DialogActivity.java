@@ -120,7 +120,7 @@ public class DialogActivity extends Activity implements OnClickListener,
 		editText_location.setOnClickListener(this);
 		editText_event = (EditText) findViewById(R.id.eventEditText);
 		editText_event.setOnClickListener(this);
-
+		
 		// 芒果广告
 		adsMogoLayout = ((AdsMogoLayout) this.findViewById(R.id.adsMogoView));
 		adsMogoLayout.setAdsMogoListener(this);

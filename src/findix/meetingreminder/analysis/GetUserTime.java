@@ -3,7 +3,6 @@
 import java.util.Calendar;
 import java.util.regex.*;
 
-import android.util.Log;
 ////////////////////////////////////////////////////
 //String[] text为分词后的结果，对于地点的判断和选择 对其进行操作
 //String Location为记录地点的字符串
@@ -13,7 +12,7 @@ import findix.meetingreminder.segmentation.SegmentationByBloom;
 public class GetUserTime {
 
 	public GetUserTime(String msg) {
-		long ftime = Calendar.getInstance().getTimeInMillis();
+		// long ftime = Calendar.getInstance().getTimeInMillis();
 		NoDateMsg = msg;
 		msg = toAllNumic(msg);
 		Msg = msg;
@@ -21,7 +20,7 @@ public class GetUserTime {
 		SegmentationByBloom seg = new SegmentationByBloom();
 		text = seg.getWords(msg);
 		PhaseShiefTime();
-		Log.i("运行时间", Calendar.getInstance().getTimeInMillis() - ftime + "");
+		// Log.i("运行时间", Calendar.getInstance().getTimeInMillis() - ftime + "");
 	}
 
 	public boolean isMeeting() {

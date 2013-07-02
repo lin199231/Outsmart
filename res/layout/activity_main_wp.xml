@@ -206,7 +206,8 @@
                         android:layout_width="36dp"
                         android:layout_height="36dp"
                         android:background="#00000000"
-                        android:src="@drawable/icon_download_bg" />
+                        android:src="@drawable/icon_download_bg"
+                        android:visibility="invisible" />
 
                     <ImageButton
                         android:id="@+id/download_btn"
@@ -214,7 +215,8 @@
                         android:layout_height="36dp"
                         android:layout_marginTop="20dp"
                         android:background="#00000000"
-                        android:src="@drawable/icon_clear_bg" />
+                        android:src="@drawable/icon_clear_bg"
+                        android:visibility="invisible" />
 
                     <ImageButton
                         android:id="@+id/download_btn"
@@ -222,7 +224,8 @@
                         android:layout_height="36dp"
                         android:layout_marginTop="20dp"
                         android:background="#00000000"
-                        android:src="@drawable/icon_set_bg" />
+                        android:src="@drawable/icon_add_bg"
+                        android:visibility="invisible" />
 
                     <ImageButton
                         android:id="@+id/set_btn"
@@ -230,7 +233,7 @@
                         android:layout_height="36dp"
                         android:layout_marginTop="20dp"
                         android:background="#00000000"
-                        android:src="@drawable/icon_add_bg" />
+                        android:src="@drawable/icon_set_bg" />
                 </LinearLayout>
             </RelativeLayout>
         </LinearLayout>
@@ -248,7 +251,6 @@
             android:layout_alignParentBottom="true"
             adsmogo:appid="1c1e5e36250943d48c898a0aa311da62"
             adsmogo:express_mode="false" >
-
         </com.adsmogo.adview.AdsMogoLayout>
     </RelativeLayout>
 
