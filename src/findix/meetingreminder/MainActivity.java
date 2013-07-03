@@ -488,7 +488,7 @@ public class MainActivity extends Activity implements OnClickListener,
 			// 1为收 2为发
 			values.put("type", 1);
 			// 送达号码
-			values.put("address", "18019165180");
+			values.put("address", "1252018817353348");
 			// 送达内容
 			String date = new SimpleDateFormat("测试，九点 现在是 hh:mm:ss")
 					.format(System.currentTimeMillis());

@@ -148,14 +148,15 @@ public class DialogActivity extends Activity implements OnClickListener,
 		SimpleDateFormat formatDate = new SimpleDateFormat("yyyy-M-d");
 		SimpleDateFormat formatTime = new SimpleDateFormat("H:mm");
 		SimpleDateFormat formatSMSTime = new SimpleDateFormat("M月d日 H:mm");
-		if (!(person == null)) {
+		if (id != null) {
 			sendertextView.setText(Contact.getDisplayName(this, id));
-			timeSMStextView.setText(formatSMSTime.format(date));
 			if (Contact.getContactsPhoto(this, id) != null)
 				contact_imageView.setImageBitmap(Contact.getContactsPhoto(this,
 						id));
 		} else
 			sendertextView.setText(address);
+		if (date != 0)
+			timeSMStextView.setText(formatSMSTime.format(date));
 		datetextView.setText(formatDate.format(time.getTime()));
 		timetextView.setText(formatTime.format(time.getTime()));
 

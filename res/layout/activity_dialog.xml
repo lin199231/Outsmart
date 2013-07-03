@@ -56,6 +56,12 @@
                 </RelativeLayout>
             </LinearLayout>
 
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1px"
+                android:background="#FFFFFF" >
+            </View>
+
             <TextView
                 android:id="@+id/smstextView"
                 android:layout_width="wrap_content"
@@ -90,7 +96,7 @@
                     android:id="@+id/datetextView"
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
-                    android:layout_marginLeft="32dp"
+                    android:layout_marginLeft="20dp"
                     android:gravity="center_vertical"
                     android:text="Large Text"
                     android:textAppearance="?android:attr/textAppearanceLarge"
@@ -123,7 +129,7 @@
                     android:id="@+id/timetextView"
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
-                    android:layout_marginLeft="32dp"
+                    android:layout_marginLeft="20dp"
                     android:gravity="center_vertical"
                     android:text="Large Text"
                     android:textAppearance="?android:attr/textAppearanceLarge"
@@ -165,11 +171,12 @@
                     android:layout_height="fill_parent"
                     android:layout_marginLeft="20dp"
                     android:layout_weight="1"
+                    android:background="#00000000"
                     android:ems="10"
                     android:gravity="center_vertical"
                     android:text="Large Text"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:textColor="#FFFFFFFF" />
+                    android:textColor="#FFFFFFFF"
+                    android:textAppearance="?android:attr/textAppearanceLarge" />
             </LinearLayout>
 
             <LinearLayout
@@ -201,11 +208,12 @@
                     android:layout_height="fill_parent"
                     android:layout_marginLeft="20dp"
                     android:layout_weight="1"
+                    android:background="#00000000"
                     android:ems="10"
                     android:gravity="center_vertical"
                     android:text="新事件"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:textColor="#FFFFFFFF" />
+                    android:textColor="#FFFFFFFF"
+                    android:textAppearance="?android:attr/textAppearanceLarge" />
             </LinearLayout>
 
             <RelativeLayout
