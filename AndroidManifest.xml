@@ -8,6 +8,8 @@
         android:targetSdkVersion="17" />
 
     <!-- 系统权限————————————————————————————————————————————————————————————————————————————————— -->
+    <!-- 读取联系人权限 -->
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
     <!-- 发送消息 -->
     <uses-permission android:name="android.permission.SEND_SMS" />
     <!-- 阅读消息 -->
@@ -64,9 +66,10 @@
              <intent-filter android:priority="2147483647">
                  <action android:name="android.intent.action.BOOT_COMPLETED" />
              </intent-filter>
-        </receiver>
+        </receiver>
         -->
         <!-- —————————————————————————————————————————————————————————————————————————————————————————————— -->
+
 
         <!-- activity注册—————————————————————————————————————————————————————————————————————————————————— -->
         <activity

@@ -282,8 +282,13 @@ public class MainActivity extends Activity implements OnClickListener,
 									intent.putExtra("content", cur
 											.getString(cur
 													.getColumnIndex("body")));
-									intent.putExtra("sender", cur.getString(cur
-											.getColumnIndex("address")));
+									intent.putExtra("address", cur
+											.getString(cur
+													.getColumnIndex("address")));
+									intent.putExtra("person", cur.getString(cur
+											.getColumnIndex("person")));
+									intent.putExtra("date", cur.getLong(cur
+											.getColumnIndex("date")));
 									// System.out.println(cur.getString(cur.getColumnIndex("address")));
 									if (toggleButton.isChecked())
 										startActivity(intent);
@@ -313,7 +318,8 @@ public class MainActivity extends Activity implements OnClickListener,
 											DialogActivity.class);
 									intent1.putExtra("content", et.getText()
 											.toString());
-									intent1.putExtra("sender", "");
+									intent1.putExtra("address", "");
+									intent1.putExtra("date", "");
 									if (toggleButton.isChecked())
 										startActivity(intent1);
 								}
@@ -473,7 +479,7 @@ public class MainActivity extends Activity implements OnClickListener,
 		case R.id.add_btn: {
 			/** 插入数据库 **/
 			Persistence smsId = new Persistence("sms.db");
-			int id=smsId.getValue();
+			int id = smsId.getValue();
 			ContentValues values = new ContentValues();
 			// 发送时间
 			values.put("date", System.currentTimeMillis());
@@ -484,8 +490,8 @@ public class MainActivity extends Activity implements OnClickListener,
 			// 送达号码
 			values.put("address", "18019165180");
 			// 送达内容
-			String date = new SimpleDateFormat("测试，九点 现在是 hh:mm:ss").format(System
-					.currentTimeMillis());
+			String date = new SimpleDateFormat("测试，九点 现在是 hh:mm:ss")
+					.format(System.currentTimeMillis());
 			values.put("body", date);
 			// 插入短信库
 			getContentResolver().insert(Uri.parse("content://sms"), values);

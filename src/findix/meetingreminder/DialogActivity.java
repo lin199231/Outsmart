@@ -13,9 +13,9 @@ import findix.meetingreminder.analysis.GetUserLocation;
 import findix.meetingreminder.analysis.GetUserTime;
 import findix.meetingreminder.db.DatabaseHelper;
 import findix.meetingreminder.segmentation.Persistence;
+import findix.meetingreminder.sms.Contact;
 import findix.meetingreminder.sms.SendSMS;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
@@ -36,6 +36,7 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -43,6 +44,8 @@ import android.widget.Toast;
 public class DialogActivity extends Activity implements OnClickListener,
 		AdsMogoListener {
 
+	private TextView sendertextView = null;
+	private TextView timeSMStextView = null;
 	private TextView smstextView = null;
 	private TextView timetextView = null;
 	private TextView datetextView = null;
@@ -56,9 +59,10 @@ public class DialogActivity extends Activity implements OnClickListener,
 	private Button btn_changeEvent = null;
 	private Button btn_changeTime = null;
 	private Button btn_changeDate = null;
+	private ImageView contact_imageView = null;
 	private String[] location;
 	private Calendar time = Calendar.getInstance();
-	private String sender = new String();
+	private String address = new String();
 	private String replyText = new String();
 
 	private boolean isClear_Event = false;
@@ -95,6 +99,8 @@ public class DialogActivity extends Activity implements OnClickListener,
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_dialog);
 		setTheme(R.style.DialogTheme);
+		sendertextView = (TextView) findViewById(R.id.sendertextView);
+		timeSMStextView = (TextView) findViewById(R.id.timeSMStextView);
 		datetextView = (TextView) findViewById(R.id.datetextView);
 		timetextView = (TextView) findViewById(R.id.timetextView);
 		smstextView = (TextView) findViewById(R.id.smstextView);
@@ -118,6 +124,7 @@ public class DialogActivity extends Activity implements OnClickListener,
 		editText_location.setOnClickListener(this);
 		editText_event = (EditText) findViewById(R.id.eventEditText);
 		editText_event.setOnClickListener(this);
+		contact_imageView = (ImageView) findViewById(R.id.contact_imageView);
 
 		// 芒果广告
 		// adsMogoLayout = ((AdsMogoLayout)
@@ -128,29 +135,37 @@ public class DialogActivity extends Activity implements OnClickListener,
 		// 接受intent
 		Intent intent = getIntent();
 		String content = intent.getStringExtra("content");
-		String sender = intent.getStringExtra("sender");
-		Log.i("content", content);
-		Log.i("sender", sender);
-
+		String address = intent.getStringExtra("address");
+		String person = intent.getStringExtra("person");
+		Long date = intent.getLongExtra("date", 0);
+		String id = Contact.getContactId(this, address);
 		GetUserTime getUserTime = new GetUserTime(content);
 		time = getUserTime.getTime();
-		// System.out.println(getUserTime.isMeeting() ? "【是会议】" + content:
-		// "【不是会议】" + content);
 		GetUserLocation getUserLocation = new GetUserLocation(
 				getUserTime.getNoDateMsg());
 		location = getUserLocation.getLocation();
-		this.sender = sender;
-		SimpleDateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd");
+		this.address = address;
+		SimpleDateFormat formatDate = new SimpleDateFormat("yyyy-M-d");
 		SimpleDateFormat formatTime = new SimpleDateFormat("H:mm");
+		SimpleDateFormat formatSMSTime = new SimpleDateFormat("M月d日 H:mm");
+		if (!(person == null)) {
+			sendertextView.setText(Contact.getDisplayName(this, id));
+			timeSMStextView.setText(formatSMSTime.format(date));
+			if (Contact.getContactsPhoto(this, id) != null)
+				contact_imageView.setImageBitmap(Contact.getContactsPhoto(this,
+						id));
+		} else
+			sendertextView.setText(address);
 		datetextView.setText(formatDate.format(time.getTime()));
 		timetextView.setText(formatTime.format(time.getTime()));
+
 		editText_location.setText(getUserLocation.getUserLocation(this));
 		editText_location.clearFocus();
 		smstextView.setText(content);
 
 		// 注册广播
-		registerReceiver(sendMessage, new IntentFilter(SENT_SMS_ACTION));
-		registerReceiver(receiver, new IntentFilter(DELIVERED_SMS_ACTION));
+		// registerReceiver(sendMessage, new IntentFilter(SENT_SMS_ACTION));
+		// registerReceiver(receiver, new IntentFilter(DELIVERED_SMS_ACTION));
 
 		// TipHelper.PlaySound(this);// 响铃
 		// long ring[]={1000,500,1000};
@@ -162,8 +177,8 @@ public class DialogActivity extends Activity implements OnClickListener,
 		// TODO Auto-generated method stub
 		super.onDestroy();
 		// 解除注册广播
-		unregisterReceiver(sendMessage);
-		unregisterReceiver(receiver);
+		// unregisterReceiver(sendMessage);
+		// unregisterReceiver(receiver);
 	}
 
 	@Override
@@ -318,11 +333,11 @@ public class DialogActivity extends Activity implements OnClickListener,
 											.toString();
 									replyText = reply;
 									if (PhoneNumberUtils
-											.isGlobalPhoneNumber(sender)
-											&& sender.length() > 0
+											.isGlobalPhoneNumber(address)
+											&& address.length() > 0
 											&& reply.length() > 0) {
 										new SendSMS(DialogActivity.this,
-												sender, reply);
+												address, reply);
 										/** 将发送的短信插入数据库 **/
 										ContentValues values = new ContentValues();
 										// 发送时间
@@ -333,7 +348,7 @@ public class DialogActivity extends Activity implements OnClickListener,
 										// 1为收 2为发
 										values.put("type", 2);
 										// 送达号码
-										values.put("address", sender);
+										values.put("address", address);
 										// 送达内容
 										values.put("body", replyText);
 										// 插入短信库
@@ -342,7 +357,7 @@ public class DialogActivity extends Activity implements OnClickListener,
 												values);
 										// finish();
 									} else {
-										if (sender.length() == 0) {
+										if (address.length() == 0) {
 											Toast.makeText(DialogActivity.this,
 													"这条信息没有发件人，所以是没法回复的哦~",
 													Toast.LENGTH_LONG).show();
@@ -353,7 +368,7 @@ public class DialogActivity extends Activity implements OnClickListener,
 										} else {
 											Toast.makeText(
 													DialogActivity.this,
-													"向号码 \"" + sender
+													"向号码 \"" + address
 															+ "\" 发送短信 \""
 															+ reply
 															+ "\" 失败，请重新尝试",
