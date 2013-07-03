@@ -40,7 +40,6 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-@SuppressLint("SimpleDateFormat")
 public class DialogActivity extends Activity implements OnClickListener,
 		AdsMogoListener {
 
@@ -76,7 +75,7 @@ public class DialogActivity extends Activity implements OnClickListener,
 	private static String calanderRemiderURL = "";
 	// 为了兼容不同版本的日历,2.2以后url发生改变
 	static {
-		if (Integer.parseInt(Build.VERSION.SDK) >= 8) {
+		if (Build.VERSION.SDK_INT >= 8) {
 			// calanderURL = "content://com.android.calendar/calendars";
 			calanderEventURL = "content://com.android.calendar/events";
 			calanderRemiderURL = "content://com.android.calendar/reminders";
@@ -89,7 +88,6 @@ public class DialogActivity extends Activity implements OnClickListener,
 
 	}
 
-	@SuppressLint("SimpleDateFormat")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -120,11 +118,12 @@ public class DialogActivity extends Activity implements OnClickListener,
 		editText_location.setOnClickListener(this);
 		editText_event = (EditText) findViewById(R.id.eventEditText);
 		editText_event.setOnClickListener(this);
-		
+
 		// 芒果广告
-		adsMogoLayout = ((AdsMogoLayout) this.findViewById(R.id.adsMogoView));
-		adsMogoLayout.setAdsMogoListener(this);
-		adsMogoLayout.downloadIsShowDialog = true;
+		// adsMogoLayout = ((AdsMogoLayout)
+		// this.findViewById(R.id.adsMogoView));
+		// adsMogoLayout.setAdsMogoListener(this);
+		// adsMogoLayout.downloadIsShowDialog = true;
 
 		// 接受intent
 		Intent intent = getIntent();

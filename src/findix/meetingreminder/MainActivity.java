@@ -1,6 +1,7 @@
 ﻿package findix.meetingreminder;
 
 import java.io.*;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import com.adsmogo.adapters.AdsMogoAdapter;
@@ -23,12 +24,9 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.*;
 import android.content.DialogInterface.OnMultiChoiceClickListener;
-import android.content.res.Resources;
-import android.database.ContentObserver;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -47,6 +45,7 @@ public class MainActivity extends Activity implements OnClickListener,
 	private Button restoreButton = null;
 	private Button calendarSetButton = null;
 	private ImageButton set_btn = null;
+	private ImageButton add_btn = null;
 	private LinearLayout toggleButtonLayout = null;
 	private LinearLayout mainLayout = null;
 
@@ -66,7 +65,7 @@ public class MainActivity extends Activity implements OnClickListener,
 
 	// 为了兼容不同版本的日历,2.2以后url发生改变
 	static {
-		if (Integer.parseInt(Build.VERSION.SDK) >= 8) {
+		if (Build.VERSION.SDK_INT >= 8) {
 			calanderURL = "content://com.android.calendar/calendars";
 			// calanderEventURL = "content://com.android.calendar/events";
 			// calanderRemiderURL = "content://com.android.calendar/reminders";
@@ -79,7 +78,6 @@ public class MainActivity extends Activity implements OnClickListener,
 
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -105,51 +103,49 @@ public class MainActivity extends Activity implements OnClickListener,
 		toggleButtonLayout = (LinearLayout) findViewById(R.id.toggleButtonLayout);
 		set_btn = (ImageButton) findViewById(R.id.set_btn);
 		set_btn.setOnClickListener(this);
+		add_btn = (ImageButton) findViewById(R.id.add_btn);
+		add_btn.setOnClickListener(this);
 		mainLayout = (LinearLayout) findViewById(R.id.mainLayout);
 
 		// 复制字典
 		new CopyDic(this);
-		
+
 		// 注册短信数据库接收监听器
 		SmsReceiver smsReceiver = new SmsReceiver(new Handler(), this);
 		this.getContentResolver().registerContentObserver(
 				Uri.parse("content://sms"), true, smsReceiver);
-		
-		//初始化最新短信_id
+
+		// 初始化最新短信_id
 		final String SMS_URI_INBOX = "content://sms/inbox";
 		Uri uri = Uri.parse(SMS_URI_INBOX);
 		String[] projectionSMS = new String[] { "_id", "address", "person",
 				"body", "date", "type" };
-		final Cursor cur = getContentResolver().query(uri,
-				projectionSMS, null, null, "date desc");
+		final Cursor cur = getContentResolver().query(uri, projectionSMS, null,
+				null, "date desc");
 		cur.moveToFirst();
-		String id = cur.getString(cur.getColumnIndex("_id"));
-		Persistence smsId=new Persistence(id);
+		int id = cur.getInt(cur.getColumnIndex("_id"));
+		Persistence smsId = new Persistence("sms.db");
+		smsId.changeValue(id);
 
 		// 设置背景
-		Persistence setBackGround = new Persistence("sms.db");
+		Persistence setBackGround = new Persistence("SetBackGround.db");
 		int bg = setBackGround.getValue();
 		// setBackGround.changeValue(bg == 5 ? 1 : bg + 1);
 		switch (bg) {
 		case 1:
-			mainLayout.setBackgroundDrawable(getResources().getDrawable(
-					R.drawable.main_bg1));
+			mainLayout.setBackgroundResource(R.drawable.main_bg1);
 			break;
 		case 2:
-			mainLayout.setBackgroundDrawable(getResources().getDrawable(
-					R.drawable.main_bg2));
+			mainLayout.setBackgroundResource(R.drawable.main_bg2);
 			break;
 		case 3:
-			mainLayout.setBackgroundDrawable(getResources().getDrawable(
-					R.drawable.main_bg3));
+			mainLayout.setBackgroundResource(R.drawable.main_bg3);
 			break;
 		case 4:
-			mainLayout.setBackgroundDrawable(getResources().getDrawable(
-					R.drawable.main_bg4));
+			mainLayout.setBackgroundResource(R.drawable.main_bg4);
 			break;
 		case 5:
-			mainLayout.setBackgroundDrawable(getResources().getDrawable(
-					R.drawable.main_bg5));
+			mainLayout.setBackgroundResource(R.drawable.main_bg5);
 			break;
 		}
 
@@ -457,27 +453,42 @@ public class MainActivity extends Activity implements OnClickListener,
 			setBackGround.changeValue(bg >= 5 ? bg = 1 : ++bg);
 			switch (bg) {
 			case 1:
-				mainLayout.setBackgroundDrawable(getResources().getDrawable(
-						R.drawable.main_bg1));
+				mainLayout.setBackgroundResource(R.drawable.main_bg1);
 				break;
 			case 2:
-				mainLayout.setBackgroundDrawable(getResources().getDrawable(
-						R.drawable.main_bg2));
+				mainLayout.setBackgroundResource(R.drawable.main_bg2);
 				break;
 			case 3:
-				mainLayout.setBackgroundDrawable(getResources().getDrawable(
-						R.drawable.main_bg3));
+				mainLayout.setBackgroundResource(R.drawable.main_bg3);
 				break;
 			case 4:
-				mainLayout.setBackgroundDrawable(getResources().getDrawable(
-						R.drawable.main_bg4));
+				mainLayout.setBackgroundResource(R.drawable.main_bg4);
 				break;
 			case 5:
-				mainLayout.setBackgroundDrawable(getResources().getDrawable(
-						R.drawable.main_bg5));
+				mainLayout.setBackgroundResource(R.drawable.main_bg5);
 				break;
 			}
-
+			break;
+		}
+		case R.id.add_btn: {
+			/** 插入数据库 **/
+			Persistence smsId = new Persistence("sms.db");
+			int id=smsId.getValue();
+			ContentValues values = new ContentValues();
+			// 发送时间
+			values.put("date", System.currentTimeMillis());
+			// 阅读状态
+			values.put("read", 0);
+			// 1为收 2为发
+			values.put("type", 1);
+			// 送达号码
+			values.put("address", "18019165180");
+			// 送达内容
+			String date = new SimpleDateFormat("测试，九点 现在是 hh:mm:ss").format(System
+					.currentTimeMillis());
+			values.put("body", date);
+			// 插入短信库
+			getContentResolver().insert(Uri.parse("content://sms"), values);
 		}
 		}
 	}
@@ -485,28 +496,6 @@ public class MainActivity extends Activity implements OnClickListener,
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.activity_main, menu);
-		// long ftime = Calendar.getInstance().getTimeInMillis();// 开始时间
-		// String a =
-		// "打印数组和对象数组为什么返回结果不一样为什么前者返回字符串后者返回地址而不返回地址这个实在是不科学啊不科学我现在打的这些都是为了测试你马上能不能用啊尼玛我想了这么多办法要是还不行那我就没话说了凑一百";
-		// String a
-		// ="民共和国技术的进步应该是真正能够带来用户体验的提升而进，而非为了让参数更加漂亮，吸引人。当然，也有的技术是越普及，体现的价值越明显。屏幕分辨率，就是一种这样的技术。一一道来";
-		// String a = "人民共和国技术的进步12345应该是真正能够带来FindiX用户体验的提升";
-		// String a = "明天下午3:00在南4304开会讨论Lambda表达式。";
-		// NoPunctuation np = new NoPunctuation();
-		// NoStopword ns = new NoStopword();
-		// SegmentationByBloom seg = new SegmentationByBloom();
-		// String tempString="苹果";
-		// ArrayList<String> list = seg.getWordsbyArrayList(a);
-		// np.getNoPunctuationWords(list);
-		// ns.getNoStopwordWords(list);
-		// MakeCharTogether.getCharTogether(list);
-		// String[] b = (String[]) list.toArray(new String[list.size()]);
-		// String[] b = seg.getWords(a);
-		// for (int i = 0; i < b.length; i++) {
-		// Log.i(i + "", b[i]);
-		// }
-		// Log.i("Whole Time", Calendar.getInstance().getTimeInMillis() - ftime
-		// + "");// 结束时间
 		return true;
 	}
 
@@ -538,33 +527,34 @@ public class MainActivity extends Activity implements OnClickListener,
 		AlertDialog dialog = new AlertDialog.Builder(this).create();
 
 		dialog.setMessage("是否关闭广告？");
+		dialog.setButton(dialog.BUTTON_POSITIVE, "是",
+				new DialogInterface.OnClickListener() {
 
-		dialog.setButton("是", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						// TODO Auto-generated method stub
+						// return true;
 
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				// TODO Auto-generated method stub
-				// return true;
+						dialog.dismiss();
 
-				dialog.dismiss();
+						if (adsMogoLayout != null) {
+							// 关闭当前广告
+							adsMogoLayout.setADEnable(false);
+						}
 
-				if (adsMogoLayout != null) {
-					// 关闭当前广告
-					adsMogoLayout.setADEnable(false);
-				}
+					}
+				});
 
-			}
-		});
+		dialog.setButton(dialog.BUTTON_NEGATIVE, "否",
+				new DialogInterface.OnClickListener() {
 
-		dialog.setButton2("否", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						// TODO Auto-generated method stub
 
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				// TODO Auto-generated method stub
-
-				dialog.dismiss();
-			}
-		});
+						dialog.dismiss();
+					}
+				});
 
 		dialog.show();
 

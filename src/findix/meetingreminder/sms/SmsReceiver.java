@@ -34,6 +34,7 @@ public class SmsReceiver extends ContentObserver {
 
 	@Override
 	public void onChange(boolean selfChange) {
+
 		super.onChange(selfChange);
 		final String SMS_URI_INBOX = "content://sms/inbox";
 		Uri uri = Uri.parse(SMS_URI_INBOX);
@@ -45,6 +46,8 @@ public class SmsReceiver extends ContentObserver {
 		String content = cur.getString(cur.getColumnIndex("body"));
 		String sender = cur.getString(cur.getColumnIndex("address"));
 		int id = cur.getInt(cur.getColumnIndex("_id"));
+		cur.close();
+		Log.i("监听到数据库变化", id + " " + sender + " " + content);
 		// 这样启动一个Activity一定要把Intent打上FLAG_ACTIVITY_NEW_TASK的标志，不然会报错
 		Intent intent = new Intent(context, DialogActivity.class);
 		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -52,16 +55,15 @@ public class SmsReceiver extends ContentObserver {
 		intent.putExtra("content", content);
 		intent.putExtra("sender", sender);
 		Persistence smsId = new Persistence("sms.db");
-		if (smsId.getValue() - id == 1) {
+//		Log.i("this id", id + "");
+//		Log.i("last id", smsId.getValue() + "");
+//		Log.i("setting",new Persistence("Setting.db").getValue()+"");
+//		Log.i("isMeeting",new GetUserTime(content).isMeeting()+"");
+		if (id > smsId.getValue()) {
 			smsId.changeValue(id);
-		} else {
-			if (smsId.getValue() < id) {
-				smsId.changeValue(id);
-				if (new Persistence("Setting.db").getValue() == 1
-						&& new GetUserTime(content).isMeeting()) {
-					context.startActivity(intent);
-				}
-				Log.i("短信数据库监听结果", sender + " " + content);
+			if (new Persistence("Setting.db").getValue() == 1
+					&& new GetUserTime(content).isMeeting()) {
+				context.startActivity(intent);
 			}
 		}
 
