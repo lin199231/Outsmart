@@ -316,11 +316,11 @@ public class DialogActivity extends Activity implements OnClickListener,
 		}
 		case R.id.btn_reply: {
 			LayoutInflater layoutInflater = LayoutInflater.from(this);
-			final View myLoginView = layoutInflater.inflate(
+			final View replyView = layoutInflater.inflate(
 					R.layout.activity_reply, null);
 			Dialog alertDialog = new AlertDialog.Builder(this)
-					.setView(myLoginView)
-					.setTitle("确认回复")
+					.setView(replyView)
+					//.setTitle("确认回复")
 					.setPositiveButton("确定",
 							new DialogInterface.OnClickListener() {
 
@@ -328,7 +328,7 @@ public class DialogActivity extends Activity implements OnClickListener,
 								public void onClick(DialogInterface dialog,
 										int which) {
 									// TODO Auto-generated method stub
-									editText = (EditText) myLoginView
+									editText = (EditText) replyView
 											.findViewById(R.id.EditText);
 									String reply = editText.getText()
 											.toString();

@@ -20,13 +20,13 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.*;
 import android.content.DialogInterface.OnMultiChoiceClickListener;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -34,7 +34,7 @@ import android.view.ViewGroup;
 import android.view.View.*;
 import android.widget.*;
 
-public class MainActivity extends Activity implements OnClickListener,
+public class MainActivity extends ActionBarActivity implements OnClickListener,
 		AdsMogoListener {
 	private ToggleButton toggleButton = null;
 	private Button Button1 = null;
