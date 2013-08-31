@@ -1,9 +1,30 @@
 <resources>
 
-    <string name="app_name">智能会议提醒</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="app_name">智取</string>
+    <string name="hello_world">你好世界!</string>
     <string name="menu_settings">上海市科技创新项目@SHIEP</string>
-    <string name="title_activity_main">智能会议提醒</string>
+    <string name="title_activity_main">智取</string>
     <string name="Copyright">Copyright © 2012–2013 FengXiang &amp; LinFeng.</string>
+    <!--  -->
+    <string name="new_reminder">新建提醒</string>
+     <string name="show_last_SMS">最后一条短信</string>
+    <string name="show_last_SMS_summary">以最后一条收到的短信新建提醒</string>
+    <string name="show_SMS">显示短信</string>
+    <string name="show_SMS_summary">从一条收到的短信新建提醒</string>
+    <string name="edit_SMS">快速新建提醒</string>
+    <string name="edit_SMS_summary">自行编辑信息来快速添加一个提醒</string>
+    <!--  -->
+    <string name="settings">设置</string>
+    <string name="choose_calendar">选择日历</string>
+    <string name="choose_calendar_summary">选择日历存储位置</string>
+    <string name="add_location">新增地点</string>
+    <string name="add_location_summary">新增一个地点以帮助程序识别</string>
+    <string name="delete_location">删除地点</string>
+    <string name="delete_location_summary">删除地点数据</string>
+    <!--  -->
+    <string name="backup">备份</string>
+    <string name="backup_summary">备份地点数据</string>
+    <string name="restore">还原</string>
+    <string name="restore_summary">还原地点数据</string>
 
 </resources>

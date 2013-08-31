@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:title="@string/app_name" >
+
+    <PreferenceCategory android:title="@string/new_reminder" >
+        <Preference
+            android:key="@string/show_last_SMS"
+            android:summary="@string/show_last_SMS_summary"
+            android:title="@string/show_last_SMS" />
+        <Preference
+            android:key="@string/show_SMS"
+            android:summary="@string/show_SMS_summary"
+            android:title="@string/show_SMS" />
+        <Preference
+            android:key="@string/edit_SMS"
+            android:summary="@string/edit_SMS_summary"
+            android:title="@string/edit_SMS" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/settings" >
+        <Preference
+            android:key="@string/choose_calendar"
+            android:summary="@string/choose_calendar_summary"
+            android:title="@string/choose_calendar" />
+        <Preference
+            android:key="@string/add_location"
+            android:summary="@string/add_location_summary"
+            android:title="@string/add_location" />
+        <Preference
+            android:key="@string/delete_location"
+            android:summary="@string/delete_location_summary"
+            android:title="@string/delete_location" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/backup" >
+        <Preference
+            android:key="@string/backup"
+            android:summary="@string/backup_summary"
+            android:title="@string/backup" />
+        <Preference
+            android:key="@string/restore"
+            android:summary="@string/backup_summary"
+            android:title="@string/restore" />
+    </PreferenceCategory>
+    
+    <PreferenceCategory android:title="测试" >
+        <Preference
+            android:key="模拟收到短信"
+            android:title="模拟收到短信" />
+    </PreferenceCategory>
+
+</PreferenceScreen>
