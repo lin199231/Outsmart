@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:adsmogo="http://www.adsmogo.com"
     android:id="@+id/mainLayout"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
@@ -224,7 +223,8 @@
                         android:layout_height="36dp"
                         android:layout_marginTop="20dp"
                         android:background="#00000000"
-                        android:src="@drawable/icon_add_bg" />
+                        android:src="@drawable/icon_add_bg" 
+                        android:visibility="invisible" />
 
                     <ImageButton
                         android:id="@+id/set_btn"
@@ -238,19 +238,5 @@
         </LinearLayout>
     </RelativeLayout>
 
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="fill_parent"
-        android:orientation="vertical" >
-
-        <com.adsmogo.adview.AdsMogoLayout
-            android:id="@+id/adsMogoView_main"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            adsmogo:appid="1c1e5e36250943d48c898a0aa311da62"
-            adsmogo:express_mode="false" >
-        </com.adsmogo.adview.AdsMogoLayout>
-    </RelativeLayout>
 
 </LinearLayout>

@@ -1,9 +1,9 @@
 <resources>
 
-    <string name="app_name">Meeting Reminder</string>
+    <string name="app_name">Outsmart</string>
     <string name="hello_world">Hello world!</string>
     <string name="menu_settings">上海市科技创新项目@SHIEP</string>
-    <string name="title_activity_main">Meeting Reminder</string>
+    <string name="title_activity_main">Outsmart</string>
     <string name="Copyright">Copyright © 2012–2013 FengXiang &amp; LinFeng.</string>
 
 </resources>

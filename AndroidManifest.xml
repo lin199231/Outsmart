@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="findix.meetingreminder"
+    package="com.find1x.meetingreminder"
     android:versionCode="1"
     android:versionName="1.0" >
 
@@ -73,7 +73,7 @@
 
         <!-- activity注册—————————————————————————————————————————————————————————————————————————————————— -->
         <activity
-            android:name=".MainActivity"
+            android:name="com.find1x.meetingreminder.MainActivity"
             android:excludeFromRecents="true"
             android:label="@string/title_activity_main"
             android:screenOrientation="portrait"
@@ -85,7 +85,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".DialogActivity"
+            android:name="com.find1x.meetingreminder.DialogActivity"
             android:excludeFromRecents="true"
             android:screenOrientation="portrait"
             android:theme="@style/DialogTheme" >
