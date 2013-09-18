@@ -12,12 +12,9 @@ import com.find1x.outsmart.backup.BackupTask;
 import com.find1x.outsmart.db.DatabaseHelper;
 import com.find1x.outsmart.segmentation.CopyDic;
 import com.find1x.outsmart.segmentation.Persistence;
-import com.find1x.outsmart.sms.SmsReceiver;
-
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.widget.CompoundButton;

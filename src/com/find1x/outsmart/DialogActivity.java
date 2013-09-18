@@ -129,7 +129,7 @@ public class DialogActivity extends Activity implements OnClickListener{
 		Intent intent = getIntent();
 		String content = intent.getStringExtra("content");
 		String address = intent.getStringExtra("address");
-		String person = intent.getStringExtra("person");
+		//String person = intent.getStringExtra("person");
 		Long date = intent.getLongExtra("date", 0);
 		String id = Contact.getContactId(this, address);
 		GetUserTime getUserTime = new GetUserTime(content);
