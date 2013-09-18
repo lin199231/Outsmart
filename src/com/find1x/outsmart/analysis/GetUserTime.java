@@ -82,7 +82,7 @@ public class GetUserTime {
 		Pattern Week = Pattern.compile("(星期|礼拜|周)[一二三四五六日天1-7]");// 星期x
 		Pattern TS = Pattern.compile("[AaPp].?[Mm].?");// am/pm
 		Pattern Time = Pattern
-				.compile("\\d{1,2}(([点时](半|[123一二三]刻|\\d{1,2}分|\\d{1,2}))|([：:]\\d{1,2})|[点 ])");// 精确时间
+				.compile("\\d{1,2}(([点时](半|[123一二三]刻|\\d{1,2}分|\\d{1,2}))|([：:]\\d{1,2})|[点时])");// 精确时间
 		// 明天 后天 大后天 晚上 分词后进行校正
 		// 提取xxxx年xx月xx日/号
 		Matcher MC = null;// 匹配器
@@ -442,7 +442,7 @@ public class GetUserTime {
 	private void TSFix() {
 		for (int i = 0; i < text.length; i++) {
 			if (text[i].compareTo("上午") == 0 || text[i].compareTo("清晨") == 0
-					|| text[i].compareTo("早晨") == 0
+					|| text[i].compareTo("早晨") == 0 || text[i].compareTo("早上") == 0
 					|| text[i].compareTo("今天上午") == 0) {
 				time.set(Calendar.AM_PM, Calendar.AM);
 				setAPM = 0;
