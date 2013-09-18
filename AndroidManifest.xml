@@ -55,8 +55,17 @@
              <intent-filter android:priority="2147483647">
                  <action android:name="android.intent.action.BOOT_COMPLETED" />
              </intent-filter>
-        </receiver>
+        </receiver>
         -->
+        <receiver  
+            android:name=".AutoStartBroadcastReceiver"  
+            android:enabled="true"  
+            android:exported="true" >  
+            <intent-filter>  
+                <action android:name="android.intent.action.BOOT_COMPLETED" > </action>  
+                <category android:name="android.intent.category.LAUNCHER" /> </intent-filter>  
+             
+        </receiver>  
         <!-- —————————————————————————————————————————————————————————————————————————————————————————————— -->
 
 
@@ -78,7 +87,9 @@
             android:theme="@style/DialogTheme" >
         </activity>
         <!-- —————————————————————————————————————————————————————————————————————————————————————————————— -->
-
+        <service
+            android:name=".SmsReceiverService"
+            android:enabled="true" />
     </application>
 
 </manifest>

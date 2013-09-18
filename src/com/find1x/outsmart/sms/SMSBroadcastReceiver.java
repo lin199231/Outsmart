@@ -14,6 +14,7 @@ import android.telephony.*;
 public class SMSBroadcastReceiver extends BroadcastReceiver {
 
 	boolean isChecked;
+	String packagename="com.find1x.outsmart";
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
@@ -29,7 +30,7 @@ public class SMSBroadcastReceiver extends BroadcastReceiver {
 
 			try {
 				FileReader io = new FileReader(
-						"/data/data/findix.meetingreminder/Setting.db");
+						"/data/data/"+packagename+"/Setting.db");
 				isChecked = (io.read() == 1);
 				io.close();
 			} catch (IOException e1) {

@@ -89,9 +89,10 @@ public class MainActivity extends SherlockPreferenceActivity implements
 		new CopyDic(this);
 
 		// 注册短信数据库接收监听器
-		SmsReceiver smsReceiver = new SmsReceiver(new Handler(), this);
-		this.getContentResolver().registerContentObserver(
-				Uri.parse("content://sms"), true, smsReceiver);
+		//SmsReceiver smsReceiver = new SmsReceiver(new Handler(), this);
+		//this.getContentResolver().registerContentObserver(Uri.parse("content://sms"), true, smsReceiver);
+		//启动短信数据库监听器服务
+		startService(new Intent(this, SmsReceiverService.class));  
 
 		// 初始化最新短信_id
 		final String SMS_URI_INBOX = "content://sms/inbox";
