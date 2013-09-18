@@ -1,4 +1,4 @@
-package findix.meetingreminder.segmentation;
+package com.find1x.outsmart.segmentation;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -7,8 +7,8 @@ import java.io.IOException;
 
 public class GetDicBloom {
 	public static byte[] getBloom() {
-		String packageNameString = "findix.meetingreminder";
-		File dir = new File("data/data/" + packageNameString + "/databases");
+		String packagename="com.find1x.outsmart";
+		File dir = new File("data/data/" + packagename + "/databases");
 		if (!dir.exists() || !dir.isDirectory()) {
 			dir.mkdir();
 		}

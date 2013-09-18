@@ -1,15 +1,15 @@
-package findix.meetingreminder;
+﻿package com.find1x.outsmart;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.TimeZone;
 
-import findix.meetingreminder.analysis.GetUserLocation;
-import findix.meetingreminder.analysis.GetUserTime;
-import findix.meetingreminder.db.DatabaseHelper;
-import findix.meetingreminder.segmentation.Persistence;
-import findix.meetingreminder.sms.Contact;
-import findix.meetingreminder.sms.SendSMS;
+import com.find1x.outsmart.analysis.GetUserLocation;
+import com.find1x.outsmart.analysis.GetUserTime;
+import com.find1x.outsmart.db.DatabaseHelper;
+import com.find1x.outsmart.segmentation.Persistence;
+import com.find1x.outsmart.sms.Contact;
+import com.find1x.outsmart.sms.SendSMS;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -61,6 +61,7 @@ public class DialogActivity extends Activity implements OnClickListener{
 
 	private boolean isClear_Event = false;
 	private boolean isClear_Location = false;
+
 
 	/** 发送与接收的广播 **/
 	String SENT_SMS_ACTION = "SENT_SMS_ACTION";
@@ -117,6 +118,12 @@ public class DialogActivity extends Activity implements OnClickListener{
 		editText_event = (EditText) findViewById(R.id.eventEditText);
 		editText_event.setOnClickListener(this);
 		contact_imageView = (ImageView) findViewById(R.id.contact_imageView);
+
+		// 芒果广告
+		// adsMogoLayout = ((AdsMogoLayout)
+		// this.findViewById(R.id.adsMogoView));
+		// adsMogoLayout.setAdsMogoListener(this);
+		// adsMogoLayout.downloadIsShowDialog = true;
 
 		// 接受intent
 		Intent intent = getIntent();
@@ -302,11 +309,11 @@ public class DialogActivity extends Activity implements OnClickListener{
 		}
 		case R.id.btn_reply: {
 			LayoutInflater layoutInflater = LayoutInflater.from(this);
-			final View replyView = layoutInflater.inflate(
+			final View myLoginView = layoutInflater.inflate(
 					R.layout.activity_reply, null);
 			Dialog alertDialog = new AlertDialog.Builder(this)
-					.setView(replyView)
-					//.setTitle("确认回复")
+					.setView(myLoginView)
+					.setTitle("确认回复")
 					.setPositiveButton("确定",
 							new DialogInterface.OnClickListener() {
 
@@ -314,7 +321,7 @@ public class DialogActivity extends Activity implements OnClickListener{
 								public void onClick(DialogInterface dialog,
 										int which) {
 									// TODO Auto-generated method stub
-									editText = (EditText) replyView
+									editText = (EditText) myLoginView
 											.findViewById(R.id.EditText);
 									String reply = editText.getText()
 											.toString();

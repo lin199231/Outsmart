@@ -1,4 +1,4 @@
-package findix.meetingreminder.db;
+package com.find1x.outsmart.db;
 
 import java.io.File;
 import java.io.FileOutputStream;

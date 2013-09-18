@@ -1,4 +1,4 @@
-package findix.meetingreminder.analysis;
+package com.find1x.outsmart.analysis;
 
 import java.util.*;
 

@@ -1,10 +1,11 @@
-﻿package findix.meetingreminder.sms;
+﻿package com.find1x.outsmart.sms;
 
 import java.io.FileReader;
 import java.io.IOException;
 
-import findix.meetingreminder.DialogActivity;
-import findix.meetingreminder.analysis.GetUserTime;
+import com.find1x.outsmart.DialogActivity;
+import com.find1x.outsmart.analysis.GetUserTime;
+
 
 
 import android.content.*;

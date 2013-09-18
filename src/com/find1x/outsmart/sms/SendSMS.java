@@ -1,4 +1,4 @@
-package findix.meetingreminder.sms;
+package com.find1x.outsmart.sms;
 
 import java.util.ArrayList;
 

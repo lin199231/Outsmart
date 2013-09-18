@@ -1,15 +1,16 @@
-package findix.meetingreminder.analysis;
+package com.find1x.outsmart.analysis;
 
 import java.util.ArrayList;
+
+import com.find1x.outsmart.db.DatabaseHelper;
+import com.find1x.outsmart.segmentation.NoPunctuation;
+import com.find1x.outsmart.segmentation.NoStopword;
+import com.find1x.outsmart.segmentation.SegmentationByBloom;
 
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import findix.meetingreminder.db.DatabaseHelper;
-import findix.meetingreminder.segmentation.NoPunctuation;
-import findix.meetingreminder.segmentation.NoStopword;
-import findix.meetingreminder.segmentation.SegmentationByBloom;
 
 public class GetUserLocation {
 	String[] str;

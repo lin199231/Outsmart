@@ -1,10 +1,9 @@
-package findix.meetingreminder.sms;
+package com.find1x.outsmart.sms;
 
-import java.util.Calendar;
+import com.find1x.outsmart.DialogActivity;
+import com.find1x.outsmart.analysis.GetUserTime;
+import com.find1x.outsmart.segmentation.Persistence;
 
-import findix.meetingreminder.DialogActivity;
-import findix.meetingreminder.analysis.GetUserTime;
-import findix.meetingreminder.segmentation.Persistence;
 
 import android.content.Context;
 import android.content.Intent;

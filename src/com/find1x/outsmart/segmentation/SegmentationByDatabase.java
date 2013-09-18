@@ -1,13 +1,14 @@
-package findix.meetingreminder.segmentation;
+package com.find1x.outsmart.segmentation;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+
+import com.find1x.outsmart.db.CopyAndGetSQL;
 
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
-import findix.meetingreminder.db.CopyAndGetSQL;
 
 public class SegmentationByDatabase {
 	CopyAndGetSQL database = new CopyAndGetSQL();

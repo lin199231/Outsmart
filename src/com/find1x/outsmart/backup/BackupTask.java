@@ -1,4 +1,4 @@
-package findix.meetingreminder.backup;
+package com.find1x.outsmart.backup;
 
 import java.io.*;
 import java.nio.channels.FileChannel;
@@ -10,6 +10,7 @@ import android.util.Log;
 public class BackupTask extends AsyncTask<String, Void, Integer> {
 	private static final String COMMAND_BACKUP = "backupDatabase";
 	public static final String COMMAND_RESTORE = "restroeDatabase";
+	String packagename="com.find1x.outsmart";
 	private Context mContext;
 
 	public BackupTask(Context context) {
@@ -26,7 +27,7 @@ public class BackupTask extends AsyncTask<String, Void, Integer> {
 		// 获取SD卡下的用
 		// Environment.getExternalStorageDirectory().getAbsolutePath()+"*.db."
 		// 默认路径是 /data/data/(包名)/databases/*.db3
-		File dbFile = mContext.getDatabasePath("/data/data/findix.meetingreminder/databases/user.db3");
+		File dbFile = mContext.getDatabasePath("/data/data/"+packagename+"/databases/user.db3");
 		File exportDir = new File(Environment.getExternalStorageDirectory(),
 				"/findix/Backup");
 		if (!exportDir.exists()) {

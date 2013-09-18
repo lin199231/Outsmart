@@ -40,11 +40,5 @@
             android:summary="@string/backup_summary"
             android:title="@string/restore" />
     </PreferenceCategory>
-    
-    <PreferenceCategory android:title="测试" >
-        <Preference
-            android:key="模拟收到短信"
-            android:title="模拟收到短信" />
-    </PreferenceCategory>
 
 </PreferenceScreen>

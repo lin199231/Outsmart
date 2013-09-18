@@ -1,22 +1,25 @@
-package findix.meetingreminder.segmentation;
+package com.find1x.outsmart.segmentation;
 
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import android.content.Context;
+import android.provider.ContactsContract.Contacts;
+
 public class Persistence {
 	String fileName=new String();
-
+	String packagename="com.find1x.outsmart";
 	public Persistence(String fileName) {
 		this.fileName=fileName;
-		File settings = new File("/data/data/findix.meetingreminder/"
+		File settings = new File("/data/data/"+packagename+"//"
 				+ fileName);
 		if (!settings.exists()) {
 			try {
 				settings.createNewFile();
 				FileWriter io = null;
-				io = new FileWriter("/data/data/findix.meetingreminder/"
+				io = new FileWriter("/data/data/"+packagename+"//"
 						+ fileName);
 				io.write(1);
 				io.close();
@@ -30,7 +33,7 @@ public class Persistence {
 		int value = 0;
 		try {
 			FileReader io = new FileReader(
-					"/data/data/findix.meetingreminder/"
+					"/data/data/"+packagename+"//"
 							+ fileName);
 			value=io.read();
 			io.close();
@@ -44,7 +47,7 @@ public class Persistence {
 		FileWriter io = null;
 		try {
 			io = new FileWriter(
-					"/data/data/findix.meetingreminder/"+ fileName);
+					"/data/data/"+packagename+"//"+ fileName);
 			io.write(value);
 			io.close();
 		} catch (IOException e1) {

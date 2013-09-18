@@ -1,13 +1,14 @@
-﻿package findix.meetingreminder.analysis;
+﻿package com.find1x.outsmart.analysis;
 
 import java.util.Calendar;
 import java.util.regex.*;
+
+import com.find1x.outsmart.segmentation.SegmentationByBloom;
 
 ////////////////////////////////////////////////////
 //String[] text为分词后的结果，对于地点的判断和选择 对其进行操作
 //String Location为记录地点的字符串
 
-import findix.meetingreminder.segmentation.SegmentationByBloom;
 
 public class GetUserTime {
 

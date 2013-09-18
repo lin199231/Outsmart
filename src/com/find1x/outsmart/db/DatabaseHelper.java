@@ -1,4 +1,4 @@
-package findix.meetingreminder.db;
+package com.find1x.outsmart.db;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

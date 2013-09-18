@@ -1,4 +1,4 @@
-package findix.meetingreminder.segmentation;
+package com.find1x.outsmart.segmentation;
 
 import java.util.ArrayList;
 

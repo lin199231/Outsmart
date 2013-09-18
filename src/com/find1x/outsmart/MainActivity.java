@@ -1,6 +1,5 @@
-﻿package findix.meetingreminder;
+﻿package com.find1x.outsmart;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import org.jraf.android.backport.switchwidget.Switch;
@@ -9,12 +8,12 @@ import com.actionbarsherlock.app.SherlockPreferenceActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.find1x.outsmart.backup.BackupTask;
+import com.find1x.outsmart.db.DatabaseHelper;
+import com.find1x.outsmart.segmentation.CopyDic;
+import com.find1x.outsmart.segmentation.Persistence;
+import com.find1x.outsmart.sms.SmsReceiver;
 
-import findix.meetingreminder.backup.BackupTask;
-import findix.meetingreminder.db.DatabaseHelper;
-import findix.meetingreminder.segmentation.CopyDic;
-import findix.meetingreminder.segmentation.Persistence;
-import findix.meetingreminder.sms.SmsReceiver;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -45,7 +44,6 @@ public class MainActivity extends SherlockPreferenceActivity implements
 	private Preference deleteLocation;
 	private Preference backup;
 	private Preference restore;
-	private Preference test;
 	// 建立数据库
 	SQLiteDatabase db;
 	DatabaseHelper dbHelper = new DatabaseHelper(MainActivity.this, "user.db3");
@@ -119,7 +117,6 @@ public class MainActivity extends SherlockPreferenceActivity implements
 		deleteLocation = (Preference) findPreference(getString(R.string.delete_location));
 		backup = (Preference) findPreference(getString(R.string.backup));
 		restore = (Preference) findPreference(getString(R.string.restore));
-		test=(Preference) findPreference("模拟收到短信");
 		// 注册Preference监听
 		showlastSMS.setOnPreferenceClickListener(this);
 		showSMS.setOnPreferenceClickListener(this);
@@ -129,7 +126,6 @@ public class MainActivity extends SherlockPreferenceActivity implements
 		deleteLocation.setOnPreferenceClickListener(this);
 		backup.setOnPreferenceClickListener(this);
 		restore.setOnPreferenceClickListener(this);
-		test.setOnPreferenceClickListener(this);
 	}
 
 	/*
@@ -158,8 +154,6 @@ public class MainActivity extends SherlockPreferenceActivity implements
 			backupDo();
 		} else if (preference.getKey().equals(getString(R.string.restore))) {
 			restoreDo();
-		}else if (preference.getKey().equals("模拟收到短信")) {
-			testDo();
 		}
 		// 返回true表示允许改变
 		return true;
@@ -405,26 +399,6 @@ public class MainActivity extends SherlockPreferenceActivity implements
 						backup(false);
 					}
 				}).setNegativeButton("取消", null).show();
-	}
-	private void testDo(){
-		/** 插入数据库 **/
-		Persistence smsId = new Persistence("sms.db");
-		int id = smsId.getValue();
-		ContentValues values = new ContentValues();
-		// 发送时间
-		values.put("date", System.currentTimeMillis());
-		// 阅读状态
-		values.put("read", 0);
-		// 1为收 2为发
-		values.put("type", 1);
-		// 送达号码
-		values.put("address", "18817353348");
-		// 送达内容
-		String date = new SimpleDateFormat("测试，九点 现在是 hh:mm:ss")
-				.format(System.currentTimeMillis());
-		values.put("body", date);
-		// 插入短信库
-		getContentResolver().insert(Uri.parse("content://sms"), values);
 	}
 	/*
 	 * ==========================================================================
