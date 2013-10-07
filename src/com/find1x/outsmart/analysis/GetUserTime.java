@@ -487,8 +487,10 @@ public class GetUserTime {
 	}
 
 	private void dropAllDate() {
-		Pattern Year = Pattern.compile("\\d{2,4}[年\\.\\/\\-]");// xx-xxxx年
-		Pattern Month = Pattern.compile("\\d{1,2}[月\\.\\/\\-]");// x-xx月
+		Pattern CompleteDate = Pattern.compile("(\\d{2,4}[\\.\\/\\-])?(\\d{1,2}[\\.\\/\\-])(\\d{1,2})");
+		//修正南DDDD.识别为日期的问题
+		Pattern Year = Pattern.compile("\\d{2,4}年");// xx-xxxx年
+		Pattern Month = Pattern.compile("\\d{1,2}月");// x-xx月
 		Pattern Day = Pattern.compile("\\d{1,2}[日号]");// x-xx日
 		Pattern Week = Pattern.compile("(星期|礼拜|周)[一二三四五六日天1-7]");// 星期x
 		Pattern NextWeek = Pattern.compile("下(星期|礼拜|周)[一二三四五六日天1-7]");// 下星期x
@@ -497,6 +499,7 @@ public class GetUserTime {
 				.compile("\\d{1,2}(([：:]\\d{1,2})|([点](\\d{1,2}分|半|[123一二三]刻)?))");// 精确时间
 		Pattern APM = Pattern.compile("(上午|中午|下午|清晨|早晨|晚上|傍晚|半夜|午夜|凌晨)");// am/pm
 		Pattern Date = Pattern.compile("(明天|后天|大后天)");
+		deleteDateWord(CompleteDate);
 		deleteDateWord(Year);
 		deleteDateWord(Month);
 		deleteDateWord(Day);
