@@ -347,7 +347,7 @@ public class GetUserTime {
 		StringBuffer strb = new StringBuffer(msg);
 		String temp;
 		Pattern Zero = Pattern.compile("零[一二三四五六七八九]");// 零数
-		Pattern Single = Pattern.compile("[一二三四五六七八九]");// 一位数
+		Pattern Single = Pattern.compile("[一二两三四五六七八九]");// 一位数
 		Pattern Double = Pattern.compile("十[一二三四五六七八九]?");// 两位数
 		Pattern Twenty = Pattern.compile("[一二三四五六七八九]十");// 二十这样的两位数
 		Pattern Triple = Pattern.compile("[一二三四五六七八九]十[一二三四五六七八九]");// 三位数
@@ -396,6 +396,8 @@ public class GetUserTime {
 		case '一':
 			return '1';
 		case '二':
+			return '2';
+		case '两':
 			return '2';
 		case '三':
 			return '3';
